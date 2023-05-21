@@ -7,3 +7,5 @@ resources:
   - ./local-path-provisioner/ks.yaml
   - ./metrics-server/ks.yaml
   - ./reloader/ks.yaml
+  - ./coredns-custom/ks.yaml
+  - ./nfs-subdir-external-provisioner/ks.yaml
