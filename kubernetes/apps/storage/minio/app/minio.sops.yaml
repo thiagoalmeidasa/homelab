@@ -1,0 +1,30 @@
+# yamllint disable
+apiVersion: v1
+kind: Secret
+metadata:
+    name: minio-secret
+    namespace: storage
+type: Opaque
+stringData:
+    MINIO_ROOT_USER: ENC[AES256_GCM,data:74mMO/ARhKNKig==,iv:ldRp9V2W4v4F8KNvUA3CHDZzG15Koelp9jIrFuY0dEk=,tag:mfshLY6xh7yszL7PP6VWbQ==,type:str]
+    MINIO_ROOT_PASSWORD: ENC[AES256_GCM,data:CltrLoY6IKgxrGbkdEJH5Xz9OkLkBYLxqSs6JgYRHRE=,iv:+raLcB69KxZ7M+ivSrNSrtcaOkuP2Wa4c09axc5HOoM=,tag:8E/iwuJnA9SPDtJBMdX+HA==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1w02zzfg0y4ast9mgnd9w0yuym0wqx6q967kmrmq355w4cnw0xytq2x369r
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBvYkdjNkt3ZnJWT1FFVHVR
+            SlRDYnBJVFlOLzVkUHBoVWwwWVlzQUlPRzFrCjJYTVFwd2oxWk1OemVkTXBSWTVp
+            eTZBdTdWNS9YNHZzTmFBYVRFdG8yRmsKLS0tIGRGLzlzMTZGZHVYT3BYUnlWRG4v
+            YkRDU0pLcmM1RlBUbjVaYkpBaGJDN0EKwJtF6LBXX40YwxDlile/KYtXG10kRwlv
+            cQgckv6vndaOhC+0WhDyk5t0R1/hHo1+romC6yYLv//Y3ysmh2NdQQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2023-05-21T20:25:16Z"
+    mac: ENC[AES256_GCM,data:Jle7KT5IbvK6q6rgoPaJEk8Hm+mj7S6T6ydAn+cKRnMonsF9qk7sd2xR1udA8rHlGeEl/Qave8eZKmmvqqPvJ9EkpkteItBga0oaKCgN/HdZ2gKIbBIW0x9sLG6SiMbCDM04emu1ztNG4nhQnXrFehRVFbgKSg9e0XRHUs6/Mr8=,iv:1mdirtm51tCx1qQeBxUcKx08IN0ZQGM9MEgnsl8gGpg=,tag:CqKPj88AT1LNlDRRYf7F7A==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData)$
+    version: 3.7.3
