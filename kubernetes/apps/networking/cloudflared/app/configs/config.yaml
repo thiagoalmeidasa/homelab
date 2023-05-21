@@ -7,12 +7,12 @@
 # from the internet to cloudflared, run `cloudflared tunnel route dns <tunnel> <hostname>`.
 # E.g. `cloudflared tunnel route dns example-tunnel tunnel.example.com`.
 ingress:
-  - hostname: "${SECRET_DOMAIN}"
+  - hostname: "ingress.${PUBLIC_DOMAIN}"
     service: https://ingress-nginx-controller.networking.svc.cluster.local:443
     originRequest:
-      originServerName: "ingress.${SECRET_DOMAIN}"
-  - hostname: "*.${SECRET_DOMAIN}"
+      originServerName: "ingress.${PUBLIC_DOMAIN}"
+  - hostname: "*.${PUBLIC_DOMAIN}"
     service: https://ingress-nginx-controller.networking.svc.cluster.local:443
     originRequest:
-      originServerName: "ingress.${SECRET_DOMAIN}"
+      originServerName: "ingress.${PUBLIC_DOMAIN}"
   - service: http_status:404
