@@ -45,6 +45,7 @@ spec:
       showBookmarkGroups: true
       alwaysTargetBlank: true
       defaultSearchProvider: None
+      defaultEnable: true
       namespaceSelector:
         any: true
       # icons: https://materialdesignicons.com/
