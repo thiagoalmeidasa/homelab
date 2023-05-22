@@ -11,10 +11,9 @@ spec:
     kind: ClusterIssuer
   commonName: "${SECRET_DOMAIN}"
   dnsNames:
-    - "${SECRET_DOMAIN}"
-    - "*.${SECRET_DOMAIN}"
     - "${PUBLIC_DOMAIN}"
     - "*.${PUBLIC_DOMAIN}"
+    - "*.${SECRET_DOMAIN}"
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
@@ -28,7 +27,6 @@ spec:
     kind: ClusterIssuer
   commonName: "${SECRET_DOMAIN}"
   dnsNames:
-    - "${SECRET_DOMAIN}"
-    - "*.${SECRET_DOMAIN}"
     - "${PUBLIC_DOMAIN}"
     - "*.${PUBLIC_DOMAIN}"
+    - "*.${SECRET_DOMAIN}"
