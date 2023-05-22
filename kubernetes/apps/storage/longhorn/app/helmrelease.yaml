@@ -22,8 +22,10 @@ spec:
   values:
     persistence:
       defaultClass: false
+      defaultClassReplicaCount: 2
     defaultSettings:
       backupTarget: "nfs://nfs.lan://mnt/media/backup/k8s/longhorn"
+      defaultReplicaCount: 2
     ingress:
       enabled: true
       annotations:
