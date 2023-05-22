@@ -9,7 +9,7 @@ spec:
   issuerRef:
     name: letsencrypt-production
     kind: ClusterIssuer
-  commonName: "${SECRET_DOMAIN}"
+  commonName: "${PUBLIC_DOMAIN}"
   dnsNames:
     - "${PUBLIC_DOMAIN}"
     - "*.${PUBLIC_DOMAIN}"
@@ -25,7 +25,7 @@ spec:
   issuerRef:
     name: letsencrypt-staging
     kind: ClusterIssuer
-  commonName: "${SECRET_DOMAIN}"
+  commonName: "${PUBLIC_DOMAIN}"
   dnsNames:
     - "${PUBLIC_DOMAIN}"
     - "*.${PUBLIC_DOMAIN}"
