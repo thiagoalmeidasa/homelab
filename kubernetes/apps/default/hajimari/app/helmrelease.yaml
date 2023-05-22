@@ -55,15 +55,18 @@ spec:
               url: http://mibox:8080/
               icon: kodi
             - name: Deluge
-              url: http://cn4:8112/
+              url: http://storage.lan:8112/
               icon: download
+            - name: Transmission
+              url: http://storage.lan:9092/
+              icon: folder-download
         - group: 3D Printing
           apps:
             - name: Octoprint
               url: http://icarus.lan/
               icon: printer-3d-nozzle
             - name: Obico
-              url: http://cn5:3334/
+              url: http://cn5.lan:3334/
               icon: printer-3d
         - group: Monitoring
           apps:
@@ -73,12 +76,12 @@ spec:
       globalBookmarks:
         - group: k8s-at-home
           bookmarks:
-            - name: thiagoalmeidasa/rasp-k3s
-              url: "https://github.com/thiagoalmeidasa/rasp-k3s/"
+            - name: thiagoalmeidasa/homelab
+              url: "https://github.com/thiagoalmeidasa/homelab/"
             - name: Template repo
-              url: "https://github.com/k8s-at-home/template-cluster-k3s/"
+              url: "https://github.com/onedr0p/flux-cluster-template"
             - name: Helm charts
-              url: "https://github.com/k8s-at-home/charts/"
+              url: "https://github.com/bjw-s/helm-charts/tree/main/charts/library/common"
             - name: onedr0p/home-cluster
               url: "https://github.com/onedr0p/home-cluster"
             - name: cbirkenbeul/k3s-gitops
