@@ -71,7 +71,7 @@ spec:
         volumeSpec:
           nfs:
             server: "${NFS_SERVER}"
-            path: "${NFS_TV}/services/sonnar/config"
+            path: "${NFS_TV}/services/sonarr/config"
 
       torrents:
         enabled: true
