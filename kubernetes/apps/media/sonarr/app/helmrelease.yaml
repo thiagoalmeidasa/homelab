@@ -25,9 +25,6 @@ spec:
       PUID: 1000
       PGID: 1000
 
-    nodeSelector:
-      extra-storage: "true"
-
     service:
       main:
         ports:
