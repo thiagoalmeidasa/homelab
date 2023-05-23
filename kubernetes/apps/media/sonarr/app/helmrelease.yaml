@@ -1,0 +1,130 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app sonarr
+  namespace: media
+spec:
+  interval: 15m
+  chart:
+    spec:
+      # renovate: registryUrl=https://bjw-s.github.io/helm-charts/
+      chart: app-template
+      version: 1.5.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  values:
+    image:
+      repository: lscr.io/linuxserver/sonarr
+      tag: 3.0.10
+
+    env:
+      TZ: ${TIMEZONE}
+      PUID: 1000
+      PGID: 1000
+
+    nodeSelector:
+      extra-storage: "true"
+
+    service:
+      main:
+        ports:
+          http:
+            port: 8989
+
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "traefik"
+        annotations:
+          traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+          hajimari.io/enable: "true"
+          hajimari.io/icon: "television-box"
+        hosts:
+          - host: &host "sonarr.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+    podSecurityContext:
+      supplementalGroups:
+        - 1000
+
+    persistence:
+      config:
+        enabled: true
+        mountPath: /config
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "${NFS_SERVER}"
+            path: "${NFS_KUBERNETES}/tv/services/sonnar/config"
+
+      torrents:
+        enabled: true
+        mountPath: /torrents
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "${NFS_SERVER}"
+            path: "${NFS_KUBERNETES}/tv/torrents"
+
+      downloads:
+        enabled: true
+        mountPath: /downloads
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "${NFS_SERVER}"
+            path: "${NFS_KUBERNETES}/tv/downloads"
+
+      tv:
+        enabled: true
+        mountPath: /tv
+        hostPath: /mnt/media/tv/tvshows/
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "${NFS_SERVER}"
+            path: "${NFS_KUBERNETES}/tv/tvshows"
+
+    resources:
+      requests:
+        cpu: "0.04"
+        memory: 450Mi
+      limits:
+        memory: 600Mi
+
+    sidecars:
+      exporter:
+        image: ghcr.io/onedr0p/exportarr:v1.3.2
+        args:
+          - *app
+        env:
+          URL: http://localhost
+          CONFIG: /config/config.xml
+          PORT: &metrics-port 9794
+          ENABLE_ADDITIONAL_METRICS: true
+          ENABLE_UNKNOWN_QUEUE_ITEMS: true
+          API_KEY: random-value-will-be-overriden-by-config-xml
+        ports:
+          - name: metrics
+            containerPort: *metrics-port
+        volumeMounts:
+          - name: config
+            mountPath: /config
+
+    serviceMonitor:
+      main:
+        enabled: true
+        serviceName: '{{ include "bjw-s.common.lib.chart.names.fullname" $ }}'
+        endpoints:
+          - port: metrics
+            scheme: http
+            path: /metrics
+            interval: 3m
+            scrapeTimeout: 1m
