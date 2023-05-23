@@ -15,6 +15,17 @@ spec:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
   values:
     image:
       repository: lscr.io/linuxserver/sonarr
@@ -34,9 +45,10 @@ spec:
     ingress:
       main:
         enabled: true
-        ingressClassName: "traefik"
+        ingressClassName: "nginx"
         annotations:
-          traefik.ingress.kubernetes.io/router.entrypoints: "websecure"
+          nginx.ingress.kubernetes.io/whitelist-source-range: |
+            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
           hajimari.io/enable: "true"
           hajimari.io/icon: "television-box"
         hosts:
@@ -59,7 +71,7 @@ spec:
         volumeSpec:
           nfs:
             server: "${NFS_SERVER}"
-            path: "${NFS_KUBERNETES}/tv/services/sonnar/config"
+            path: "${NFS_TV}/services/sonnar/config"
 
       torrents:
         enabled: true
@@ -68,7 +80,7 @@ spec:
         volumeSpec:
           nfs:
             server: "${NFS_SERVER}"
-            path: "${NFS_KUBERNETES}/tv/torrents"
+            path: "${NFS_TV}/torrents"
 
       downloads:
         enabled: true
@@ -77,17 +89,16 @@ spec:
         volumeSpec:
           nfs:
             server: "${NFS_SERVER}"
-            path: "${NFS_KUBERNETES}/tv/downloads"
+            path: "${NFS_TV}/downloads"
 
       tv:
         enabled: true
         mountPath: /tv
-        hostPath: /mnt/media/tv/tvshows/
         type: custom
         volumeSpec:
           nfs:
             server: "${NFS_SERVER}"
-            path: "${NFS_KUBERNETES}/tv/tvshows"
+            path: "${NFS_TV}/tvshows"
 
     resources:
       requests:
