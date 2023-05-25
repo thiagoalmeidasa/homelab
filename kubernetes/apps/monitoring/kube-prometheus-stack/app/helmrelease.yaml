@@ -1,0 +1,200 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: kube-prometheus-stack
+  namespace: monitoring
+spec:
+  interval: 15m
+  timeout: 10m
+  chart:
+    spec:
+      # renovate: registryUrl=https://prometheus-community.github.io/helm-charts
+      chart: kube-prometheus-stack
+      version: 45.29.0
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community-charts
+        namespace: flux-system
+      interval: 5m
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    fullnameOverride: prometheus
+    alertmanager:
+      fullnameOverride: alertmanager
+      config:
+        global:
+          resolve_timeout: 5m
+        receivers:
+          - name: "null"
+          - name: "pagerduty"
+            pagerduty_configs:
+              - service_key: ${PAGERDUTY_KEY}
+          - name: dead-mans-switch
+            webhook_configs:
+              - url: http://dead-mans-switch:8080/webhook
+        route:
+          group_by: ["alertname", "job"]
+          group_wait: 30s
+          group_interval: 5m
+          repeat_interval: 6h
+          receiver: "null"
+          routes:
+            - receiver: dead-mans-switch
+              group_wait: 10s
+              group_interval: 30s
+              repeat_interval: 15s
+              match:
+                alertname: 'Watchdog'
+            - receiver: "pagerduty"
+              matchers:
+                - severity=~"critical|page"
+                - alertname!="KubeAPIErrorBudgetBurn"
+              continue: true
+        inhibit_rules:
+          - source_match:
+              severity: "critical"
+            target_match:
+              severity: "warning"
+            equal: ["alertname", "namespace"]
+      ingress:
+        enabled: true
+        pathType: Prefix
+        ingressClassName: "nginx"
+        annotations:
+          nginx.ingress.kubernetes.io/whitelist-source-range: |
+            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+          hajimari.io/enable: "true"
+          hajimari.io/appName: "Alert Manager"
+          hajimari.io/icon: "alert-decagram"
+          hajimari.io/group: "monitoring"
+        hosts:
+          - "alert-manager.${SECRET_DOMAIN}"
+        tls:
+          - hosts:
+              - "alert-manager.${SECRET_DOMAIN}"
+      alertmanagerSpec:
+        storage:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: longhorn
+              resources:
+                requests:
+                  storage: 1Gi
+    nodeExporter:
+      serviceMonitor:
+        relabelings:
+          - action: replace
+            regex: (.*)
+            replacement: $1
+            sourceLabels:
+              - __meta_kubernetes_pod_node_name
+            targetLabel: kubernetes_node
+    kube-state-metrics:
+      fullnameOverride: kube-state-metrics
+    prometheus-node-exporter:
+      fullnameOverride: node-exporter
+    grafana:
+      fullnameOverride: grafana
+      enabled: true
+      forceDeployDashboards: true
+      defaultDashboardsTimezone: "Europe/Stockholm"
+      folderAnnotation: grafana_folder
+      env:
+        GF_EXPLORE_ENABLED: true
+      grafana.ini:
+        users:
+          viewers_can_edit: false
+        auth.anonymous:
+          enabled: true
+          org_role: Viewer
+      additionalDataSources:
+        - name: Loki
+          editable: false
+          orgId: 1
+          type: loki
+          url: http://loki.logging.svc.cluster.local:3100
+          version: 1
+        - name: AlertManager
+          type: alertmanager
+          access: proxy
+          url: http://alertmanager-operated.monitoring.svc.cluster.local:9093
+          jsonData:
+            implementation: "prometheus"
+      sidecar:
+        dashboards:
+          enabled: true
+          searchNamespace: ALL
+          folderAnnotation: grafana_folder
+          provider:
+            foldersFromFilesStructure: true
+        datasources:
+          enabled: true
+          searchNamespace: ALL
+      ingress:
+        enabled: true
+        pathType: Prefix
+        ingressClassName: "nginx"
+        annotations:
+          nginx.ingress.kubernetes.io/whitelist-source-range: |
+            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+          hajimari.io/enable: "true"
+          hajimari.io/appName: "Grafana"
+          hajimari.io/icon: "monitor-dashboard"
+          hajimari.io/group: "monitoring"
+        hosts:
+          - "grafana.${SECRET_DOMAIN}"
+        tls:
+          - hosts:
+              - "grafana.${SECRET_DOMAIN}"
+    prometheusOperator:
+      configReloaderCpu: 0
+    prometheus:
+      fullnameOverride: prometheus
+      ingress:
+        enabled: true
+        pathType: Prefix
+        ingressClassName: "nginx"
+        annotations:
+          nginx.ingress.kubernetes.io/whitelist-source-range: |
+            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+          hajimari.io/enable: "true"
+          hajimari.io/appName: "Prometheus"
+          hajimari.io/icon: "database-search"
+          hajimari.io/group: "monitoring"
+        hosts:
+          - "prometheus.${SECRET_DOMAIN}"
+        tls:
+          - hosts:
+              - "prometheus.${SECRET_DOMAIN}"
+      prometheusSpec:
+        retention: 15d
+        resources:
+          limits:
+            memory: 2Gi
+        ruleSelectorNilUsesHelmValues: false
+        serviceMonitorSelectorNilUsesHelmValues: false
+        podMonitorSelectorNilUsesHelmValues: false
+        probeSelectorNilUsesHelmValues: false
+        enableAdminAPI: true
+        walCompression: true
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: longhorn
+              resources:
+                requests:
+                  storage: 15Gi
+    kubeControllerManager:
+      enabled: false
+    kubeScheduler:
+      enabled: false
+    kubeEtcd:
+      enabled: false
+    kubeProxy:
+      enabled: false
