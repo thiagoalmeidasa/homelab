@@ -1,0 +1,129 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.rasp-k3s.thiagoalmeida.xyz/helm.toolkit.fluxcd.io/helmrelease_v2beta1.json
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: &app radarr
+  namespace: media
+spec:
+  interval: 15m
+  chart:
+    spec:
+      # renovate: registryUrl=https://bjw-s.github.io/helm-charts/
+      chart: app-template
+      version: 1.5.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  values:
+    image:
+      repository: lscr.io/linuxserver/radarr
+      tag: 4.4.4
+
+    env:
+      TZ: ${TIMEZONE}
+      PUID: 1000
+      PGID: 1000
+
+    service:
+      main:
+        ports:
+          http:
+            port: 7878
+
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: "nginx"
+        annotations:
+          nginx.ingress.kubernetes.io/whitelist-source-range: |
+            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+          hajimari.io/enable: "true"
+          hajimari.io/icon: "filmstrip"
+        hosts:
+          - host: &host "radarr.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+
+    podSecurityContext:
+      supplementalGroups:
+        - 1000
+
+    persistence:
+      config:
+        enabled: true
+        mountPath: /config
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "${NFS_SERVER}"
+            path: "${NFS_TV}/services/radarr/config"
+
+      torrents:
+        enabled: true
+        mountPath: /torrents
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "${NFS_SERVER}"
+            path: "${NFS_TV}/torrents"
+
+      downloads:
+        enabled: true
+        mountPath: /downloads
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "${NFS_SERVER}"
+            path: "${NFS_TV}/downloads"
+
+      movies:
+        enabled: true
+        mountPath: /tv
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "${NFS_SERVER}"
+            path: "${NFS_TV}/movies"
+
+    resources:
+      requests:
+        memory: 600Mi
+        cpu: 500m
+      limits:
+        memory: 1Gi
+
+    sidecars:
+      exporter:
+        image: ghcr.io/onedr0p/exportarr:v1.3.2
+        args:
+          - *app
+        env:
+          URL: http://localhost
+          CONFIG: /config/config.xml
+          PORT: &metrics-port 9794
+          ENABLE_ADDITIONAL_METRICS: true
+          ENABLE_UNKNOWN_QUEUE_ITEMS: true
+          API_KEY: random-value-will-be-overriden-by-config-xml
+        ports:
+          - name: metrics
+            containerPort: *metrics-port
+        volumeMounts:
+          - name: config
+            mountPath: /config
+
+    serviceMonitor:
+      main:
+        enabled: true
+        serviceName: '{{ include "bjw-s.common.lib.chart.names.fullname" $ }}'
+        endpoints:
+          - port: metrics
+            scheme: http
+            path: /metrics
+            interval: 3m
+            scrapeTimeout: 1m
