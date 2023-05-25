@@ -26,6 +26,9 @@ spec:
       PUID: 1000
       PGID: 1000
 
+    nodeSelector:
+      extra-storage: "true"
+
     service:
       main:
         ports:
@@ -57,39 +60,31 @@ spec:
     persistence:
       config:
         enabled: true
+        type: hostPath
         mountPath: /config
-        type: custom
-        volumeSpec:
-          nfs:
-            server: "${NFS_SERVER}"
-            path: "${NFS_TV}/services/radarr/config"
+        hostPath: /mnt/media/tv/services/radarr/config
+        hostPathType: Directory
 
       torrents:
         enabled: true
+        type: hostPath
         mountPath: /torrents
-        type: custom
-        volumeSpec:
-          nfs:
-            server: "${NFS_SERVER}"
-            path: "${NFS_TV}/torrents"
+        hostPath: /mnt/media/tv/torrents/
+        hostPathType: Directory
 
       downloads:
         enabled: true
+        type: hostPath
         mountPath: /downloads
-        type: custom
-        volumeSpec:
-          nfs:
-            server: "${NFS_SERVER}"
-            path: "${NFS_TV}/downloads"
+        hostPath: /mnt/media/tv/downloads/
+        hostPathType: Directory
 
       movies:
         enabled: true
-        mountPath: /tv
-        type: custom
-        volumeSpec:
-          nfs:
-            server: "${NFS_SERVER}"
-            path: "${NFS_TV}/movies"
+        type: hostPath
+        mountPath: /movies
+        hostPath: /mnt/media/tv/movies/
+        hostPathType: Directory
 
     resources:
       requests:
