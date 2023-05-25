@@ -1,0 +1,15 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: monitoring
+resources:
+  - deployment.yaml
+  - service.yaml
+  - prometheusrule.yaml
+  - servicemonitor.yaml
+configMapGenerator:
+  - name: dead-mans-switch-config
+    files:
+      - config.yaml
+    options:
+      disableNameSuffixHash: true

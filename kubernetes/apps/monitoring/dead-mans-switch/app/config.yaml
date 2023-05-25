@@ -1,0 +1,17 @@
+---
+interval: 15m
+notify:
+  pagerduty:
+    key: ${PAGERDUTY_KEY}
+evaluate:
+  # evaluate alert payload include .evaluate.data
+  type: include
+  data:
+    receiver: dead-mans-switch
+    status: firing
+    alerts:
+      - status: firing
+        labels:
+          alertname: Watchdog
+          prometheus: monitoring/prometheus-prometheus
+          severity: none
