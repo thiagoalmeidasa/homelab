@@ -59,6 +59,24 @@ spec:
         tls:
           - hosts:
               - *host
+
+    probes:
+      liveness:
+        enabled: true
+        custom: true
+        spec:
+          exec:
+            command:
+              - /usr/bin/env
+              - bash
+              - -c
+              - curl --fail localhost:9117/health
+          failureThreshold: 5
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 10
+
     podSecurityContext:
       supplementalGroups:
         - 1000
