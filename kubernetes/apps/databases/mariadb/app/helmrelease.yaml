@@ -1,0 +1,50 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: mariadb
+  namespace: databases
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: mariadb
+      version: 12.2.3
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami
+        namespace: flux-system
+      interval: 15m
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    global:
+      storageClass: longhorn
+    architecture: standalone
+    auth:
+      existingSecret: mariadb-secret
+      database: main
+    persistence:
+      storageClass: longhorn
+      size: 2Gi
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+      prometheusRule:
+        enabled: true
+    # networkPolicy:
+    #   enabled: true
+    #   metrics:
+    #     enabled: true
+    #     namespaceSelector:
+    #       kubernetes.io/metadata.name: monitoring
