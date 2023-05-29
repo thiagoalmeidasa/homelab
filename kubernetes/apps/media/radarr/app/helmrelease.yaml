@@ -1,5 +1,5 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.rasp-k3s.thiagoalmeida.xyz/helm.toolkit.fluxcd.io/helmrelease_v2beta1.json
+# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helm.toolkit.fluxcd.io/helmrelease_v2beta1.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
@@ -17,17 +17,28 @@ spec:
         name: bjw-s
         namespace: flux-system
   values:
+    initContainers:
+      01-init-db:
+        image: ghcr.io/onedr0p/postgres-init:14.8
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - secretRef:
+              name: radarr-secret
+    controller:
+      type: statefulset
+      annotations:
+        reloader.stakater.com/auto: "true"
     image:
-      repository: lscr.io/linuxserver/radarr
-      tag: 4.4.4
+      repository: ghcr.io/onedr0p/radarr-develop
+      tag: 4.5.2.7318@sha256:821502cc07e2a222ac91b358b43a7974277fa8f2dfee34d8a0a70b6be45cb629
 
     env:
       TZ: ${TIMEZONE}
-      PUID: 1000
-      PGID: 1000
-
-    nodeSelector:
-      extra-storage: "true"
+    envFrom:
+      - secretRef:
+          name: radarr-secret
+    # nodeSelector:
+    #   extra-storage: "true"
 
     service:
       main:
@@ -54,37 +65,49 @@ spec:
               - *host
 
     podSecurityContext:
+      runAsUser: 568
+      runAsGroup: 568
+      fsGroup: 568
+      fsGroupChangePolicy: "OnRootMismatch"
       supplementalGroups:
         - 1000
 
     persistence:
       config:
         enabled: true
-        type: hostPath
         mountPath: /config
-        hostPath: /mnt/media/tv/services/radarr/config
-        hostPathType: Directory
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "${NFS_SERVER}"
+            path: "${NFS_KUBERNETES}/sonarr"
 
       torrents:
         enabled: true
-        type: hostPath
         mountPath: /torrents
-        hostPath: /mnt/media/tv/torrents/
-        hostPathType: Directory
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "${NFS_SERVER}"
+            path: "${NFS_TV}/torrents"
 
       downloads:
         enabled: true
-        type: hostPath
         mountPath: /downloads
-        hostPath: /mnt/media/tv/downloads/
-        hostPathType: Directory
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "${NFS_SERVER}"
+            path: "${NFS_TV}/downloads"
 
       movies:
         enabled: true
-        type: hostPath
-        mountPath: /movies
-        hostPath: /mnt/media/tv/movies/
-        hostPathType: Directory
+        mountPath: /tv
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "${NFS_SERVER}"
+            path: "${NFS_TV}/movies"
 
     resources:
       requests:
@@ -93,32 +116,32 @@ spec:
       limits:
         memory: 1Gi
 
-    sidecars:
-      exporter:
-        image: ghcr.io/onedr0p/exportarr:v1.3.2
-        args:
-          - *app
-        env:
-          URL: http://localhost
-          CONFIG: /config/config.xml
-          PORT: &metrics-port 9794
-          ENABLE_ADDITIONAL_METRICS: true
-          ENABLE_UNKNOWN_QUEUE_ITEMS: true
-          API_KEY: random-value-will-be-overriden-by-config-xml
-        ports:
-          - name: metrics
-            containerPort: *metrics-port
-        volumeMounts:
-          - name: config
-            mountPath: /config
-
-    serviceMonitor:
-      main:
-        enabled: true
-        serviceName: '{{ include "bjw-s.common.lib.chart.names.fullname" $ }}'
-        endpoints:
-          - port: metrics
-            scheme: http
-            path: /metrics
-            interval: 3m
-            scrapeTimeout: 1m
+    # sidecars:
+    #   exporter:
+    #     image: ghcr.io/onedr0p/exportarr:v1.3.2
+    #     args:
+    #       - *app
+    #     env:
+    #       URL: http://localhost
+    #       CONFIG: /config/config.xml
+    #       PORT: &metrics-port 9794
+    #       ENABLE_ADDITIONAL_METRICS: true
+    #       ENABLE_UNKNOWN_QUEUE_ITEMS: true
+    #       API_KEY: random-value-will-be-overriden-by-config-xml
+    #     ports:
+    #       - name: metrics
+    #         containerPort: *metrics-port
+    #     volumeMounts:
+    #       - name: config
+    #         mountPath: /config
+    #
+    # serviceMonitor:
+    #   main:
+    #     enabled: true
+    #     serviceName: '{{ include "bjw-s.common.lib.chart.names.fullname" $ }}'
+    #     endpoints:
+    #       - port: metrics
+    #         scheme: http
+    #         path: /metrics
+    #         interval: 3m
+    #         scrapeTimeout: 1m

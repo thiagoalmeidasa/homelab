@@ -1,1 +1,3 @@
 kubernetes/apps/vpn-gateway/gateway/app/secret.sops.yaml:generic-api-key:9
+kubernetes/apps/media/radarr/app/secret.sops.yaml:generic-api-key:12
+kubernetes/apps/media/radarr/app/secret.sops.yaml:generic-api-key:8
