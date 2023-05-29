@@ -17,13 +17,6 @@ spec:
         name: bjw-s
         namespace: flux-system
   values:
-    initContainers:
-      01-init-db:
-        image: ghcr.io/onedr0p/postgres-init:14.8
-        imagePullPolicy: IfNotPresent
-        envFrom:
-          - secretRef:
-              name: radarr-secret
     controller:
       type: statefulset
       annotations:
@@ -80,7 +73,7 @@ spec:
         volumeSpec:
           nfs:
             server: "${NFS_SERVER}"
-            path: "${NFS_KUBERNETES}/sonarr"
+            path: "${NFS_KUBERNETES}/radarr"
 
       torrents:
         enabled: true
