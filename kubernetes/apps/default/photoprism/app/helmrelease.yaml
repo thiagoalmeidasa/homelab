@@ -1,0 +1,114 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: photoprism
+  namespace: default
+spec:
+  interval: 5m
+  chart:
+    spec:
+      # renovate: registryUrl=https://bjw-s.github.io/helm-charts/
+      chart: app-template
+      version: 1.5.0
+      interval: 15m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  # See https://github.com/bjw-s/helm-charts/blob/main/charts/library/common/values.yaml
+  values:
+    controller:
+      type: statefulset
+      annotations:
+        reloader.stakater.com/auto: "true"
+    image:
+      repository: docker.io/photoprism/photoprism
+      tag: 230504
+    env:
+      PHOTOPRISM_STORAGE_PATH: /photoprism/storage
+      PHOTOPRISM_ORIGINALS_PATH: /photoprism/originals
+      ## See other config options from PhotoPrism documentation: https://docs.photoprism.org/getting-started/config-options/
+      PHOTOPRISM_PUBLIC: "false"
+      PHOTOPRISM_SITE_TITLE: "Thiago Almeida"
+      PHOTOPRISM_SITE_CAPTION: "Photos"
+      PHOTOPRISM_SITE_DESCRIPTION: "Memories"
+      PHOTOPRISM_SITE_AUTHOR: "Thiago Almeida"
+      PHOTOPRISM_DATABASE_DRIVER: "mysql"
+      PHOTOPRISM_ORIGINALS_LIMIT: 4000  # in MB (default 1000)
+    envFrom:
+      - secretRef:
+          name: photoprism-secret
+    persistence:
+      config:
+        enabled: true
+        mountPath: /photoprism/storage
+        type: pvc
+        storageClass: longhorn
+        size: 1Gi
+        retain: true
+
+      originals:
+        enabled: true
+        mountPath: "/photoprism/originals"
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "${NFS_SERVER}"
+            path: "${NFS_KUBERNETES}/photoprism/originals"
+
+      import:
+        enabled: true
+        mountPath: "/photoprism/import"
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "${NFS_SERVER}"
+            path: "${NFS_KUBERNETES}/photoprism/import"
+    service:
+      main:
+        ports:
+          http:
+            port: 2342
+    ingress:
+      main:
+        enabled: true
+        ingressClassName: nginx
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "ingress.${PUBLIC_DOMAIN}"
+          hajimari.io/enable: "true"
+          hajimari.io/icon: arcticons:photoprism
+          hajimari.io/info: Manage Photos
+          hajimari.io/group: media
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+        hosts:
+          - host: photos.${PUBLIC_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+          - host: photos.${SECRET_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - "photos.${SECRET_DOMAIN}"
+              - "photos.${PUBLIC_DOMAIN}"
+    resources:
+      limits:
+        cpu: 2
+        memory: 2Gi
+      requests:
+        cpu: 1
+        memory: 400Mi
