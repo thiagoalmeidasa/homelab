@@ -86,17 +86,12 @@ spec:
         enabled: true
         ingressClassName: nginx
         annotations:
-          external-dns.alpha.kubernetes.io/target: "ingress.${PUBLIC_DOMAIN}"
           hajimari.io/enable: "true"
           hajimari.io/icon: arcticons:photoprism
           hajimari.io/info: Manage Photos
           hajimari.io/group: media
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
         hosts:
-          - host: photos.${PUBLIC_DOMAIN}
-            paths:
-              - path: /
-                pathType: Prefix
           - host: photos.${SECRET_DOMAIN}
             paths:
               - path: /
@@ -104,6 +99,20 @@ spec:
         tls:
           - hosts:
               - "photos.${SECRET_DOMAIN}"
+      public:
+        enabled: true
+        ingressClassName: nginx
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "ingress.${PUBLIC_DOMAIN}"
+          hajimari.io/enable: "false"
+          nginx.ingress.kubernetes.io/proxy-body-size: 4G
+        hosts:
+          - host: photos.${PUBLIC_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
               - "photos.${PUBLIC_DOMAIN}"
     resources:
       limits:
