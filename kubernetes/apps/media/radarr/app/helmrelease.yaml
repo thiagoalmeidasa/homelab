@@ -95,7 +95,7 @@ spec:
 
       movies:
         enabled: true
-        mountPath: /tv
+        mountPath: /movies
         type: custom
         volumeSpec:
           nfs:
