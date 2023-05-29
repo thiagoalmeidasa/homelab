@@ -189,7 +189,7 @@ spec:
               storageClassName: longhorn
               resources:
                 requests:
-                  storage: 15Gi
+                  storage: 25Gi
     kubeControllerManager:
       enabled: false
     kubeScheduler:
