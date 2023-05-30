@@ -96,6 +96,36 @@ spec:
               - __meta_kubernetes_pod_node_name
             targetLabel: kubernetes_node
     kube-state-metrics:
+      collectors:
+        - certificatesigningrequests
+        - configmaps
+        - cronjobs
+        - daemonsets
+        - deployments
+        - endpoints
+        - horizontalpodautoscalers
+        - ingresses
+        - jobs
+        - leases
+        - limitranges
+        - mutatingwebhookconfigurations
+        - namespaces
+        - networkpolicies
+        - nodes
+        - persistentvolumeclaims
+        - persistentvolumes
+        - poddisruptionbudgets
+        - pods
+        - replicasets
+        - replicationcontrollers
+        - resourcequotas
+        - secrets
+        - services
+        - statefulsets
+        - storageclasses
+        - validatingwebhookconfigurations
+        - volumeattachments
+        - verticalpodautoscalers
       fullnameOverride: kube-state-metrics
     prometheus-node-exporter:
       fullnameOverride: node-exporter
