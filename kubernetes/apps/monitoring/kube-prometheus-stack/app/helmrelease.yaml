@@ -175,8 +175,10 @@ spec:
       prometheusSpec:
         retention: 15d
         resources:
+          requests:
+            memory: 1Gi
           limits:
-            memory: 2Gi
+            memory: 4Gi
         ruleSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
         podMonitorSelectorNilUsesHelmValues: false
