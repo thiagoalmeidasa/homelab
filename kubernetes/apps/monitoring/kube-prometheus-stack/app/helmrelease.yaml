@@ -50,7 +50,7 @@ spec:
               group_interval: 30s
               repeat_interval: 15s
               match:
-                alertname: 'Watchdog'
+                alertname: "Watchdog"
             - receiver: "pagerduty"
               matchers:
                 - severity=~"critical|page"
@@ -199,4 +199,6 @@ spec:
     kubeEtcd:
       enabled: false
     kubeProxy:
+      enabled: false
+    kubeApiServer:
       enabled: false
