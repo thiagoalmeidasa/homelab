@@ -2,9 +2,8 @@
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
-  name: bjw-s
+  name: weave-gitops
   namespace: flux-system
 spec:
-  type: oci
-  interval: 5m
-  url: oci://ghcr.io/bjw-s/helm
+  interval: 1h
+  url: https://helm.gitops.weave.works
