@@ -76,7 +76,7 @@ spec:
         existingClaim: home-assistant-config
     resources:
       requests:
-        cpu: 10m
-        memory: 100Mi
+        cpu: 15m
+        memory: 250Mi
       limits:
         memory: 750Mi
