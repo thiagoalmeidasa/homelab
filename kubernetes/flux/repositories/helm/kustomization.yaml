@@ -12,7 +12,6 @@ resources:
   - ./jetstack.yaml
   - ./k8s-gateway.yaml
   - ./kubernetes-dashboard.yaml
-  - ./kubernetes-sigs-descheduler-charts.yaml
   - ./longhorn.yaml
   - ./metallb.yaml
   - ./metrics-server.yaml
