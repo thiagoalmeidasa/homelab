@@ -67,11 +67,9 @@ spec:
       config:
         enabled: true
         mountPath: /config
-        type: custom
-        volumeSpec:
-          nfs:
-            server: "${NFS_SERVER}"
-            path: "${NFS_TV}/services/sonarr/config"
+        storageClass: longhorn
+        size: 200Mi
+        retain: true
 
       torrents:
         enabled: true
