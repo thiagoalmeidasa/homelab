@@ -34,7 +34,7 @@ spec:
         type: gluetun
         image:
           repository: docker.io/qmcgaw/gluetun
-          tag: v3.34.2@sha256:68a854741847dfda7bfc7cebe6b2c0cec4870feef7ab3e84f54a1b72f3d92f5a
+          tag: v3.34.3@sha256:55f6c5b9cd2646b7d3f95c48f2d35e9e01fefa5d927f8636392e104f6d86639b
 
         envFrom:
           - secretRef:
