@@ -59,6 +59,15 @@ spec:
         size: 1Gi
         retain: true
 
+      cache:
+        enabled: true
+        mountPath: "/photoprism/storage/cache"
+        type: pvc
+        storageClass: longhorn
+        size: 2Gi
+        retain: true
+        accessMode: ReadWriteOnce
+
       originals:
         enabled: true
         mountPath: "/photoprism/originals"
@@ -76,6 +85,10 @@ spec:
           nfs:
             server: "${NFS_SERVER}"
             path: "${NFS_KUBERNETES}/photoprism/import"
+    podSecurityContext:
+      fsGroup: 1000
+      fsGroupChangePolicy: "OnRootMismatch"
+
     service:
       main:
         ports:
