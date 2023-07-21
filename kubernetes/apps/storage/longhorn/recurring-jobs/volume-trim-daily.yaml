@@ -1,0 +1,12 @@
+---
+apiVersion: longhorn.io/v1beta2
+kind: RecurringJob
+metadata:
+  name: recurring-fs-trim-per-day
+  namespace: storage
+spec:
+  concurrency: 1
+  cron: 20 5 * * *
+  name: recurring-fs-trim-per-day
+  retain: 0
+  task: filesystem-trim
