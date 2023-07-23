@@ -73,7 +73,10 @@ spec:
     persistence:
       config:
         enabled: true
-        existingClaim: home-assistant-config
+        mountPath: /config
+        storageClass: longhorn
+        size: 1Gi
+        retain: true
     resources:
       requests:
         cpu: 15m
