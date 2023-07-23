@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: code-server-hass-secret
+    namespace: home
+type: Opaque
+stringData:
+    id_rsa: ENC[AES256_GCM,data:uEIcpF6Kf30S8H4bWg+JlQZ4FZoM/vM0/ZP4F8qVXB0ugrHM/QuaaEw5wsGWLNH9u4IJl9Rybrn8Ea6jYjbvt2Al7IyyUVkxif8ywb0+q3R8R++FUclDuYIEBeRO/I4pZbLy1n60jL25XRiw3LD8zsp3yZ/pecGowSrIWdhJ9Z1B+4FpP68mox1aWSZz62NG1j2r8BXTlrBbauWYWHV/sLqfS+f+/lIFbTD3MufJqIBnDpP8iEPjP8KdHSZFKrfM4ZErNUAL9u9EqEgjcyEa4kMrlLXBUVA4Lw50GOgnbOnjnKnvcfk/deUy8MTHYKaDcjvrnAY5gb1EBSPco5QkAlHT2WYIlwss6yqH999i3jxVhxN0/ZPQltnt5mh2zjJSTrugCLSqEk5Ms9Bat0WqMheuvhh+5lnB9Xwb3OdiDtYyFqqgCtIo+eTrTIGYryd8ooNAJO7hWoB8B9eHq8oNsoV5LerRUjddgSUUXd95uhN+u+5JI2+r4tsG0KmOl1qD4lHIirfZPS/iG9cJ8O34BvzLH3DnTro+vev0dkc8pLMGX5i95dPmtXfjmCDLB+ns,iv:vRPUwYvH12otPXOdlZ1dbLUsb1QMzT+MuOLpwy+ZlSs=,tag:ImJ804tpMdqkfNFSOViEYA==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1w02zzfg0y4ast9mgnd9w0yuym0wqx6q967kmrmq355w4cnw0xytq2x369r
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBGWk5HRDBOSU5ReTBkMUVG
+            U2g4bDh0V0tGMEs0clNvQ1B4NllZeUNLNWc4ClE2dnA3Q3QzaG5uU1RkMGJxUGRC
+            UjZmYVFiNXE2ZWUralBsMVd4K1lZa0EKLS0tIHlad0lESEswYW1ickhKd0FNM0Rv
+            WUticWlIRnZaeXFpSWJkM25ZblNBT3cKFtAkQz2aeR/F/0q8ewzfeBOQOJgSE/ad
+            58evUQt+iQNppo6rcAThX/TvPhcRi+NJRDq9u34BCNcGyNtJzAmu0A==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2023-07-23T08:51:15Z"
+    mac: ENC[AES256_GCM,data:y0hfxqbW/PM47ZMmurSBUeOUrVKEYcR5K6pVIzDe8yo5j2kcxpVIkS5b8ZD/Sw0oeJAnIZh3JRlGuto1yicGAqZjWwJmbeG2i/JY2nAtOtiKNJQmR/S6jfTHf0jfFd/0FyQDfzvjElzaiBgq8eT03iVzHWglz21ae/iSIqTr+No=,iv:3F+R/J2mm3t8X2y1tS0EIqmN7muudw/MOC9RzOkQKQo=,tag:0e+lI6msiVrVbZG7juA3oA==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData)$
+    version: 3.7.3
