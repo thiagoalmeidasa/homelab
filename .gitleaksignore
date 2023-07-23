@@ -3,3 +3,4 @@ kubernetes/apps/media/radarr/app/secret.sops.yaml:generic-api-key:12
 kubernetes/apps/media/radarr/app/secret.sops.yaml:generic-api-key:8
 kubernetes/apps/databases/mariadb/app/secret.sops.yaml:generic-api-key:8
 kubernetes/apps/default/photoprism/app/secret.sops.yaml:generic-api-key:8
+kubernetes/apps/home/home-assistant/app/code-server-hass.sops.yaml:private-key:9
