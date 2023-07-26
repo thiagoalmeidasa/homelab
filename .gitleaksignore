@@ -4,3 +4,7 @@ kubernetes/apps/media/radarr/app/secret.sops.yaml:generic-api-key:8
 kubernetes/apps/databases/mariadb/app/secret.sops.yaml:generic-api-key:8
 kubernetes/apps/default/photoprism/app/secret.sops.yaml:generic-api-key:8
 kubernetes/apps/home/home-assistant/app/code-server-hass.sops.yaml:private-key:9
+kubernetes/apps/default/invoiceninja/app/secret.sops.yaml:generic-api-key:8
+kubernetes/apps/default/invoiceninja/app/secret.sops.yaml:generic-api-key:9
+kubernetes/apps/default/invoiceninja/app/secret.sops.yaml:generic-api-key:10
+kubernetes/apps/default/invoiceninja/app/secret.sops.yaml:generic-api-key:15
