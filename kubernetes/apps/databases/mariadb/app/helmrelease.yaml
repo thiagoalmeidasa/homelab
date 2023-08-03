@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: mariadb
-      version: 13.0.0
+      version: 12.2.9
       sourceRef:
         kind: HelmRepository
         name: bitnami
@@ -38,6 +38,8 @@ spec:
       size: 2Gi
     metrics:
       enabled: true
+      image:
+        tag: 0.14.0-debian-11-r55
       serviceMonitor:
         enabled: true
       prometheusRule:
