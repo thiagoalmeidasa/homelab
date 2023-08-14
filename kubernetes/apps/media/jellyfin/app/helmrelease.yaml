@@ -1,0 +1,127 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: jellyfin
+  namespace: media
+spec:
+  interval: 10m
+  chart:
+    spec:
+      chart: app-template
+      version: 1.5.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  maxHistory: 3
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    image:
+      repository: jellyfin/jellyfin
+      tag: 10.8.10
+    env:
+      DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
+      JELLYFIN_FFmpeg__probesize: 50000000
+      JELLYFIN_FFmpeg__analyzeduration: 50000000
+    service:
+      main:
+        type: LoadBalancer
+        externalIPs:
+          - ${JELLYFIN_ADDR}
+        externalTrafficPolicy: Local
+        ports:
+          http:
+            port: &port 8096
+    ingress:
+      main:
+        enabled: true
+        annotations:
+          nginx.ingress.kubernetes.io/whitelist-source-range: |
+            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+          hajimari.io/enable: "true"
+          hajimari.io/icon: simple-icons:jellyfin
+        hosts:
+          - host: &host media.${SECRET_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+        tls:
+          - hosts:
+              - *host
+    podSecurityContext:
+      runAsUser: 1000
+      runAsGroup: 1000
+      fsGroup: 1000
+      fsGroupChangePolicy: OnRootMismatch
+      supplementalGroups:
+        - 44  # video
+        - 109  # render
+    persistence:
+      config:
+        enabled: true
+        mountPath: /config
+        storageClass: longhorn
+        size: 10Gi
+        retain: true
+
+      transcode:
+        enabled: true
+        type: emptyDir
+
+      tvshows:
+        enabled: true
+        mountPath: /media/tvshows
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "${NFS_SERVER}"
+            path: "${NFS_TV}/tvshows"
+
+      movies:
+        enabled: true
+        mountPath: /media/movies
+        type: custom
+        volumeSpec:
+          nfs:
+            server: "${NFS_SERVER}"
+            path: "${NFS_TV}/movies"
+
+      # dri:
+      #   enabled: true
+      #   type: hostPath
+      #   mountPath: /dev/dri
+      #   hostPath: /dev/dri
+    probes:
+      liveness: &probes
+        enabled: true
+        custom: true
+        spec:
+          httpGet:
+            path: /health
+            port: *port
+          initialDelaySeconds: 0
+          periodSeconds: 10
+          timeoutSeconds: 1
+          failureThreshold: 3
+      readiness: *probes
+      startup:
+        enabled: false
+    nodeSelector:
+      intel.feature.node.kubernetes.io/gpu: "true"
+    resources:
+      requests:
+        cpu: 1
+        memory: 1Gi
+        gpu.intel.com/i915: 1
+      limits:
+        memory: 3Gi
+        gpu.intel.com/i915: 1
