@@ -4,5 +4,6 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./jackett/ks.yaml
+  - ./jellyfin/ks.yaml
   - ./radarr/ks.yaml
   - ./sonarr/ks.yaml
