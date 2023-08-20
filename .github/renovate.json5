@@ -55,6 +55,16 @@
       "matchPackageNames": [
         "minio/minio"
       ]
+    },
+    {
+      "matchDatasources": [
+        "docker"
+      ],
+      "automerge": true,
+      "matchUpdateTypes": ["minor", "patch"],
+      "matchPackageNames": [
+        "linuxserver/jackett"
+      ]
     }
   ],
   "regexManagers": [
