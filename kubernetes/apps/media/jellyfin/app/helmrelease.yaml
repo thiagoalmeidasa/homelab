@@ -78,7 +78,7 @@ spec:
         enabled: true
         mountPath: /config
         storageClass: longhorn
-        size: 25Gi
+        size: 35Gi
         retain: true
 
       transcode:
