@@ -41,6 +41,14 @@ spec:
         ports:
           http:
             port: &port 8096
+          discovery:
+            enabled: true
+            port: 7359
+            protocol: UDP
+          dlna:
+            enabled: true
+            port: 1900
+            protocol: UDP
     ingress:
       main:
         enabled: true
