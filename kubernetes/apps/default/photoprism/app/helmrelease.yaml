@@ -57,7 +57,7 @@ spec:
         mountPath: /photoprism/storage
         type: pvc
         storageClass: longhorn
-        size: 1Gi
+        size: 4Gi
         retain: true
 
       cache:
@@ -65,7 +65,7 @@ spec:
         mountPath: "/photoprism/storage/cache"
         type: pvc
         storageClass: longhorn
-        size: 2Gi
+        size: 6Gi
         retain: true
         accessMode: ReadWriteOnce
 
