@@ -47,6 +47,7 @@ spec:
         enabled: true
     backup:
       enabled: true
-      storage:
-        storageClass: longhorn
-        size: 8Gi
+      cronjob:
+        storage:
+          storageClass: longhorn
+          size: 8Gi
