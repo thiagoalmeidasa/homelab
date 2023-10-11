@@ -45,3 +45,8 @@ spec:
       enabled: true
       serviceMonitor:
         enabled: true
+    backup:
+      enabled: true
+      storage:
+        storageClass: longhorn
+        size: 8Gi
