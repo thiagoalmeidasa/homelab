@@ -42,7 +42,7 @@
       "matchDatasources": [
         "docker"
       ],
-      "allowedVersions": "!/v20220121/",
+      "allowedVersions": "!/20220121/",
       "matchPackageNames": [
         "photoprism/photoprism"
       ]
