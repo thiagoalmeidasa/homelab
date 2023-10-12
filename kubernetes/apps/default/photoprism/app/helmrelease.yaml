@@ -35,7 +35,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: docker.io/photoprism/photoprism
-      tag: 230923
+      tag: 20220121
     env:
       PHOTOPRISM_STORAGE_PATH: /photoprism/storage
       PHOTOPRISM_ORIGINALS_PATH: /photoprism/originals
