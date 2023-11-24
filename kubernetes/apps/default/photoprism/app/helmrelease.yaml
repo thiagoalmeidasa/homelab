@@ -128,10 +128,14 @@ spec:
         tls:
           - hosts:
               - "photos.${PUBLIC_DOMAIN}"
+    nodeSelector:
+      intel.feature.node.kubernetes.io/gpu: "true"
     resources:
       limits:
         cpu: 2
         memory: 2Gi
+        gpu.intel.com/i915: 1
       requests:
         cpu: 1
         memory: 400Mi
+        gpu.intel.com/i915: 1
