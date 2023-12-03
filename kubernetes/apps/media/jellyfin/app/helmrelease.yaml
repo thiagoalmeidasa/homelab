@@ -27,7 +27,7 @@ spec:
   values:
     image:
       repository: jellyfin/jellyfin
-      tag: 10.8.12
+      tag: 10.8.13
     env:
       DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
       JELLYFIN_FFmpeg__probesize: 50000000
