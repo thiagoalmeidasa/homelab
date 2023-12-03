@@ -48,6 +48,8 @@ spec:
       PHOTOPRISM_SITE_AUTHOR: "Thiago Almeida"
       PHOTOPRISM_DATABASE_DRIVER: "mysql"
       PHOTOPRISM_ORIGINALS_LIMIT: 4000  # in MB (default 1000)
+      PHOTOPRISM_DISABLE_TLS: "true"
+      PHOTOPRISM_DEFAULT_TLS: "false"
     envFrom:
       - secretRef:
           name: photoprism-secret
