@@ -44,7 +44,7 @@
       ],
       "allowedVersions": "!/20220121/",
       "matchPackageNames": [
-        "photoprism/photoprism"
+        "docker.io/photoprism/photoprism"
       ]
     },
     {
