@@ -42,7 +42,7 @@
       "matchDatasources": [
         "docker"
       ],
-      "versioning": "regex:^(?<major>\\d{6})",
+      "versioning": "regex:^(?<major>\\d{6})$",
       "matchPackageNames": [
         "docker.io/photoprism/photoprism"
       ]
