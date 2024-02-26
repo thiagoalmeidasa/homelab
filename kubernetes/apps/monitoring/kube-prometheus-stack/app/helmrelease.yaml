@@ -37,7 +37,7 @@ spec:
               - service_key: ${PAGERDUTY_KEY}
           - name: dead-mans-switch
             webhook_configs:
-              - url: http://dead-mans-switch:8080/webhook
+              - url: ${HEALTHCHECKS_IO_URL}
         route:
           group_by: ["alertname", "job"]
           group_wait: 30s
