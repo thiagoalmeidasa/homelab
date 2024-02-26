@@ -46,9 +46,9 @@ spec:
           receiver: "null"
           routes:
             - receiver: dead-mans-switch
-              group_wait: 10s
-              group_interval: 30s
-              repeat_interval: 15s
+              group_wait: 1m
+              group_interval: 10m
+              repeat_interval: 5m
               match:
                 alertname: "Watchdog"
             - receiver: "pagerduty"
