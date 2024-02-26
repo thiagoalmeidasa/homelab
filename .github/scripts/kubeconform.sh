@@ -23,7 +23,8 @@ kubeconform_args=(
     # "${SCHEMA_DIR}/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
     # temp solution, soon will add the kubernetes-schemas extractor workflow
     "-schema-location"
-    "https://kubernetes-schemas.devbu.io/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
+    # "https://kubernetes-schemas.devbu.io/{{.Group}}/{{.ResourceKind}}_{{.ResourceAPIVersion}}.json"
+    "https://raw.githubusercontent.com/yannh/kubernetes-json-schema/master/{{ .NormalizedKubernetesVersion }}-standalone{{ .StrictSuffix }}/{{ .ResourceKind }}{{ .KindSuffix }}.json"
     "-verbose"
 )
 
