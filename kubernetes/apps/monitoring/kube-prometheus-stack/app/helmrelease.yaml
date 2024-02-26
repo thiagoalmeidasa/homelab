@@ -176,9 +176,11 @@ spec:
         retention: 15d
         resources:
           requests:
+            cpu: 175m
             memory: 1Gi
           limits:
-            memory: 4Gi
+            cpu: 350m
+            memory: 2Gi
         ruleSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
         podMonitorSelectorNilUsesHelmValues: false
