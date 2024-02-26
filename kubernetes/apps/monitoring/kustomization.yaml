@@ -4,4 +4,4 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./kube-prometheus-stack/ks.yaml
-  # - ./dead-mans-switch/ks.yaml
+  - ./dead-mans-switch/ks.yaml
