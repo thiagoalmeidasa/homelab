@@ -5,6 +5,5 @@ resources:
   - ./namespace.yaml
   - ./jackett/ks.yaml
   - ./jellyfin/ks.yaml
-  - ./kavita/ks.yaml
   - ./radarr/ks.yaml
   - ./sonarr/ks.yaml
