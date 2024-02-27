@@ -85,10 +85,10 @@ spec:
               url: "https://github.com/bjw-s/helm-charts/tree/main/charts/library/common"
             - name: onedr0p/home-cluster
               url: "https://github.com/onedr0p/home-cluster"
-            - name: cbirkenbeul/k3s-gitops
-              url: "https://github.com/cbirkenbeul/k3s-gitops"
-            - name: bjw-s/k8s-gitops
-              url: "https://github.com/bjw-s/k8s-gitops"
+            - name: cbirkenbeul/homelab
+              url: "https://github.com/cbirkenbeul/homelab"
+            - name: bjw-s/home-ops
+              url: "https://github.com/bjw-s/home-ops"
         - group: Tech
           bookmarks:
             - name: Hacker News
