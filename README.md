@@ -402,7 +402,7 @@ If nothing is working, that is expected. This is DNS after all!
 
 ### 🤖 Renovatebot
 
-[Renovatebot](https://www.mend.io/free-developer-tools/renovate/) will scan your repository and offer PRs when it finds dependencies out of date. Common dependencies it will discover and update are Flux, Ansible Galaxy Roles, Terraform Providers, Kubernetes Helm Charts, Kubernetes Container Images, Pre-commit hooks updates, and more!
+[Renovatebot](https://www.mend.io/renovate-free/) will scan your repository and offer PRs when it finds dependencies out of date. Common dependencies it will discover and update are Flux, Ansible Galaxy Roles, Terraform Providers, Kubernetes Helm Charts, Kubernetes Container Images, Pre-commit hooks updates, and more!
 
 The base Renovate configuration provided in your repository can be view at [.github/renovate.json5](https://github.com/onedr0p/flux-cluster-template/blob/main/.github/renovate.json5). If you notice this only runs on weekends and you can [change the schedule to anything you want](https://docs.renovatebot.com/presets-schedule/) or simply remove it.
 
@@ -521,16 +521,6 @@ The benefits of a public repository include:
    ```
 10. Optionally set your repository to Private in your repository settings.
 </details>
-
-### 💨 Kubernetes Dashboard
-
-Included in your cluster is the [Kubernetes Dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/). Inorder to log into this you will have to get the secret token from the cluster using the command below.
-
-```sh
-kubectl -n monitoring get secret kubernetes-dashboard -o jsonpath='{.data.token}' | base64 -d
-```
-
-You should be able to access the dashboard at `https://kubernetes.${SECRET_DOMAIN}`
 
 ## 🐛 Debugging
 
