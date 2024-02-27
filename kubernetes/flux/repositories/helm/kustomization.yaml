@@ -18,4 +18,3 @@ resources:
   - ./nfs-provisioner-charts.yaml
   - ./prometheus-community-charts.yaml
   - ./stakater.yaml
-  - ./weave-gitops.yaml
