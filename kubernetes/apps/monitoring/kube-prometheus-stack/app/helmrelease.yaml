@@ -194,6 +194,15 @@ spec:
               resources:
                 requests:
                   storage: 25Gi
+        affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+                - matchExpressions:
+                    - key: kubernetes.io/hostname
+                      operator: NotIn
+                      values:
+                        - cn4.lan
     kubeControllerManager:
       enabled: false
     kubeScheduler:
