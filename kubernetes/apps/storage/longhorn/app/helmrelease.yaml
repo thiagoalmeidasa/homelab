@@ -26,6 +26,8 @@ spec:
     defaultSettings:
       backupTarget: "nfs://nfs.lan://mnt/media/backup/k8s/longhorn"
       defaultReplicaCount: 2
+      v2DataEngineGuaranteedInstanceManagerCPU: "750"
+      guaranteedInstanceManagerCPU: 5
     ingress:
       enabled: true
       annotations:
