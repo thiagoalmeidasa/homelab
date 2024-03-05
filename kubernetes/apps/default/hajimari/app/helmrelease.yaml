@@ -52,23 +52,17 @@ spec:
       customApps:
         - group: Media
           apps:
-            - name: Kodi
-              url: http://mibox:8080/
-              icon: kodi
-            - name: Deluge
-              url: http://storage.lan:8112/
-              icon: download
             - name: Transmission
               url: http://storage.lan:9092/
               icon: folder-download
-        - group: 3D Printing
-          apps:
-            - name: Octoprint
-              url: http://icarus.lan/
-              icon: printer-3d-nozzle
-            - name: Obico
-              url: http://cn5.lan:3334/
-              icon: printer-3d
+        # - group: 3D Printing
+        #   apps:
+        #     - name: Octoprint
+        #       url: http://icarus.lan/
+        #       icon: printer-3d-nozzle
+        #     - name: Obico
+        #       url: http://cn5.lan:3334/
+        #       icon: printer-3d
         - group: Monitoring
           apps:
             - name: PagerDuty
