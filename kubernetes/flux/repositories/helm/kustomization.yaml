@@ -5,6 +5,7 @@ resources:
   - ./angelnu-charts.yaml
   - ./bitnami.yaml
   - ./bjw-s.yaml
+  - ./descheduler.yaml
   - ./external-dns.yaml
   - ./fairwinds-charts.yaml
   - ./hajimari.yaml
