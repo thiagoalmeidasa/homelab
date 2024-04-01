@@ -29,7 +29,7 @@ spec:
   values:
     image:
       repository: lscr.io/linuxserver/sonarr
-      tag: 4.0.2
+      tag: 4.0.3
 
     env:
       TZ: ${TIMEZONE}
