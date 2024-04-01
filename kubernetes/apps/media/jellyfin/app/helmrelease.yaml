@@ -78,7 +78,7 @@ spec:
         enabled: true
         mountPath: /config
         storageClass: longhorn
-        size: 35Gi
+        size: 60Gi
         retain: true
 
       transcode:
@@ -103,11 +103,6 @@ spec:
             server: "${NFS_SERVER}"
             path: "${NFS_TV}/movies"
 
-      # dri:
-      #   enabled: true
-      #   type: hostPath
-      #   mountPath: /dev/dri
-      #   hostPath: /dev/dri
     probes:
       liveness: &probes
         enabled: true
