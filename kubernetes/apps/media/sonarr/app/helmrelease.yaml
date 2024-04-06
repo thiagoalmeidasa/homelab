@@ -68,7 +68,7 @@ spec:
         enabled: true
         mountPath: /config
         storageClass: longhorn
-        size: 1Gi
+        size: 3Gi
         retain: true
 
       torrents:
