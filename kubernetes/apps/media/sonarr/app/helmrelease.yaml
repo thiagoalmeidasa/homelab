@@ -107,7 +107,7 @@ spec:
 
     sidecars:
       exporter:
-        image: ghcr.io/onedr0p/exportarr:v2.0.0
+        image: ghcr.io/onedr0p/exportarr:v2.0.1
         args:
           - *app
         env:
