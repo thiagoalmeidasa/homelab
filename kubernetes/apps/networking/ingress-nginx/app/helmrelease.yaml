@@ -71,5 +71,5 @@ spec:
         repository: ghcr.io/tarampampam/error-pages
         tag: 2.27.0
       extraEnvs:
-        - { name: TEMPLATE_NAME, value: lost-in-space }
+        - { name: TEMPLATE_NAME, value: connection }
         - { name: SHOW_DETAILS, value: "false" }
