@@ -1,8 +1,9 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/app-template-3.1.0/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2beta2
 kind: HelmRelease
 metadata:
-  name: photoprism
+  name: &app photoprism
   namespace: default
 spec:
   interval: 5m
@@ -10,7 +11,7 @@ spec:
     spec:
       # renovate: registryUrl=https://bjw-s.github.io/helm-charts/
       chart: app-template
-      version: 1.5.1
+      version: 3.1.0
       interval: 15m
       sourceRef:
         kind: HelmRepository
@@ -24,83 +25,96 @@ spec:
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
   uninstall:
     keepHistory: false
   # See https://github.com/bjw-s/helm-charts/blob/main/charts/library/common/values.yaml
   values:
-    controller:
-      type: statefulset
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: docker.io/photoprism/photoprism
-      tag: 240420
-    env:
-      PHOTOPRISM_STORAGE_PATH: /photoprism/storage
-      PHOTOPRISM_ORIGINALS_PATH: /photoprism/originals
-      ## See other config options from PhotoPrism documentation: https://docs.photoprism.org/getting-started/config-options/
-      PHOTOPRISM_SITE_URL: "https://photos.${PUBLIC_DOMAIN}/"
-      PHOTOPRISM_PUBLIC: "false"
-      PHOTOPRISM_SITE_TITLE: "Thiago Almeida"
-      PHOTOPRISM_SITE_CAPTION: "Photos"
-      PHOTOPRISM_SITE_DESCRIPTION: "Memories"
-      PHOTOPRISM_SITE_AUTHOR: "Thiago Almeida"
-      PHOTOPRISM_DATABASE_DRIVER: "mysql"
-      PHOTOPRISM_ORIGINALS_LIMIT: 4000  # in MB (default 1000)
-      PHOTOPRISM_DISABLE_TLS: "true"
-      PHOTOPRISM_DEFAULT_TLS: "false"
-    envFrom:
-      - secretRef:
-          name: photoprism-secret
+    controllers:
+      photoprism:
+        # nodeSelector:
+        #   intel.feature.node.kubernetes.io/gpu: "true"
+        strategy: RollingUpdate
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        containers:
+          app:
+            image:
+              repository: docker.io/photoprism/photoprism
+              tag: 240420
+            env:
+              PHOTOPRISM_STORAGE_PATH: &storage /photoprism/storage
+              PHOTOPRISM_ORIGINALS_PATH: &originals /photoprism/originals
+              ## See other config options from PhotoPrism documentation: https://docs.photoprism.org/getting-started/config-options/
+              PHOTOPRISM_SITE_URL: "https://photos.${PUBLIC_DOMAIN}/"
+              PHOTOPRISM_PUBLIC: "false"
+              PHOTOPRISM_SITE_TITLE: "Thiago Almeida"
+              PHOTOPRISM_SITE_CAPTION: "Photos"
+              PHOTOPRISM_SITE_DESCRIPTION: "Memories"
+              PHOTOPRISM_SITE_AUTHOR: "Thiago Almeida"
+              PHOTOPRISM_DATABASE_DRIVER: "mysql"
+              PHOTOPRISM_ORIGINALS_LIMIT: 4000  # in MB (default 1000)
+              PHOTOPRISM_DISABLE_TLS: "true"
+              PHOTOPRISM_DEFAULT_TLS: "false"
+            envFrom:
+              - secretRef:
+                  name: photoprism-secret
+            resources:
+              limits:
+                cpu: 2
+                memory: 2Gi
+                gpu.intel.com/i915: 1
+              requests:
+                cpu: 1
+                memory: 400Mi
+                gpu.intel.com/i915: 1
+
     persistence:
       config:
+        accessMode: ReadWriteOnce
         enabled: true
-        mountPath: /photoprism/storage
-        type: pvc
+        type: persistentVolumeClaim
         storageClass: longhorn
-        size: 4Gi
+        size: 7Gi
         retain: true
+        globalMounts:
+          - path: *storage
 
       cache:
-        enabled: true
-        mountPath: "/photoprism/storage/cache"
-        type: pvc
+        type: persistentVolumeClaim
         storageClass: longhorn
-        size: 6Gi
+        size: 7Gi
         retain: true
         accessMode: ReadWriteOnce
+        globalMounts:
+          - path: "/photoprism/storage/cache"
 
       originals:
-        enabled: true
-        mountPath: "/photoprism/originals"
-        type: custom
-        volumeSpec:
-          nfs:
-            server: "${NFS_SERVER}"
-            path: "${NFS_KUBERNETES}/photoprism/originals"
+        type: nfs
+        server: "${NFS_SERVER}"
+        path: *originals
+        globalMounts:
+          - path: "${NFS_KUBERNETES}/photoprism/originals"
 
       import:
-        enabled: true
-        mountPath: "/photoprism/import"
-        type: custom
-        volumeSpec:
-          nfs:
-            server: "${NFS_SERVER}"
-            path: "${NFS_KUBERNETES}/photoprism/import"
-    podSecurityContext:
-      fsGroup: 1000
-      fsGroupChangePolicy: "OnRootMismatch"
+        type: nfs
+        server: "${NFS_SERVER}"
+        path: "/photoprism/import"
+        globalMounts:
+          - "/photoprism/import"
 
     service:
-      main:
+      app:
+        controller: *app
         ports:
           http:
             port: 2342
     ingress:
-      main:
+      app:
         enabled: true
-        ingressClassName: nginx
+        className: nginx
         annotations:
           hajimari.io/enable: "true"
           hajimari.io/icon: arcticons:photoprism
@@ -108,36 +122,31 @@ spec:
           hajimari.io/group: media
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
         hosts:
-          - host: photos.${SECRET_DOMAIN}
+          - host: &domain photos.${SECRET_DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
+                service:
+                  identifier: app
+                  port: http
         tls:
           - hosts:
-              - "photos.${SECRET_DOMAIN}"
+              - *domain
       public:
         enabled: true
-        ingressClassName: nginx
+        className: nginx
         annotations:
           external-dns.alpha.kubernetes.io/target: "ingress.${PUBLIC_DOMAIN}"
           hajimari.io/enable: "false"
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
         hosts:
-          - host: photos.${PUBLIC_DOMAIN}
+          - host: &public-domain photos.${PUBLIC_DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
+                service:
+                  identifier: app
+                  port: http
         tls:
           - hosts:
-              - "photos.${PUBLIC_DOMAIN}"
-    nodeSelector:
-      intel.feature.node.kubernetes.io/gpu: "true"
-    resources:
-      limits:
-        cpu: 2
-        memory: 2Gi
-        gpu.intel.com/i915: 1
-      requests:
-        cpu: 1
-        memory: 400Mi
-        gpu.intel.com/i915: 1
+              - *public-domain
