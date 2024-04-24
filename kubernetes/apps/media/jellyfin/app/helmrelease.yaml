@@ -80,10 +80,11 @@ spec:
         enabled: true
         mountPath: /config
         storageClass: longhorn
-        size: 60Gi
+        size: 5Gi
         retain: true
 
       cache:
+        enabled: true
         type: emptyDir
 
       transcode:
