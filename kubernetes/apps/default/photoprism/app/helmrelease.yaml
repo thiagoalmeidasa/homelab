@@ -94,16 +94,16 @@ spec:
       originals:
         type: nfs
         server: "${NFS_SERVER}"
-        path: *originals
+        path: "${NFS_KUBERNETES}/photoprism/originals"
         globalMounts:
-          - path: "${NFS_KUBERNETES}/photoprism/originals"
+          - path: *originals
 
       import:
         type: nfs
         server: "${NFS_SERVER}"
-        path: "/photoprism/import"
+        path: "${NFS_KUBERNETES}/photoprism/import"
         globalMounts:
-          - "/photoprism/import"
+          - path: "/photoprism/import"
 
     service:
       app:
