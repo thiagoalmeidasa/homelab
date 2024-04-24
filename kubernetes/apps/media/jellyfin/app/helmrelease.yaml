@@ -32,6 +32,7 @@ spec:
       DOTNET_SYSTEM_IO_DISABLEFILELOCKING: "true"
       JELLYFIN_FFmpeg__probesize: 50000000
       JELLYFIN_FFmpeg__analyzeduration: 50000000
+      JELLYFIN_CACHE_DIR: /cache
     service:
       main:
         type: LoadBalancer
@@ -71,8 +72,9 @@ spec:
       fsGroup: 1000
       fsGroupChangePolicy: OnRootMismatch
       supplementalGroups:
-        - 44  # video
-        - 109  # render
+        - 44 # video
+        - 109 # render
+
     persistence:
       config:
         enabled: true
@@ -80,6 +82,9 @@ spec:
         storageClass: longhorn
         size: 60Gi
         retain: true
+
+      cache:
+        type: emptyDir
 
       transcode:
         enabled: true
