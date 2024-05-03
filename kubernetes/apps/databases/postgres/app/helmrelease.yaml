@@ -36,6 +36,7 @@ spec:
       repository: bitnami/postgresql
       tag: "16.2.0"
     primary:
+      resourcesPreset: small
       persistence:
         enabled: true
         storageClass: longhorn

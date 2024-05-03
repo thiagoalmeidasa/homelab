@@ -33,6 +33,8 @@ spec:
     auth:
       existingSecret: mariadb-secret
       database: main
+    primary:
+      resourcesPreset: small
     persistence:
       storageClass: longhorn
       size: 2Gi
@@ -42,9 +44,3 @@ spec:
         enabled: true
       prometheusRule:
         enabled: true
-    # networkPolicy:
-    #   enabled: true
-    #   metrics:
-    #     enabled: true
-    #     namespaceSelector:
-    #       kubernetes.io/metadata.name: monitoring
