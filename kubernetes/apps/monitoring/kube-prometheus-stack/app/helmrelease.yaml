@@ -54,14 +54,7 @@ spec:
             - receiver: "pagerduty"
               matchers:
                 - severity=~"critical|page"
-                - alertname!="KubeAPIErrorBudgetBurn"
               continue: true
-        inhibit_rules:
-          - source_match:
-              severity: "critical"
-            target_match:
-              severity: "warning"
-            equal: ["alertname", "namespace"]
       ingress:
         enabled: true
         pathType: Prefix
