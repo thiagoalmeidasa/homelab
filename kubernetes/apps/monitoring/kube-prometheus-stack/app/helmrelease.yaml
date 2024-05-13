@@ -40,20 +40,23 @@ spec:
               - url: ${HEALTHCHECKS_IO_URL}
         route:
           group_by: ["alertname", "job"]
-          group_wait: 30s
-          group_interval: 5m
-          repeat_interval: 6h
-          receiver: "null"
+          group_wait: 1m
+          group_interval: 10m
+          repeat_interval: 12h
+          receiver: "pagerduty"
           routes:
             - receiver: dead-mans-switch
-              group_wait: 1m
+              group_wait: 0s
               group_interval: 5m
-              repeat_interval: 6m
+              repeat_interval: 5m
               match:
                 alertname: "Watchdog"
+            - receiver: "null"
+              matchers:
+                - alertname =~ "InfoInhibitor"
             - receiver: "pagerduty"
               matchers:
-                - severity=~"critical|page"
+                - severity=~"warning|critical|page"
               continue: true
       ingress:
         enabled: true
