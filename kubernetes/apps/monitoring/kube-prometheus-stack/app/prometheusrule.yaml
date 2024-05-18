@@ -19,7 +19,7 @@ spec:
             description: "Container {{ $labels.container }} in pod {{ $labels.namespace }}/{{ $labels.pod }} has been OOMKilled {{ $value }} times in the last 10 minutes.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}"
 
         - alert: KubernetesPodCrashLooping
-          expr: increase(kube_pod_container_status_restarts_total[1m]) > 3
+          expr: increase(kube_pod_container_status_restarts_total[1m]) > 3 or increase(kube_pod_container_status_restarts_total[1h]) > 5
           for: 2m
           labels:
             severity: critical
