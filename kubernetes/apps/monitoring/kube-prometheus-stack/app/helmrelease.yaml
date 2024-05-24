@@ -383,6 +383,26 @@ spec:
         auth.anonymous:
           enabled: true
           org_role: Viewer
+      dashboardProviders:
+        dashboardproviders.yaml:
+          apiVersion: 1
+          providers:
+            - name: 'default'
+              orgId: 1
+              folder: ''
+              type: file
+              disableDeletion: false
+              editable: true
+              options:
+                path: /var/lib/grafana/dashboards/default
+      plugins:
+        - grafana-piechart-panel
+      dashboards:
+        default:
+          nodeExporter:
+            gnetId: 1860
+            revision: 37
+            datasource: "Prometheus"
       additionalDataSources:
         - name: Loki
           editable: false
