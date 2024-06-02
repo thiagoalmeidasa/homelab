@@ -1,0 +1,58 @@
+---
+- hosts:
+    - cn3.lan
+  become: true
+  gather_facts: true
+  any_errors_fatal: true
+  pre_tasks:
+    - name: Pausing for 5 seconds...
+      ansible.builtin.pause:
+        seconds: 5
+  tasks:
+    - name: Setup Encrypted mounted filesystem
+      block:
+        - name: Setup Luks on sda
+          ansible.builtin.include_role:
+            name: robertdebock.luks
+            public: true
+          vars:
+            luks_default_state: opened
+            luks_devices:
+              - device: /dev/sda
+                name: crypt-luks-data
+                keyfile: /etc/crypt-luks-data.keyfile
+        - name: Create EXT4 filesystem
+          ansible.builtin.include_role:
+            name: robertdebock.filesystem
+            public: true
+          vars:
+            filesystem_list:
+              - dev: /dev/mapper/crypt-luks-data
+                fstype: ext4
+        - name: Mount filesystem
+          ansible.builtin.include_role:
+            name: robertdebock.mount
+            public: true
+          vars:
+            mount_requests:
+              - path: /mnt/data
+                src: /dev/mapper/crypt-luks-data
+                fstype: ext4
+    - name: Setup Pull based Rsync
+      tags: cron
+      block:
+        - name: Ensure packages needed for sync_cron are present
+          ansible.builtin.apt:
+            state: present
+            update_cache: true
+            name: "{{ item }}"
+          with_items:
+            - rsync
+        - name: Setup cron for rsync
+          ansible.builtin.cron:
+            name: "Sync Longhorn backup folder"
+            job: "rsync -aAXHv --delete {{ longhorn_user }}@{{ longhorn_host}}:/mnt/media/backup/k8s/longhorn/ /mnt/data/backups/longhorn/ && curl curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_rsync_token }}"
+            user: cubie
+            minute: 20
+            hour: 4
+            weekday: 1,4

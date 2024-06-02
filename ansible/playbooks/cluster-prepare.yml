@@ -54,7 +54,7 @@
             name: ["linux-modules-extra-raspi"]
             install_recommends: false
           notify: Reboot
-          when: "'raspi' in ansible_kernel"
+          when: "'raspi' in ansible_kernel and ansible_distribution_version is version('22.04', '<=')"
       when: ansible_facts['distribution'] == 'Ubuntu'
 
     - name: User Configuration
@@ -85,6 +85,16 @@
           ansible.builtin.systemd:
             service: fstrim.timer
             enabled: true
+        - name: System Configuration (1) | Setup Multipath for LongHorn
+          ansible.builtin.blockinfile:
+            path: /etc/multipath.conf
+            append_newline: true
+            prepend_newline: true
+            block: |
+              blacklist {
+                devnode "^sd[a-z0-9]+"
+              }
+          notify: RestartMultipathd
 
     - name: System Configuration (2)
       block:
@@ -146,3 +156,7 @@
       ansible.builtin.reboot:
         msg: Rebooting nodes
         reboot_timeout: 3600
+    - name: RestartMultipathd
+      ansible.builtin.systemd:
+        service: multipathd.service
+        state: restarted
