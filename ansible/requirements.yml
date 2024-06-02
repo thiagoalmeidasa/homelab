@@ -14,3 +14,15 @@ roles:
   - name: xanmanning.k3s
     src: https://github.com/PyratLabs/ansible-role-k3s.git
     version: v3.4.4
+  - name: robertdebock.bootstrap
+    src: https://github.com/robertdebock/ansible-role-bootstrap.git
+    version: 6.2.6
+  - name: robertdebock.luks
+    src: https://github.com/robertdebock/ansible-role-luks.git
+    version: 3.0.12
+  - name: robertdebock.filesystem
+    src: https://github.com/robertdebock/ansible-role-filesystem.git
+    version: 2.1.2
+  - name: robertdebock.mount
+    src: https://github.com/robertdebock/ansible-role-mount.git
+    version: 2.3.4
