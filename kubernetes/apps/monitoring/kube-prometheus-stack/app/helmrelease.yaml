@@ -463,6 +463,11 @@ spec:
           - hosts:
               - "prometheus.${SECRET_DOMAIN}"
       prometheusSpec:
+        additionalScrapeConfigs:
+          - job_name: node-exporter
+            static_configs:
+              - targets:
+                  - cn3.lan:9100
         retention: 15d
         resources:
           requests:
