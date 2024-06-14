@@ -106,3 +106,10 @@ spec:
         path: "${NFS_TV}/downloads"
         globalMounts:
           - path: /downloads
+
+      downloading:
+        type: nfs
+        server: "${NFS_SERVER}"
+        path: "${NFS_TV}/downloading"
+        globalMounts:
+          - path: /downloading
