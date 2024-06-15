@@ -62,18 +62,6 @@ spec:
                 enabled: true
               readiness:
                 enabled: true
-        initContainers:
-          init-permission:
-            image:
-              repository: docker.io/library/busybox
-              tag: 1.36.1-glibc
-              pullPolicy: IfNotPresent
-            command:
-              - sh
-              - -c
-              - chown -R 1000:1000 /jellyfin/jellyfin-web/index.html
-            securityContext:
-              runAsUser: 0
     service:
       main:
         controller: jellyfin
