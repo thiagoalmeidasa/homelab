@@ -33,7 +33,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: ghcr.io/home-assistant/home-assistant
-      tag: 2024.6.2
+      tag: 2024.6.3
     env:
       TZ: Europe/Stockholm
     envFrom:
