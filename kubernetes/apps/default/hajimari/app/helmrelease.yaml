@@ -43,7 +43,7 @@ spec:
       showBookmarks: true
       showGlobalBookmarks: true
       showBookmarkGroups: true
-      alwaysTargetBlank: true
+      alwaysTargetBlank: false
       defaultSearchProvider: None
       defaultEnable: true
       namespaceSelector:
