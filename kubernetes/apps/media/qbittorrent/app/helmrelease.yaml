@@ -37,6 +37,15 @@ spec:
             fsGroup: 1000
             fsGroupChangePolicy: OnRootMismatch
             seccompProfile: {type: RuntimeDefault}
+          affinity:
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchExpressions:
+                      - key: app.kubernetes.io/name
+                        operator: In
+                        values: ["cn4.lan"]
+                  topologyKey: kubernetes.io/hostname
         containers:
           app:
             image:
@@ -44,11 +53,13 @@ spec:
               tag: 4.6.5@sha256:c019af23966ebafcaf1713d4553bc043246858b711a7d57d8bee358a89990a3e
             env:
               QBT_Preferences__WebUI__LocalHostAuth: false
+              QBT_Preferences__WebUI__AlternativeUIEnabled: false
+              QBT_Preferences__WebUI__AuthSubnetWhitelistEnabled: true
+              QBT_Preferences__WebUI__AuthSubnetWhitelist: ${LOCAL_SUBNETS}
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: {drop: ["ALL"]}
-            # FIXME: disabled because of authentication issues
             probes:
               liveness: &probes
                 enabled: false
@@ -67,6 +78,7 @@ spec:
                 cpu: 100m
                 memory: 3Gi
               limits:
+                cpu: 500m
                 memory: 5Gi
     service:
       app:
@@ -78,8 +90,7 @@ spec:
       app:
         className: nginx
         annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: |
-            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+          nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
           hajimari.io/enable: "true"
           hajimari.io/icon: simple-icons:qbittorrent
         hosts:
@@ -100,16 +111,15 @@ spec:
         globalMounts:
           - path: /config
 
+      # @TODO: join downloads path in a single dir
       downloads:
-        type: nfs
-        server: "${NFS_SERVER}"
-        path: "${NFS_TV}/downloads"
+        type: hostPath
+        hostPath: /mnt/media/tv/downloads
         globalMounts:
           - path: /downloads
 
       downloading:
-        type: nfs
-        server: "${NFS_SERVER}"
-        path: "${NFS_TV}/downloading"
+        type: hostPath
+        hostPath: /mnt/media/tv/downloading
         globalMounts:
           - path: /downloading
