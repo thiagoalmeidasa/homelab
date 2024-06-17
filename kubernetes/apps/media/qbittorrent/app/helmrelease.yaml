@@ -111,15 +111,8 @@ spec:
         globalMounts:
           - path: /config
 
-      # @TODO: join downloads path in a single dir
-      downloads:
+      media:
         type: hostPath
-        hostPath: /mnt/media/tv/downloads
+        hostPath: /mnt/media/tv/
         globalMounts:
-          - path: /downloads
-
-      downloading:
-        type: hostPath
-        hostPath: /mnt/media/tv/downloading
-        globalMounts:
-          - path: /downloading
+          - path: /tv
