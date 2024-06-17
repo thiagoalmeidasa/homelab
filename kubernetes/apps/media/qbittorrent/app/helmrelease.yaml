@@ -76,10 +76,10 @@ spec:
             resources:
               requests:
                 cpu: 100m
-                memory: 3Gi
+                memory: 1Gi
               limits:
                 cpu: 500m
-                memory: 5Gi
+                memory: 2Gi
     service:
       app:
         controller: qbittorrent
