@@ -103,26 +103,7 @@ spec:
         cpu: 15m
         memory: 335Mi
       limits:
-        memory: 600Mi
-
-    sidecars:
-      exporter:
-        image: ghcr.io/onedr0p/exportarr:v2.0.1
-        args:
-          - *app
-        env:
-          URL: http://localhost
-          CONFIG: /config/config.xml
-          PORT: &metrics-port 9794
-          ENABLE_ADDITIONAL_METRICS: true
-          ENABLE_UNKNOWN_QUEUE_ITEMS: true
-          API_KEY: random-value-will-be-overriden-by-config-xml
-        ports:
-          - name: metrics
-            containerPort: *metrics-port
-        volumeMounts:
-          - name: config
-            mountPath: /config
+        memory: 1Gi
 
     serviceMonitor:
       main:
