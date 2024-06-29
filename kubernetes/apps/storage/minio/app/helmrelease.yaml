@@ -33,7 +33,7 @@ spec:
         reloader.stakater.com/auto: "true"
     image:
       repository: minio/minio
-      tag: RELEASE.2024-06-22T05-26-45Z
+      tag: RELEASE.2024-06-28T09-06-49Z
     env:
       TZ: ${TIMEZONE}
       MINIO_UPDATE: "off"
