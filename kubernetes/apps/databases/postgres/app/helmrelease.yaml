@@ -48,35 +48,35 @@ spec:
         enabled: true
     backup:
       enabled: true
-      command:
-        - /bin/sh
-        - -c
-        - |
-          BACKUP_DIR=${PGDUMP_DIR}
-          BACKUPS_TO_KEEP=7
-
-          echo "Current backups in ${BACKUP_DIR}:"
-          ls -lh ${BACKUP_DIR}/pg_dumpall-*.pgdump
-
-          pg_dumpall --clean --if-exists --load-via-partition-root --quote-all-identifiers --no-password --file=${BACKUP_DIR}/pg_dumpall-$(date '+%Y-%m-%d-%H-%M').pgdump
-
-          if [ $? -eq 0 ]; then
-            echo "Backup created successfully."
-
-            BACKUPS_TO_DELETE=$(ls -1t $BACKUP_DIR/pg_dumpall-*.pgdump | tail -n +$((BACKUPS_TO_KEEP+1)))
-
-            if [ -n "$BACKUPS_TO_DELETE" ]; then
-              echo "Deleting old backups:"
-              echo "$BACKUPS_TO_DELETE"
-
-              echo "$BACKUPS_TO_DELETE" | xargs -I {} rm -- {}
-            else
-              echo "No backups to delete."
-            fi
-          else
-            echo "Backup creation failed. Old backups will not be deleted."
-          fi
       cronjob:
         storage:
           storageClass: longhorn
           size: 8Gi
+        command:
+          - /bin/sh
+          - -c
+          - |
+            BACKUP_DIR=${PGDUMP_DIR}
+            BACKUPS_TO_KEEP=7
+
+            echo "Current backups in ${BACKUP_DIR}:"
+            ls -lh ${BACKUP_DIR}/pg_dumpall-*.pgdump
+
+            pg_dumpall --clean --if-exists --load-via-partition-root --quote-all-identifiers --no-password --file=${BACKUP_DIR}/pg_dumpall-$(date '+%Y-%m-%d-%H-%M').pgdump
+
+            if [ $? -eq 0 ]; then
+              echo "Backup created successfully."
+
+              BACKUPS_TO_DELETE=$(ls -1t $BACKUP_DIR/pg_dumpall-*.pgdump | tail -n +$((BACKUPS_TO_KEEP+1)))
+
+              if [ -n "$BACKUPS_TO_DELETE" ]; then
+                echo "Deleting old backups:"
+                echo "$BACKUPS_TO_DELETE"
+
+                echo "$BACKUPS_TO_DELETE" | xargs -I {} rm -- {}
+              else
+                echo "No backups to delete."
+              fi
+            else
+              echo "Backup creation failed. Old backups will not be deleted."
+            fi
