@@ -56,13 +56,13 @@ spec:
           - /bin/sh
           - -c
           - |
-            BACKUP_DIR=${PGDUMP_DIR}
+            BACKUP_DIR="$PGDUMP_DIR"
             BACKUPS_TO_KEEP=7
 
-            echo "Current backups in ${BACKUP_DIR}:"
-            ls -lh ${BACKUP_DIR}/pg_dumpall-*.pgdump
+            echo "Current backups in $BACKUP_DIR:"
+            ls -lh $BACKUP_DIR/pg_dumpall-*.pgdump
 
-            pg_dumpall --clean --if-exists --load-via-partition-root --quote-all-identifiers --no-password --file=${BACKUP_DIR}/pg_dumpall-$(date '+%Y-%m-%d-%H-%M').pgdump
+            pg_dumpall --clean --if-exists --load-via-partition-root --quote-all-identifiers --no-password --file=$BACKUP_DIR/pg_dumpall-$(date '+%Y-%m-%d-%H-%M').pgdump
 
             if [ $? -eq 0 ]; then
               echo "Backup created successfully."
