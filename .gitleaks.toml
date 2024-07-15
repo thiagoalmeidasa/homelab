@@ -1,0 +1,6 @@
+[rules.allowlist]
+description = "Skip encrypted secrets"
+regexes = [
+  '''(?i)!!enveloped:''', # Encrypted secrets
+  '''ENC\[AES256_GCM,data:''', # sops secrets
+]

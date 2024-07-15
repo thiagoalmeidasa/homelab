@@ -5,6 +5,7 @@ resources:
   - ./namespace.yaml
   - ./jackett/ks.yaml
   - ./jellyfin/ks.yaml
+  - ./prowlarr/ks.yaml
+  - ./qbittorrent/ks.yaml
   - ./radarr/ks.yaml
   - ./sonarr/ks.yaml
-  - ./qbittorrent/ks.yaml
