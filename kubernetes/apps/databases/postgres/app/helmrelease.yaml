@@ -79,4 +79,5 @@ spec:
               fi
             else
               echo "Backup creation failed. Old backups will not be deleted."
+              exit 1
             fi
