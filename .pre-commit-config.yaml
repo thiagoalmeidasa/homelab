@@ -17,11 +17,11 @@ repos:
     hooks:
       - id: check-json
       - id: check-merge-conflict
-  - repo: https://github.com/k8s-at-home/sops-pre-commit
-    rev: v2.1.1
-    hooks:
-      - id: forbid-secrets
   - repo: https://github.com/zricethezav/gitleaks
     rev: v8.18.4
     hooks:
       - id: gitleaks
+  - repo: https://github.com/k8s-at-home/sops-pre-commit
+    rev: v2.1.1
+    hooks:
+      - id: forbid-secrets
