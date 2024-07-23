@@ -36,6 +36,10 @@ spec:
     persistence:
       storageClass: longhorn
       size: 2Gi
+    primary:
+      pdb:
+        create: true
+        minAvailable: 1
     metrics:
       enabled: true
       serviceMonitor:
