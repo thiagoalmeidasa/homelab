@@ -45,6 +45,7 @@ spec:
       pdb:
         create: true
         minAvailable: 1
+      resourcesPreset: "micro"
     metrics:
       enabled: true
       serviceMonitor:
