@@ -40,6 +40,7 @@ spec:
       persistence:
         enabled: true
         storageClass: longhorn
+        size: 20Gi
         labels:
           recurring-job-group.longhorn.io/backup: enabled
       pdb:
@@ -55,7 +56,7 @@ spec:
       cronjob:
         storage:
           storageClass: longhorn
-          size: 8Gi
+          size: 20Gi
         command:
           - /bin/sh
           - -c
