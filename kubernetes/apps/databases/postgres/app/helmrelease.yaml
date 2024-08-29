@@ -39,8 +39,7 @@ spec:
     primary:
       persistence:
         enabled: true
-        storageClass: longhorn
-        size: 20Gi
+        existingClaim: postgres16
         labels:
           recurring-job-group.longhorn.io/backup: enabled
       pdb:
