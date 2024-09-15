@@ -73,8 +73,7 @@ spec:
         enabled: true
         className: nginx
         annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: |
-            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+          nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
           hajimari.io/enable: "true"
           hajimari.io/icon: simple-icons:jellyfin
         hosts:
@@ -101,13 +100,13 @@ spec:
       movies:
         type: nfs
         server: "${NFS_SERVER}"
-        path: "${NFS_TV}/movies"
+        path: "${NFS_MEDIA}/movies"
         globalMounts:
           - path: "/media/movies"
       tvshows:
         type: nfs
         server: "${NFS_SERVER}"
-        path: "${NFS_TV}/tvshows"
+        path: "${NFS_MEDIA}/tvshows"
         globalMounts:
           - path: "/media/tvshows"
       transcode:

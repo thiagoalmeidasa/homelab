@@ -24,15 +24,14 @@ spec:
       defaultClass: false
       defaultClassReplicaCount: 2
     defaultSettings:
-      backupTarget: "nfs://nfs.lan://mnt/media/backup/k8s/longhorn"
+      backupTarget: "nfs://nfs.lan://volume1/backups/k8s/longhorn"
       defaultReplicaCount: 2
       v2DataEngineGuaranteedInstanceManagerCPU: "750"
       guaranteedInstanceManagerCPU: 5
     ingress:
       enabled: true
       annotations:
-        nginx.ingress.kubernetes.io/whitelist-source-range: |
-          10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+        nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
         hajimari.io/enable: "true"
         hajimari.io/appName: "Longhorn"
         hajimari.io/icon: "nas"

@@ -30,8 +30,6 @@ spec:
     envFrom:
       - secretRef:
           name: radarr-secret
-    # nodeSelector:
-    #   extra-storage: "true"
 
     service:
       main:
@@ -44,8 +42,7 @@ spec:
         enabled: true
         ingressClassName: "nginx"
         annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: |
-            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+          nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
           hajimari.io/enable: "true"
           hajimari.io/icon: "filmstrip"
         hosts:
@@ -79,7 +76,7 @@ spec:
         volumeSpec:
           nfs:
             server: "${NFS_SERVER}"
-            path: "${NFS_TV}/torrents"
+            path: "${NFS_MEDIA}/torrents"
 
       downloads:
         enabled: true
@@ -88,7 +85,7 @@ spec:
         volumeSpec:
           nfs:
             server: "${NFS_SERVER}"
-            path: "${NFS_TV}/downloads"
+            path: "${NFS_MEDIA}/downloads"
 
       movies:
         enabled: true
@@ -97,7 +94,7 @@ spec:
         volumeSpec:
           nfs:
             server: "${NFS_SERVER}"
-            path: "${NFS_TV}/movies"
+            path: "${NFS_MEDIA}/movies"
 
     resources:
       requests:
@@ -105,33 +102,3 @@ spec:
         cpu: 15m
       limits:
         memory: 1Gi
-
-    # sidecars:
-    #   exporter:
-    #     image: ghcr.io/onedr0p/exportarr:v1.3.2
-    #     args:
-    #       - *app
-    #     env:
-    #       URL: http://localhost
-    #       CONFIG: /config/config.xml
-    #       PORT: &metrics-port 9794
-    #       ENABLE_ADDITIONAL_METRICS: true
-    #       ENABLE_UNKNOWN_QUEUE_ITEMS: true
-    #       API_KEY: random-value-will-be-overriden-by-config-xml
-    #     ports:
-    #       - name: metrics
-    #         containerPort: *metrics-port
-    #     volumeMounts:
-    #       - name: config
-    #         mountPath: /config
-    #
-    # serviceMonitor:
-    #   main:
-    #     enabled: true
-    #     serviceName: '{{ include "bjw-s.common.lib.chart.names.fullname" $ }}'
-    #     endpoints:
-    #       - port: metrics
-    #         scheme: http
-    #         path: /metrics
-    #         interval: 3m
-    #         scrapeTimeout: 1m
