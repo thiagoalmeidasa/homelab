@@ -119,7 +119,7 @@ spec:
       downloading:
         type: nfs
         server: "${NFS_SERVER}"
-        path: "${NFS_MEDIA}/downloads"
+        path: "${NFS_MEDIA}/downloading"
         globalMounts:
           - path: "/media/downloading"
       movies:
