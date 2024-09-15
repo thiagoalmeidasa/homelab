@@ -110,9 +110,27 @@ spec:
         retain: true
         globalMounts:
           - path: /config
-
-      media:
-        type: hostPath
-        hostPath: /mnt/media/tv/
+      downloads:
+        type: nfs
+        server: "${NFS_SERVER}"
+        path: "${NFS_MEDIA}/downloads"
         globalMounts:
-          - path: /tv
+          - path: "/media/downloads"
+      downloading:
+        type: nfs
+        server: "${NFS_SERVER}"
+        path: "${NFS_MEDIA}/downloads"
+        globalMounts:
+          - path: "/media/downloading"
+      movies:
+        type: nfs
+        server: "${NFS_SERVER}"
+        path: "${NFS_MEDIA}/movies"
+        globalMounts:
+          - path: "/media/movies"
+      tvshows:
+        type: nfs
+        server: "${NFS_SERVER}"
+        path: "${NFS_MEDIA}/tvshows"
+        globalMounts:
+          - path: "/media/tvshows"
