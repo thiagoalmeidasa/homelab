@@ -21,7 +21,7 @@ spec:
     replicaCount: 2
     nfs:
       server: nfs.lan
-      path: /mnt/media/k8s
+      path: /volume1/k8s/
     storageClass:
       defaultClass: false
       name: nfs-provision
