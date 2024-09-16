@@ -43,7 +43,7 @@ spec:
           app:
             image:
               repository: docker.io/photoprism/photoprism
-              tag: 240711
+              tag: 240915
             env:
               PHOTOPRISM_STORAGE_PATH: &storage /photoprism/storage
               PHOTOPRISM_ORIGINALS_PATH: &originals /photoprism/originals
