@@ -466,6 +466,7 @@ spec:
           - job_name: node-exporter
             static_configs:
               - targets:
+                  - 192.168.100.102:9100
                   - 192.168.100.103:9100
                   - 192.168.100.102:9100
         retention: 15d
