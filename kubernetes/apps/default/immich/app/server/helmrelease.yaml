@@ -1,0 +1,154 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app immich-server
+spec:
+  interval: 30m
+  chart:
+    spec:
+      # renovate: registryUrl=https://bjw-s.github.io/helm-charts/
+      chart: app-template
+      version: 3.4.0
+      interval: 30m
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+
+  maxHistory: 2
+  install:
+    createNamespace: false
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  # See https://github.com/bjw-s/helm-charts/blob/main/charts/library/common/values.yaml
+  values:
+    controllers:
+      immich-server:
+        annotations:
+          reloader.stakater.com/auto: "true"
+
+        pod:
+          enableServiceLinks: false
+          topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: DoNotSchedule
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: *app
+
+        containers:
+          app:
+            image:
+              repository: ghcr.io/immich-app/immich-server
+              tag: v1.115.0
+
+            env:
+              # General
+              LOG_LEVEL: verbose
+              IMMICH_MEDIA_LOCATION: &mediaLocation /usr/src/app/upload
+              # Ports
+              SERVER_PORT: &port 3001
+              # Database on secret
+
+            envFrom:
+              - configMapRef:
+                  name: immich-configmap
+              - secretRef:
+                  name: immich-secret
+
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                memory: 4096Mi
+
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/server-info/ping
+                    port: 3001
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/server-info/ping
+                    port: 3001
+                  failureThreshold: 30
+                  periodSeconds: 5
+                  successThreshold: 1
+                  timeoutSeconds: 1
+
+    service:
+      app:
+        controller: immich-server
+        ports:
+          http:
+            port: *port
+
+    ingress:
+      app:
+        enabled: true
+        className: nginx
+        annotations:
+          hajimari.io/enable: "true"
+          hajimari.io/icon: arcticons:immich
+          hajimari.io/info: Manage Photos
+          hajimari.io/group: media
+          nginx.ingress.kubernetes.io/proxy-body-size: "0"
+          nginx.ingress.kubernetes.io/upstream-hash-by: "$client_ip"
+        hosts:
+          - host: &domain photos.${SECRET_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - *domain
+      public:
+        enabled: true
+        className: nginx
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "ingress.${PUBLIC_DOMAIN}"
+          hajimari.io/enable: "false"
+          nginx.ingress.kubernetes.io/proxy-body-size: "0"
+          nginx.ingress.kubernetes.io/upstream-hash-by: "$client_ip"
+        hosts:
+          - host: &public-domain photos.${PUBLIC_DOMAIN}
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - *public-domain
+
+    persistence:
+      library:
+        type: nfs
+        server: "${NFS_SERVER}"
+        path: "${NFS_KUBERNETES}/immich"
+        globalMounts:
+          - path: *mediaLocation
