@@ -48,7 +48,7 @@ spec:
               PHOTOPRISM_STORAGE_PATH: &storage /photoprism/storage
               PHOTOPRISM_ORIGINALS_PATH: &originals /photoprism/originals
               ## See other config options from PhotoPrism documentation: https://docs.photoprism.org/getting-started/config-options/
-              PHOTOPRISM_SITE_URL: "https://photos.${PUBLIC_DOMAIN}/"
+              PHOTOPRISM_SITE_URL: "https://portfolio.${PUBLIC_DOMAIN}/"
               PHOTOPRISM_PUBLIC: "false"
               PHOTOPRISM_SITE_TITLE: "Thiago Almeida"
               PHOTOPRISM_SITE_CAPTION: "Photos"
@@ -122,7 +122,7 @@ spec:
           hajimari.io/group: media
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
         hosts:
-          - host: &domain photos.${SECRET_DOMAIN}
+          - host: &domain portfolio.${SECRET_DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
@@ -140,7 +140,7 @@ spec:
           hajimari.io/enable: "false"
           nginx.ingress.kubernetes.io/proxy-body-size: 4G
         hosts:
-          - host: &public-domain photos.${PUBLIC_DOMAIN}
+          - host: &public-domain portfolio.${PUBLIC_DOMAIN}
             paths:
               - path: /
                 pathType: Prefix
