@@ -3,7 +3,6 @@ apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
   name: immich-server-pdb
-  namespace: default
 spec:
   minAvailable: 1
   selector:
