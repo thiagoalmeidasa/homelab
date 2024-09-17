@@ -5,4 +5,5 @@ resources:
   - ./namespace.yaml
   - ./echo-server/ks.yaml
   - ./hajimari/ks.yaml
+  - ./immich/ks.yaml
   - ./photoprism/ks.yaml

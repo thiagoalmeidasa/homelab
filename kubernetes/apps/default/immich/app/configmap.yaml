@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: immich-configmap
+  namespace: default
+data:
+  # URLS
+  IMMICH_WEB_URL: http://photos.${SECRET_DOMAIN}:3000
+  IMMICH_SERVER_URL: http://photos.${SECRET_DOMAIN}:3001
+  PUBLIC_IMMICH_SERVER_URL: https://photos.${PUBLIC_DOMAIN}
+
+  # REDIS
+  REDIS_HOSTNAME: "redis-master.databases.svc.cluster.local"
+  REDIS_PORT: "6379"
