@@ -51,7 +51,7 @@
         - name: Setup cron for rsync
           ansible.builtin.cron:
             name: "Sync Longhorn backup folder"
-            job: "rsync -aAXHv --delete {{ longhorn_user }}@{{ longhorn_host}}:/mnt/media/backup/k8s/longhorn/ /mnt/data/backups/longhorn/ && curl curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_rsync_token }}"
+            job: "rsync -aAXHv --delete {{ longhorn_user }}@{{ longhorn_host}}:/mnt/media/backup/k8s/longhorn/ /mnt/data/backups/longhorn/ && curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_rsync_token }}"
             user: cubie
             minute: 20
             hour: 6
