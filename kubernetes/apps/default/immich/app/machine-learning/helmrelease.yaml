@@ -70,7 +70,7 @@ spec:
               - secretRef:
                   name: immich-secret
               - configMapRef:
-                  name: immich-config
+                  name: immich-configmap
     service:
       main:
         controller: immich-machine-learning
