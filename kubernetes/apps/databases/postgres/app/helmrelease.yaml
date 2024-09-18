@@ -33,9 +33,9 @@ spec:
           existingSecret: postgresql-secret
           database: main
     image:
-      registry: docker.io
-      repository: bitnami/postgresql
-      tag: "16.4.0"
+      registry: ghcr.io
+      repository: thiagoalmeidasa/bitnami-postgres-pgvecto-rs
+      tag: "16.4.0-debian-12-r9"
     primary:
       persistence:
         enabled: true
