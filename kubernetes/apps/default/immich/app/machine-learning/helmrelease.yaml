@@ -30,13 +30,6 @@ spec:
         strategy: RollingUpdate
         pod:
           enableServiceLinks: false
-          topologySpreadConstraints:
-            - maxSkew: 1
-              topologyKey: kubernetes.io/hostname
-              whenUnsatisfiable: DoNotSchedule
-              labelSelector:
-                matchLabels:
-                  app.kubernetes.io/name: immich-server
           affinity:
             nodeAffinity:
               requiredDuringSchedulingIgnoredDuringExecution:
@@ -45,6 +38,15 @@ spec:
                       - key: "kubernetes.io/arch"
                         operator: In
                         values: ["amd64"]
+            podAntiAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchExpressions:
+                      - key: app.kubernetes.io/name
+                        operator: In
+                        values:
+                          - immich-server
+                  topologyKey: kubernetes.io/hostname
         containers:
           main:
             image:
