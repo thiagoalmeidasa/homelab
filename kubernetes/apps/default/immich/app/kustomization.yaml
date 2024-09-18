@@ -6,4 +6,4 @@ resources:
   - ./configmap.yaml
   - ./secret.sops.yaml
   - ./server
-  # - ./machine-learning
+  - ./machine-learning
