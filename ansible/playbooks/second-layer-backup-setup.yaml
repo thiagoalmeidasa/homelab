@@ -46,12 +46,13 @@
             state: present
             update_cache: true
             name: "{{ item }}"
+            cache_valid_time: "{{ 3600 * 7 }}"
           with_items:
             - rsync
         - name: Setup cron for rsync
           ansible.builtin.cron:
             name: "Sync Longhorn backup folder"
-            job: "rsync -aAXHv --delete {{ longhorn_user }}@{{ longhorn_host}}:/mnt/media/backup/k8s/longhorn/ /mnt/data/backups/longhorn/ && curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_rsync_token }}"
+            job: "rsync -aAXHv --delete {{ longhorn_user }}@{{ longhorn_host}}:/volume1/backups/k8s/longhorn/ /mnt/data/backups/longhorn/ && curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_rsync_token }}"
             user: cubie
             minute: 20
             hour: 6
