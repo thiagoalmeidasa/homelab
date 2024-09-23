@@ -66,6 +66,9 @@ spec:
                 enabled: true
               readiness:
                 enabled: true
+            env:
+              MACHINE_LEARNING_CACHE_FOLDER: /cache
+              TRANSFORMERS_CACHE: /cache
             envFrom:
               - secretRef:
                   name: immich-secret
@@ -85,5 +88,10 @@ spec:
         globalMounts:
           - path: /usr/src/app/upload
       cache:
-        enabled: true
-        type: emptyDir
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        retain: true
+        size: 10Gi
+        storageClass: longhorn
+        globalMounts:
+          - path: /cache
