@@ -39,7 +39,7 @@ spec:
 
         envFrom:
           - secretRef:
-              name: gateway-vpnconfig-secret
+              name: vpn-gateway-pod-gateway
         securityContext:
           capabilities:
             add:
