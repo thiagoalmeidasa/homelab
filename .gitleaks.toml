@@ -1,4 +1,7 @@
-[rules.allowlist]
+[extend]
+useDefault = true
+
+[allowlist]
 description = "Skip encrypted secrets"
 regexes = [
   '''(?i)!!enveloped:''', # Encrypted secrets

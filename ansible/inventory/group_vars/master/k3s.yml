@@ -10,9 +10,10 @@ k3s_server:
   node-ip: "{{ ansible_host }}"
   tls-san:
     - "{{ kubevip_address }}"
+  embedded-registry: true
   # Disable Docker - this will use the default containerd CRI
   docker: false
-  flannel-backend: "none" # This needs to be in quotes
+  flannel-backend: "none"  # This needs to be in quotes
   disable:
     # Disable flannel - replaced with Calico
     - flannel
@@ -24,9 +25,15 @@ k3s_server:
     - servicelb
     # Disable traefik - replaced with ingress-nginx and installed with Flux
     - traefik
+    # Disable coredns - replaced with helmfile coredns
+    - coredns
+    # Disable kube-proxy - replaced with cilium
+    - kube-proxy
   disable-network-policy: true
   disable-cloud-controller: true
   write-kubeconfig-mode: "644"
+  disable-kube-proxy: true
+
   # Network CIDR to use for pod IPs
   cluster-cidr: "10.42.0.0/16"
   # Network CIDR to use for service IPs
@@ -45,3 +52,6 @@ k3s_server:
   kube-apiserver-arg:
     # Required for HAProxy health-checks
     - "anonymous-auth=true"
+  kubelet-arg:
+    - "kube-reserved=cpu=200m,memory=256Mi"
+    - "system-reserved=cpu=200m,memory=256Mi"
