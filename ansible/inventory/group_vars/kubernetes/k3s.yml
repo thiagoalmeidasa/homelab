@@ -26,14 +26,23 @@ k3s_use_unsupported_config: true
 # (string) Control Plane registration address
 k3s_registration_address: "{{ kubevip_address }}"
 
+k3s_registries:
+  mirrors:
+    docker.io:
+    gcr.io:
+    ghcr.io:
+    k8s.gcr.io:
+    lscr.io:
+    mcr.microsoft.com:
+    public.ecr.aws:
+    quay.io:
+    registry.k8s.io:
+
 # (list) A list of URLs to deploy on the primary control plane. Read notes below.
 k3s_server_manifests_urls:
   # Kube-vip
   - url: https://kube-vip.io/manifests/rbac.yaml
     filename: custom-kube-vip-rbac.yaml
-  # Tigera Operator
-  - url: https://raw.githubusercontent.com/projectcalico/calico/v3.25.1/manifests/tigera-operator.yaml
-    filename: custom-calico-tigera-operator.yaml
   # Prometheus Operator
   - url: https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/v0.65.1/example/prometheus-operator-crd/monitoring.coreos.com_alertmanagerconfigs.yaml
     filename: custom-prometheus-alertmanagerconfigs.yaml
@@ -59,5 +68,4 @@ k3s_server_manifests_urls:
 # (list) A flat list of templates to deploy on the primary control plane
 # /var/lib/rancher/k3s/server/manifests
 k3s_server_manifests_templates:
-  - custom-calico-installation.yaml.j2
   - custom-kube-vip-daemonset.yaml.j2
