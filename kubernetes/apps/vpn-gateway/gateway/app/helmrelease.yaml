@@ -35,7 +35,7 @@ spec:
         gluetun:
           image:
             repository: docker.io/qmcgaw/gluetun
-            tag: v3.38.0@sha256:5522794f5cce6d84bc7f06b1e3a3b836ede9100c64aec94543cb503bb2ecb72f
+            tag: v3.39.0@sha256:2f011a9aca767af62008d879eefcbc80a8645bd4fd4466ab312cc941cb658ad1
 
         envFrom:
           - secretRef:
@@ -57,8 +57,8 @@ spec:
             - to:
                 - namespaceSelector: {}
     podAnnotations:
-      configmap.reloader.stakater.com/reload: gateway-pod-gateway-configmap
-      secret.reloader.stakater.com/reload: gateway-vpnconfig-secret
+      configmap.reloader.stakater.com/reload: vpn-gateway-pod-gateway
+      secret.reloader.stakater.com/reload: vpn-gateway-pod-gateway
     routed_namespaces:
       - media
     settings:
