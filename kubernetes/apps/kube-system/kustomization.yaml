@@ -11,4 +11,3 @@ resources:
   - ./metrics-server/ks.yaml
   - ./nfs-subdir-external-provisioner/ks.yaml
   - ./reloader/ks.yaml
-  - ./spegel/ks.yaml
