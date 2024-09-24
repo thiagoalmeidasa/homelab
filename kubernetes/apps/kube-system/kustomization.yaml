@@ -8,6 +8,7 @@ resources:
   - ./kube-vip/ks.yaml
   - ./kubelet-csr-approver/ks.yaml
   - ./local-path-provisioner/ks.yaml
+  - ./node-feature-discovery/ks.yaml
   - ./metrics-server/ks.yaml
   - ./nfs-subdir-external-provisioner/ks.yaml
   - ./reloader/ks.yaml
