@@ -71,17 +71,13 @@ spec:
           - path: /data
       config-file:
         type: configMap
-        name: mosquitto-configmap  # overriden by kustomizeconfig
-        advancedMounts:
-          mosquitto:
-            app:
-              - path: /mosquitto/config/mosquitto.conf
-                subPath: mosquitto.conf
+        name: mosquitto-configmap
+        globalMounts:
+          - path: /mosquitto/config/mosquitto.conf
+            subPath: mosquitto.conf
       secret-file:
         type: secret
         name: mosquitto-secret
-        advancedMounts:
-          mosquitto:
-            app:
-              - path: /mosquitto/config/mosquitto.pwd
-                subPath: mosquitto.pwd
+        globalMounts:
+          - path: /mosquitto/config/mosquitto.pwd
+            subPath: mosquitto.pwd
