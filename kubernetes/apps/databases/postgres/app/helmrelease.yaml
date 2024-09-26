@@ -35,7 +35,7 @@ spec:
     image:
       registry: ghcr.io
       repository: thiagoalmeidasa/bitnami-postgres-pgvecto-rs
-      tag: "16.4.0-debian-12-r9"
+      tag: "16.4.0-debian-12-r11"
     primary:
       persistence:
         enabled: true
