@@ -111,14 +111,14 @@ spec:
       downloads:
         enabled: true
         type: nfs
-        server: ${NFS_SERVER}}
+        server: ${NFS_SERVER}
         path: "${NFS_MEDIA}/downloads"
         globalMounts:
           - path: /media/downloads
       tvshows:
         enabled: true
         type: nfs
-        server: ${NFS_SERVER}}
+        server: ${NFS_SERVER}
         path: "${NFS_MEDIA}/tvshows"
         globalMounts:
           - path: /media/tvshows
