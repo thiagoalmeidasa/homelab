@@ -86,7 +86,7 @@ spec:
             port: *port
     ingress:
       app:
-        className: internal
+        className: nginx
         annotations:
           nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
           hajimari.io/enable: "true"
@@ -112,14 +112,14 @@ spec:
       downloads:
         enabled: true
         type: nfs
-        server: ${NFS_SERVER}}
+        server: ${NFS_SERVER}
         path: "${NFS_MEDIA}/downloads"
         globalMounts:
           - path: /media/downloads
       tvshows:
         enabled: true
         type: nfs
-        server: ${NFS_SERVER}}
+        server: ${NFS_SERVER}
         path: "${NFS_MEDIA}/tvshows"
         globalMounts:
           - path: /media/tvshows
