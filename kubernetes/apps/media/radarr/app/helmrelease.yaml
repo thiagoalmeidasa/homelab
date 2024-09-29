@@ -48,7 +48,7 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: radarr-secret
-                    key: api_key
+                    key: RADARR__API_KEY
               RADARR__INSTANCE_NAME: Radarr
               RADARR__LOG_LEVEL: info
               RADARR__PORT: &port 7878
