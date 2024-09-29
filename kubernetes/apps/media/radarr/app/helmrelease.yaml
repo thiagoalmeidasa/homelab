@@ -30,8 +30,6 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
-          nodeSelector:
-            disktype: ssd
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
@@ -67,10 +65,10 @@ spec:
             resources:
               requests:
                 cpu: 10m
-                memory: 1.5Gi
+                memory: 200Mi
               limits:
                 cpu: 200m
-                memory: 200Mi
+                memory: 1.5Gi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
