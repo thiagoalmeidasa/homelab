@@ -30,8 +30,6 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
-          nodeSelector:
-            disktype: ssd
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
