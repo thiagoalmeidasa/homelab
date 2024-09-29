@@ -120,7 +120,7 @@ spec:
         annotations:
           nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
           nginx.ingress.kubernetes.io/proxy-connect-timeout: "180"
-          nginx.ingress.kubernetes.io/proxy-body-size: 1024m
+          nginx.ingress.kubernetes.io/proxy-body-size: 4096m
           nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
           nginx.ingress.kubernetes.io/configuration-snippet: |
             chunked_transfer_encoding off;
