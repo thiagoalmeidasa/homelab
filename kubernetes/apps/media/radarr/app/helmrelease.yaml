@@ -1,104 +1,126 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.devbu.io/helm.toolkit.fluxcd.io/helmrelease_v2beta1.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: &app radarr
-  namespace: media
+  namespace: &namespace media
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
-      # renovate: registryUrl=https://bjw-s.github.io/helm-charts/
       chart: app-template
-      version: 1.5.1
+      version: 3.4.0
+      interval: 30m
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
   values:
-    controller:
-      type: statefulset
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: ghcr.io/onedr0p/radarr-develop
-      tag: 5.11.0.9244@sha256:db4b57f5e05304f6b2d47a6863da9e584f1f05af3b61584cb146dc358dd1430b
-
-    env:
-      TZ: ${TIMEZONE}
-    envFrom:
-      - secretRef:
-          name: radarr-secret
-
+    controllers:
+      radarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          nodeSelector:
+            disktype: ssd
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            fsGroup: 1000
+            fsGroupChangePolicy: "OnRootMismatch"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/onedr0p/radarr-develop
+              tag: 5.10.4.9218@sha256:f986ba978d450226de00d8174552f62cc877aca7693bb1b32e7ac70af62f8f8d
+            env:
+              COMPlus_EnableDiagnostics: "0"
+              RADARR__APPLICATION_URL: "https://radarr.${SECRET_DOMAIN}"
+              RADARR__AUTH__APIKEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: radarr-secret
+                    key: api_key
+              RADARR__INSTANCE_NAME: Radarr
+              RADARR__LOG_LEVEL: info
+              RADARR__PORT: &port 7878
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 10m
+                memory: 1.5Gi
+              limits:
+                cpu: 200m
+                memory: 200Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
     service:
-      main:
+      app:
+        controller: radarr
         ports:
           http:
-            port: 7878
-
+            port: *port
     ingress:
-      main:
+      app:
         enabled: true
-        ingressClassName: "nginx"
+        className: nginx
         annotations:
           nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
           hajimari.io/enable: "true"
           hajimari.io/icon: "filmstrip"
         hosts:
-          - host: &host "radarr.${SECRET_DOMAIN}"
+          - host: &host radarr.${SECRET_DOMAIN}
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  identifier: app
+                  port: http
         tls:
           - hosts:
               - *host
-
-    podSecurityContext:
-      runAsUser: 1000
-      runAsGroup: 1000
-      fsGroup: 1000
-
     persistence:
       config:
         enabled: true
-        mountPath: /config
-        type: custom
-        volumeSpec:
-          nfs:
-            server: "${NFS_SERVER}"
-            path: "${NFS_KUBERNETES}/radarr"
-
-      torrents:
-        enabled: true
-        mountPath: /torrents
-        type: custom
-        volumeSpec:
-          nfs:
-            server: "${NFS_SERVER}"
-            path: "${NFS_MEDIA}/torrents"
-
+        storageClass: longhorn
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        labels:
+          recurring-job-group.longhorn.io/backup: enabled
       downloads:
         enabled: true
-        mountPath: /downloads
-        type: custom
-        volumeSpec:
-          nfs:
-            server: "${NFS_SERVER}"
-            path: "${NFS_MEDIA}/downloads"
-
+        type: nfs
+        server: ${NFS_SERVER}
+        path: "${NFS_MEDIA}/downloads"
+        globalMounts:
+          - path: /media/downloads
       movies:
         enabled: true
-        mountPath: /movies
-        type: custom
-        volumeSpec:
-          nfs:
-            server: "${NFS_SERVER}"
-            path: "${NFS_MEDIA}/movies"
-
-    resources:
-      requests:
-        memory: 400Mi
-        cpu: 15m
-      limits:
-        memory: 1Gi
+        type: nfs
+        server: ${NFS_SERVER}
+        path: "${NFS_MEDIA}/movies"
+        globalMounts:
+          - path: /media/movies

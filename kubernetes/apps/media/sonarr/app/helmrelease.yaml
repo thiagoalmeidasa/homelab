@@ -1,116 +1,125 @@
 ---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2beta2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: sonarr
-  namespace: media
+  name: &app sonarr
+  namespace: &namespace media
 spec:
-  interval: 15m
+  interval: 30m
   chart:
     spec:
-      # renovate: registryUrl=https://bjw-s.github.io/helm-charts/
       chart: app-template
-      version: 1.5.1
+      version: 3.4.0
+      interval: 30m
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
-  maxHistory: 2
   install:
-    createNamespace: true
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 3
-  uninstall:
-    keepHistory: false
   values:
-    image:
-      repository: lscr.io/linuxserver/sonarr
-      tag: 4.0.9
-
-    env:
-      TZ: ${TIMEZONE}
-      PUID: 1000
-      PGID: 1000
-
+    controllers:
+      sonarr:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          nodeSelector:
+            disktype: ssd
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            fsGroup: 1000
+            fsGroupChangePolicy: "OnRootMismatch"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/onedr0p/sonarr-develop
+              tag: 4.0.9.2386@sha256:b70ad0004892e4f5fe24e79840e010dbe4eed11aef99a084521600bdc69e216d
+            env:
+              COMPlus_EnableDiagnostics: "0"
+              SONARR__APP__INSTANCENAME: Sonarr
+              SONARR__AUTH__APIKEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: sonarr-secret
+                    key: api_key
+              SONARR__LOG__LEVEL: info
+              SONARR__SERVER__PORT: &port 8989
+              SONARR__UPDATE__BRANCH: develop
+              TZ: ${TIMEZONE}
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 5
+            resources:
+              requests:
+                cpu: 10m
+                memory: 400Mi
+              limits:
+                cpu: 200m
+                memory: 1.5Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
     service:
-      main:
+      app:
+        controller: sonarr
         ports:
           http:
-            port: 8989
-
+            port: *port
     ingress:
-      main:
-        enabled: true
-        ingressClassName: "nginx"
+      app:
+        className: nginx
         annotations:
           nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
           hajimari.io/enable: "true"
           hajimari.io/icon: "television-box"
         hosts:
-          - host: &host "sonarr.${SECRET_DOMAIN}"
+          - host: &host sonarr.${SECRET_DOMAIN}
             paths:
               - path: /
-                pathType: Prefix
+                service:
+                  identifier: app
+                  port: http
         tls:
           - hosts:
               - *host
-    podSecurityContext:
-      supplementalGroups:
-        - 1000
-
     persistence:
       config:
         enabled: true
-        mountPath: /config
-        storageClass: longhorn
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
         size: 3Gi
-        retain: true
-
-      torrents:
-        enabled: true
-        mountPath: /torrents
-        type: custom
-        volumeSpec:
-          nfs:
-            server: "${NFS_SERVER}"
-            path: "${NFS_MEDIA}/torrents"
-
+        labels:
+          recurring-job-group.longhorn.io/backup: enabled
       downloads:
         enabled: true
-        mountPath: /downloads
-        type: custom
-        volumeSpec:
-          nfs:
-            server: "${NFS_SERVER}"
-            path: "${NFS_MEDIA}/downloads"
-
-      tv:
+        type: nfs
+        server: ${NFS_SERVER}
+        path: "${NFS_MEDIA}/downloads"
+        globalMounts:
+          - path: /media/downloads
+      tvshows:
         enabled: true
-        mountPath: /tv
-        type: custom
-        volumeSpec:
-          nfs:
-            server: "${NFS_SERVER}"
-            path: "${NFS_MEDIA}/tvshows"
-
-    resources:
-      requests:
-        cpu: 15m
-        memory: 335Mi
-      limits:
-        memory: 1Gi
-
-    serviceMonitor:
-      main:
-        enabled: true
-        serviceName: '{{ include "bjw-s.common.lib.chart.names.fullname" $ }}'
-        endpoints:
-          - port: metrics
-            scheme: http
-            path: /metrics
-            interval: 3m
-            scrapeTimeout: 1m
+        type: nfs
+        server: ${NFS_SERVER}
+        path: "${NFS_MEDIA}/tvshows"
+        globalMounts:
+          - path: /media/tvshows

@@ -1,21 +1,21 @@
 ---
-# yaml-language-server: $schema=https://kubernetes-schemas.rasp-k3s.thiagoalmeida.xyz/helm.toolkit.fluxcd.io/helmrelease_v2beta1.json
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: minio
   namespace: storage
 spec:
-  interval: 15m
+  interval: 60m
   chart:
     spec:
-      # renovate: registryUrl=https://bjw-s.github.io/helm-charts/
       chart: app-template
-      version: 1.5.1
+      version: 3.4.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
         namespace: flux-system
+      interval: 60m
   maxHistory: 2
   install:
     createNamespace: true
@@ -28,117 +28,118 @@ spec:
   uninstall:
     keepHistory: false
   values:
-    controller:
-      annotations:
-        reloader.stakater.com/auto: "true"
-    image:
-      repository: minio/minio
-      tag: RELEASE.2024-09-22T00-33-43Z
-    env:
-      TZ: ${TIMEZONE}
-      MINIO_UPDATE: "off"
-      MINIO_PROMETHEUS_URL: http://prometheus-prometheus.monitoring.svc.cluster.local:9090
-      MINIO_PROMETHEUS_JOB_ID: minio
-      MINIO_BROWSER_REDIRECT_URL: https://minio.${SECRET_DOMAIN}
-      MINIO_SERVER_URL: https://s3.${SECRET_DOMAIN}
-      MINIO_API_CORS_ALLOW_ORIGIN: https://minio.${SECRET_DOMAIN},https://s3.${SECRET_DOMAIN}
-      MINIO_PROMETHEUS_AUTH_TYPE: public
-    envFrom:
-      - secretRef:
-          name: minio-secret
-    args: ["server", "/data", "--console-address", ":9001"]
+    controllers:
+      minio:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            fsGroup: 1000
+            fsGroupChangePolicy: "OnRootMismatch"
+        containers:
+          app:
+            image:
+              repository: quay.io/minio/minio
+              tag: RELEASE.2024-09-22T00-33-43Z
+            env:
+              TZ: ${TIMEZONE}
+              MINIO_UPDATE: "off"
+              MINIO_PROMETHEUS_URL: http://prometheus-prometheus.monitoring.svc.cluster.local:9090
+              MINIO_PROMETHEUS_JOB_ID: minio
+              MINIO_BROWSER_REDIRECT_URL: https://minio.${SECRET_DOMAIN}
+              MINIO_SERVER_URL: https://s3.${SECRET_DOMAIN}
+              MINIO_API_CORS_ALLOW_ORIGIN: https://minio.${SECRET_DOMAIN},https://s3.${SECRET_DOMAIN}
+              MINIO_PROMETHEUS_AUTH_TYPE: public
+            envFrom:
+              - secretRef:
+                  name: minio-secret
+
+            args: ["server", "/data", "--console-address", ":9001"]
+
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /minio/health/live
+                    port: 9000
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 10
+                  failureThreshold: 6
+              readiness: *probes
+
+            resources:
+              requests:
+                memory: 100Mi
+                cpu: 100m
+              limits:
+                cpu: 300m
+                memory: 1Gi
+
     service:
-      main:
-        enabled: true
+      app:
+        controller: minio
         ports:
           http:
-            port: &console-port 9001
+            port: 9001
           api:
-            enabled: true
-            port: &api-port 9000
+            port: 9000
+
     serviceMonitor:
-      main:
-        enabled: true
+      app:
+        serviceName: minio
         endpoints:
-          - port: api
+          - port: s3
             scheme: http
             path: /minio/v2/metrics/cluster
             interval: 1m
             scrapeTimeout: 10s
-    probes:
-      liveness: &probes
-        enabled: true
-        custom: true
-        spec:
-          httpGet:
-            path: /minio/health/live
-            port: *api-port
-          initialDelaySeconds: 0
-          periodSeconds: 10
-          timeoutSeconds: 1
-          failureThreshold: 3
-      readiness: *probes
-      startup:
-        enabled: false
+
     ingress:
-      main:
-        enabled: true
-        pathType: Prefix
-        ingressClassName: nginx
+      app:
+        className: nginx
         annotations:
           nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
-          hajimari.io/appName: "Minio"
-          hajimari.io/enable: "true"
-          hajimari.io/group: "storage"
-          hajimari.io/icon: mdi:pail
         hosts:
-          - host: &console-host "{{ .Release.Name }}.${SECRET_DOMAIN}"
+          - host: &console-host minio.${SECRET_DOMAIN}
             paths:
               - path: /
-                pathType: Prefix
                 service:
-                  port: *console-port
+                  identifier: app
+                  port: http
         tls:
           - hosts:
               - *console-host
       s3:
-        enabled: true
-        ingressClassName: nginx
+        className: nginx
         annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: |
-            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
-          nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
+          nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
           nginx.ingress.kubernetes.io/proxy-connect-timeout: "180"
           nginx.ingress.kubernetes.io/proxy-body-size: 1024m
+          nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
           nginx.ingress.kubernetes.io/configuration-snippet: |
             chunked_transfer_encoding off;
-          hajimari.io/enable: "false"
         hosts:
           - host: &api-host s3.${SECRET_DOMAIN}
             paths:
               - path: /
-                pathType: Prefix
                 service:
-                  port: *api-port
+                  identifier: app
+                  port: api
         tls:
           - hosts:
               - *api-host
-    podSecurityContext:
-      runAsUser: 1000
-      runAsGroup: 1000
-      fsGroup: 1000
-      fsGroupChangePolicy: OnRootMismatch
-      supplementalGroups: [1000]
+
     persistence:
       config:
         enabled: true
-        mountPath: /data
+        accessMode: ReadWriteOnce
         storageClass: nfs-provision
         size: 20Gi
-        retain: true
-    resources:
-      requests:
-        memory: 100Mi
-        cpu: 100m
-      limits:
-        memory: 1Gi
+        globalMounts:
+          - path: /data
