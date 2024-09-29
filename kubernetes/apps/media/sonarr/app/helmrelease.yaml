@@ -48,11 +48,14 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: sonarr-secret
-                    key: api_key
+                    key: SONARR__API_KEY
               SONARR__LOG__LEVEL: info
               SONARR__SERVER__PORT: &port 8989
               SONARR__UPDATE__BRANCH: develop
               TZ: ${TIMEZONE}
+            envFrom:
+              - secretRef:
+                  name: sonarr-secret
             probes:
               liveness:
                 enabled: true
@@ -114,11 +117,11 @@ spec:
         server: ${NFS_SERVER}
         path: "${NFS_MEDIA}/downloads"
         globalMounts:
-          - path: /media/downloads
-      tvshows:
+          - path: /downloads
+      tv:
         enabled: true
         type: nfs
         server: ${NFS_SERVER}
         path: "${NFS_MEDIA}/tvshows"
         globalMounts:
-          - path: /media/tvshows
+          - path: /tv/
