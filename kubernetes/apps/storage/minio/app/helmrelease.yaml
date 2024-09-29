@@ -79,7 +79,7 @@ spec:
                 cpu: 100m
               limits:
                 cpu: 300m
-                memory: 4Gi
+                memory: 1Gi
 
     service:
       app:
