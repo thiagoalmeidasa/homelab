@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: kube-system
 resources:
   # renovate: datasource=docker image=intel/intel-gpu-plugin
-  - https://github.com/intel/intel-device-plugins-for-kubernetes/deployments/gpu_plugin/overlays/nfd_labeled_nodes?ref=v0.30.0
+  - https://github.com/intel/intel-device-plugins-for-kubernetes/deployments/gpu_plugin/overlays/nfd_labeled_nodes?ref=v0.31.0
 images:
   - name: intel/intel-gpu-plugin
     newTag: 0.30.0
