@@ -403,12 +403,12 @@ spec:
             revision: 37
             datasource: "Prometheus"
       additionalDataSources:
-        - name: Loki
-          editable: false
-          orgId: 1
-          type: loki
-          url: http://loki.logging.svc.cluster.local:3100
-          version: 1
+        # - name: Loki
+        #   editable: false
+        #   orgId: 1
+        #   type: loki
+        #   url: http://loki.logging.svc.cluster.local:3100
+        #   version: 1
         - name: AlertManager
           type: alertmanager
           access: proxy
@@ -430,8 +430,7 @@ spec:
         pathType: Prefix
         ingressClassName: "nginx"
         annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: |
-            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+          nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
           hajimari.io/enable: "true"
           hajimari.io/appName: "Grafana"
           hajimari.io/icon: "monitor-dashboard"
@@ -450,8 +449,7 @@ spec:
         pathType: Prefix
         ingressClassName: "nginx"
         annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: |
-            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+          nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
           hajimari.io/enable: "true"
           hajimari.io/appName: "Prometheus"
           hajimari.io/icon: "database-search"
