@@ -92,7 +92,25 @@ spec:
             targetLabel: kubernetes_node
     kubeStateMetrics:
       enabled: true
+      prometheus:
+        monitor:
+          enabled: true
+          relabelings:
+            - action: replace
+              regex: (.*)
+              replacement: $1
+              sourceLabels: ["__meta_kubernetes_pod_node_name"]
+              targetLabel: kubernetes_node
     kube-state-metrics:
+      prometheus:
+        monitor:
+          enabled: true
+          relabelings:
+            - action: replace
+              regex: (.*)
+              replacement: $1
+              sourceLabels: ["__meta_kubernetes_pod_node_name"]
+              targetLabel: kubernetes_node
       fullnameOverride: kube-state-metrics
       metricLabelsAllowlist:
         - pods=[*]
@@ -133,7 +151,7 @@ spec:
                 metricNamePrefix: gotk
                 metrics:
                   - name: "resource_info"
-                    help: "The current state of a GitOps Toolkit resource."
+                    help: "The current state of a Flux Kustomization resource."
                     each:
                       type: Info
                       info:
@@ -147,12 +165,12 @@ spec:
                       source_name: [spec, sourceRef, name]
               - groupVersionKind:
                   group: helm.toolkit.fluxcd.io
-                  version: v2beta2
+                  version: v2
                   kind: HelmRelease
                 metricNamePrefix: gotk
                 metrics:
                   - name: "resource_info"
-                    help: "The current state of a GitOps Toolkit resource."
+                    help: "The current state of a Flux HelmRelease resource."
                     each:
                       type: Info
                       info:
@@ -162,56 +180,19 @@ spec:
                       exported_namespace: [metadata, namespace]
                       ready: [status, conditions, "[type=Ready]", status]
                       suspended: [spec, suspend]
-                      revision: [status, lastAppliedRevision]
-                      chart_name: [spec, chart, spec, chart]
-                      chart_source_name: [spec, chart, spec, sourceRef, name]
-              - groupVersionKind:
-                  group: source.toolkit.fluxcd.io
-                  version: v1
-                  kind: GitRepository
-                metricNamePrefix: gotk
-                metrics:
-                  - name: "resource_info"
-                    help: "The current state of a GitOps Toolkit resource."
-                    each:
-                      type: Info
-                      info:
-                        labelsFromPath:
-                          name: [metadata, name]
-                    labelsFromPath:
-                      exported_namespace: [metadata, namespace]
-                      ready: [status, conditions, "[type=Ready]", status]
-                      suspended: [spec, suspend]
-                      revision: [status, artifact, revision]
-                      url: [spec, url]
-              - groupVersionKind:
-                  group: source.toolkit.fluxcd.io
-                  version: v1beta2
-                  kind: Bucket
-                metricNamePrefix: gotk
-                metrics:
-                  - name: "resource_info"
-                    help: "The current state of a GitOps Toolkit resource."
-                    each:
-                      type: Info
-                      info:
-                        labelsFromPath:
-                          name: [metadata, name]
-                    labelsFromPath:
-                      exported_namespace: [metadata, namespace]
-                      ready: [status, conditions, "[type=Ready]", status]
-                      suspended: [spec, suspend]
-                      revision: [status, artifact, revision]
-                      endpoint: [spec, endpoint]
+                      revision: [status, history, "0", chartVersion]
+                      chart_name: [status, history, "0", chartName]
+                      chart_app_version: [status, history, "0", appVersion]
+                      chart_ref_name: [spec, chartRef, name]
                       bucket_name: [spec, bucketName]
               - groupVersionKind:
                   group: source.toolkit.fluxcd.io
-                  version: v1beta2
+                  version: v1
                   kind: HelmRepository
                 metricNamePrefix: gotk
                 metrics:
                   - name: "resource_info"
-                    help: "The current state of a GitOps Toolkit resource."
+                    help: "The current state of a Flux HelmRepository resource."
                     each:
                       type: Info
                       info:
@@ -225,12 +206,12 @@ spec:
                       url: [spec, url]
               - groupVersionKind:
                   group: source.toolkit.fluxcd.io
-                  version: v1beta2
+                  version: v1
                   kind: HelmChart
                 metricNamePrefix: gotk
                 metrics:
                   - name: "resource_info"
-                    help: "The current state of a GitOps Toolkit resource."
+                    help: "The current state of a Flux HelmChart resource."
                     each:
                       type: Info
                       info:
@@ -250,7 +231,7 @@ spec:
                 metricNamePrefix: gotk
                 metrics:
                   - name: "resource_info"
-                    help: "The current state of a GitOps Toolkit resource."
+                    help: "The current state of a Flux OCIRepository resource."
                     each:
                       type: Info
                       info:
@@ -269,7 +250,7 @@ spec:
                 metricNamePrefix: gotk
                 metrics:
                   - name: "resource_info"
-                    help: "The current state of a GitOps Toolkit resource."
+                    help: "The current state of a Flux Alert resource."
                     each:
                       type: Info
                       info:
@@ -285,7 +266,7 @@ spec:
                 metricNamePrefix: gotk
                 metrics:
                   - name: "resource_info"
-                    help: "The current state of a GitOps Toolkit resource."
+                    help: "The current state of a Flux Provider resource."
                     each:
                       type: Info
                       info:
@@ -301,7 +282,7 @@ spec:
                 metricNamePrefix: gotk
                 metrics:
                   - name: "resource_info"
-                    help: "The current state of a GitOps Toolkit resource."
+                    help: "The current state of a Flux Receiver resource."
                     each:
                       type: Info
                       info:
@@ -319,7 +300,7 @@ spec:
                 metricNamePrefix: gotk
                 metrics:
                   - name: "resource_info"
-                    help: "The current state of a GitOps Toolkit resource."
+                    help: "The current state of a Flux ImageRepository resource."
                     each:
                       type: Info
                       info:
@@ -337,7 +318,7 @@ spec:
                 metricNamePrefix: gotk
                 metrics:
                   - name: "resource_info"
-                    help: "The current state of a GitOps Toolkit resource."
+                    help: "The current state of a Flux ImagePolicy resource."
                     each:
                       type: Info
                       info:
@@ -350,12 +331,12 @@ spec:
                       source_name: [spec, imageRepositoryRef, name]
               - groupVersionKind:
                   group: image.toolkit.fluxcd.io
-                  version: v1beta1
+                  version: v1beta2
                   kind: ImageUpdateAutomation
                 metricNamePrefix: gotk
                 metrics:
                   - name: "resource_info"
-                    help: "The current state of a GitOps Toolkit resource."
+                    help: "The current state of a Flux ImageUpdateAutomation resource."
                     each:
                       type: Info
                       info:
@@ -368,6 +349,15 @@ spec:
                       source_name: [spec, sourceRef, name]
     prometheus-node-exporter:
       fullnameOverride: node-exporter
+      prometheus:
+        monitor:
+          enabled: true
+          relabelings:
+            - action: replace
+              regex: (.*)
+              replacement: $1
+              sourceLabels: ["__meta_kubernetes_pod_node_name"]
+              targetLabel: kubernetes_node
     grafana:
       fullnameOverride: grafana
       enabled: true
@@ -450,8 +440,7 @@ spec:
         pathType: Prefix
         ingressClassName: "nginx"
         annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: |
-            10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
+          nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
           hajimari.io/enable: "true"
           hajimari.io/appName: "Prometheus"
           hajimari.io/icon: "database-search"
@@ -468,7 +457,6 @@ spec:
               - targets:
                   - 192.168.100.102:9100
                   - 192.168.100.103:9100
-                  - 192.168.100.102:9100
         retention: 15d
         resources:
           requests:
@@ -477,12 +465,23 @@ spec:
           limits:
             cpu: 350m
             memory: 2Gi
+        podMonitorSelector: &selector
+          matchLabels: null
+        probeSelector: *selector
+        ruleSelector: *selector
+        scrapeConfigSelector: *selector
+        serviceMonitorSelector: *selector
         ruleSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
+        scrapeConfigSelectorNilUsesHelmValues: false
         enableAdminAPI: true
         walCompression: true
+        enableFeatures:
+          - auto-gomemlimit
+          - memory-snapshot-on-shutdown
+          - new-service-discovery-manager
         storageSpec:
           volumeClaimTemplate:
             spec:
@@ -490,15 +489,6 @@ spec:
               resources:
                 requests:
                   storage: 25Gi
-        affinity:
-          nodeAffinity:
-            requiredDuringSchedulingIgnoredDuringExecution:
-              nodeSelectorTerms:
-                - matchExpressions:
-                    - key: kubernetes.io/hostname
-                      operator: NotIn
-                      values:
-                        - cn4.lan
     kubeControllerManager:
       enabled: false
     kubeScheduler:
@@ -507,5 +497,26 @@ spec:
       enabled: false
     kubeProxy:
       enabled: false
+    kubelet:
+      enabled: true
+      serviceMonitor:
+        metricRelabelings:
+          # Drop high cardinality labels
+          - action: labeldrop
+            regex: (uid)
+          - action: labeldrop
+            regex: (id|name)
+          - action: drop
+            sourceLabels: ["__name__"]
+            regex: (rest_client_request_duration_seconds_bucket|rest_client_request_duration_seconds_sum|rest_client_request_duration_seconds_count)
     kubeApiServer:
-      enabled: false
+      enabled: true
+      serviceMonitor:
+        metricRelabelings:
+          # Drop high cardinality labels
+          - action: drop
+            sourceLabels: ["__name__"]
+            regex: (apiserver|etcd|rest_client)_request(|_sli|_slo)_duration_seconds_bucket
+          - action: drop
+            sourceLabels: ["__name__"]
+            regex: (apiserver_response_sizes_bucket|apiserver_watch_events_sizes_bucket)
