@@ -11,6 +11,7 @@ configMapGenerator:
       - grafana-dashboards/cluster.json
       - grafana-dashboards/logs.json
       - ./podmonitor.yaml
+      - ./prometheus-rules.yaml
     options:
       labels:
         grafana_dashboard: "1"
