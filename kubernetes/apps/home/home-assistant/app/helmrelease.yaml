@@ -152,8 +152,6 @@ spec:
           - key: id_rsa
             path: id_rsa
         defaultMode: 256
-        advancedMounts:
-          main:
-            code-server:
-              - path: /home/coder/.ssh
-                readOnly: true
+        globalMounts:
+          - path: /root/.ssh
+            readOnly: true
