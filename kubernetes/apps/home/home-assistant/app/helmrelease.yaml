@@ -80,8 +80,8 @@ spec:
                 cpu: 50m
                 memory: 375Mi
               limits:
-                cpu: 100m
-                memory: 650Mi
+                cpu: 200m
+                memory: 950Mi
     service:
       main:
         controller: main
@@ -144,14 +144,18 @@ spec:
         size: 3Gi
         globalMounts:
           - path: /config
-      sshkey:
+      ssh:
         enabled: true
         type: secret
         name: code-server-hass-secret
         items:
           - key: id_rsa
             path: id_rsa
+          - key: known_hosts
+            path: known_hosts
         defaultMode: 256
-        globalMounts:
-          - path: /root/.ssh
-            readOnly: true
+        advancedMounts:
+          main:
+            code-server:
+              - path: /home/coder/.ssh
+                readOnly: true
