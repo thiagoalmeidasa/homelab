@@ -459,10 +459,10 @@ spec:
         retention: 15d
         resources:
           requests:
-            cpu: 175m
+            cpu: 200m
             memory: 1Gi
           limits:
-            cpu: 350m
+            cpu: 750m
             memory: 2Gi
         podMonitorSelector: &selector
           matchLabels: null
