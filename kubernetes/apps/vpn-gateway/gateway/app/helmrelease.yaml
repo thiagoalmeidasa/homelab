@@ -46,10 +46,10 @@ spec:
               - NET_ADMIN
         resources:
           requests:
-            cpu: 100Mi
+            cpu: 100m
             memory: 40Mi
           limits:
-            cpu: 150Mi
+            cpu: 150m
             memory: 100Mi
         networkPolicy:
           enabled: true
