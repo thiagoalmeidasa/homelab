@@ -35,3 +35,10 @@ spec:
       annotations:
         io.cilium/lb-ipam-ips: "${METALLB_K8S_GATEWAY_ADDR}"
       externalTrafficPolicy: Local
+    resources:
+      requests:
+        cpu: 10m
+        memory: 30Mi
+      limits:
+        cpu: 20m
+        memory: 50Mi
