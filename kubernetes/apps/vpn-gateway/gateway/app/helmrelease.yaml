@@ -28,7 +28,7 @@ spec:
       tag: v1.11.1@sha256:0617304f085bc98529f0c5cd0c40c63bb019380a026a277c812bd13f78b4bc5d
     addons:
       netshoot:
-        enabled: true
+        enabled: false
       vpn:
         enabled: true
         type: gluetun
@@ -44,6 +44,13 @@ spec:
           capabilities:
             add:
               - NET_ADMIN
+        resources:
+          requests:
+            cpu: 100Mi
+            memory: 40Mi
+          limits:
+            cpu: 150Mi
+            memory: 100Mi
         networkPolicy:
           enabled: true
           egress:
