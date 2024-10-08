@@ -32,3 +32,9 @@ spec:
       podMonitor:
         enabled: true
         namespace: *namespace
+    resources:
+      requests:
+        cpu: 15m
+        memory: 64M
+      limits:
+        memory: 64M

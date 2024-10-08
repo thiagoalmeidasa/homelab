@@ -16,17 +16,42 @@ spec:
         namespace: flux-system
   maxHistory: 2
   install:
-    createNamespace: true
+    crds: CreateReplace
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
+    crds: CreateReplace
     remediation:
       retries: 3
   uninstall:
     keepHistory: false
   values:
     installCRDs: true
+    webhook:
+      resources:
+        requests:
+          cpu: 10m
+          memory: 20Mi
+        limits:
+          cpu: 20m
+          memory: 64Mi
+    cainjector:
+      replicaCount: 1
+      resources:
+        requests:
+          cpu: 15m
+          memory: 40Mi
+        limits:
+          cpu: 20m
+          memory: 90Mi
+    resources:
+      requests:
+        cpu: 15m
+        memory: 32Mi
+      limits:
+        cpu: 25m
+        memory: 64Mi
     extraArgs:
       - --dns01-recursive-nameservers=1.1.1.1:53,9.9.9.9:53
       - --dns01-recursive-nameservers-only

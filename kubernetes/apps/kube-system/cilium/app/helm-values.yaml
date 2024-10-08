@@ -55,3 +55,10 @@ securityContext:
       - NET_ADMIN
       - SYS_ADMIN
       - SYS_RESOURCE
+resources: # for agent
+  requests:
+    cpu: 30m
+    memory: 128Mi
+  limits:
+    cpu: 64m
+    memory: 256Mi
