@@ -55,3 +55,5 @@ k3s_server:
   kubelet-arg:
     - "kube-reserved=cpu=200m,memory=256Mi"
     - "system-reserved=cpu=200m,memory=256Mi"
+    - "image-gc-low-threshold=50"
+    - "image-gc-high-threshold=55"

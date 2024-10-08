@@ -73,7 +73,6 @@ spec:
           cpu: 20m
           memory: 200Mi
         limits:
-          cpu: 40m
           memory: 400Mi
     defaultBackend:
       enabled: true
