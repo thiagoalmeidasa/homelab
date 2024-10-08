@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
         - name: kube-vip
-          image: ghcr.io/kube-vip/kube-vip:v0.8.3
+          image: ghcr.io/kube-vip/kube-vip:v0.8.3@sha256:9e23baad11ae3e69d739430b9fdb60df22356b7da4b4f4e458fae0541619deb4
           imagePullPolicy: IfNotPresent
           args: ["manager"]
           env:
@@ -49,6 +49,13 @@ spec:
           securityContext:
             capabilities:
               add: ["NET_ADMIN", "NET_RAW"]
+          resources:
+            requests:
+              cpu: 5m
+              memory: 15Mi
+            limits:
+              cpu: 10m
+              memory: 30Mi
       hostAliases:
         - hostnames:
             - kubernetes
