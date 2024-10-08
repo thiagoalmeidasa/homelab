@@ -96,3 +96,25 @@ spec:
       target:
         kind: Deployment
         name: helm-controller
+    # Remove image-automation-controller as we dont use it
+    - patch: |
+        $patch: delete
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: image-automation-controller
+      target:
+        kind: Deployment
+        version: v1
+        name: image-automation-controller
+    # Remove image-reflector-controller as we dont use it
+    - patch: |
+        $patch: delete
+        apiVersion: apps/v1
+        kind: Deployment
+        metadata:
+          name: image-reflector-controller
+      target:
+        kind: Deployment
+        version: v1
+        name: image-reflector-controller
