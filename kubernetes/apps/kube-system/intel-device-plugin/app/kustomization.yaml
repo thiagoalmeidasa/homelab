@@ -8,3 +8,15 @@ resources:
 images:
   - name: intel/intel-gpu-plugin
     newTag: 0.31.0
+
+patches:
+  - patch: |-
+      - op: add
+        path: "/spec/template/spec/containers/0/args"
+        value:
+          - "-enable-monitoring"
+          - "-v=2"
+          - "-shared-dev-num=2"
+    target:
+      kind: DaemonSet
+      name: intel-gpu-plugin
