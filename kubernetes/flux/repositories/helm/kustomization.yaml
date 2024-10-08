@@ -21,5 +21,4 @@ resources:
   - ./nfs-provisioner-charts.yaml
   - ./postfinance.yaml
   - ./prometheus-community-charts.yaml
-  - ./spegel.yaml
   - ./stakater.yaml
