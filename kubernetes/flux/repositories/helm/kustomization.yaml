@@ -10,6 +10,7 @@ resources:
   - ./descheduler.yaml
   - ./external-dns.yaml
   - ./fairwinds-charts.yaml
+  - ./grafana.yaml
   - ./hajimari.yaml
   - ./ingress-nginx.yaml
   - ./jetstack.yaml
