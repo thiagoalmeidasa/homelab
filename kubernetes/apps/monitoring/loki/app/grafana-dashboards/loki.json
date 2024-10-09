@@ -21,6 +21,7 @@
   "fiscalYearStartMonth": 0,
   "gnetId": 13639,
   "graphTooltip": 0,
+  "id": 40,
   "links": [
     {
       "$$hashKey": "object:59",
@@ -46,7 +47,7 @@
   "panels": [
     {
       "datasource": {
-        "name": "${DS_LOKI}",
+        "default": false,
         "type": "loki",
         "uid": "${DS_LOKI}"
       },
@@ -133,8 +134,10 @@
             "type": "loki",
             "uid": "${DS_LOKI}"
           },
-          "expr": "sum(count_over_time({job=\"$app\"} |= \"$search\" [$__interval]))",
+          "editorMode": "code",
+          "expr": "sum(count_over_time({job=\"$app\"} |~ \"$search\" [$__interval]))",
           "legendFormat": "",
+          "queryType": "range",
           "refId": "A"
         }
       ],
@@ -170,9 +173,11 @@
             "type": "loki",
             "uid": "${DS_LOKI}"
           },
-          "expr": "{job=\"$app\"} |= \"$search\" | logfmt",
+          "editorMode": "code",
+          "expr": "{job=\"$app\"} |~ \"$search\" | logfmt",
           "hide": false,
           "legendFormat": "",
+          "queryType": "range",
           "refId": "A"
         }
       ],
@@ -187,10 +192,9 @@
     "list": [
       {
         "current": {
-          "isNone": true,
-          "selected": false,
-          "text": "None",
-          "value": ""
+          "selected": true,
+          "text": "default/echo-server",
+          "value": "default/echo-server"
         },
         "datasource": {
           "type": "loki",
@@ -239,7 +243,7 @@
           "text": "Loki",
           "value": "P8E80F9AEF21F6940"
         },
-        "hide": 0,
+        "hide": 2,
         "includeAll": false,
         "multi": false,
         "name": "DS_LOKI",
@@ -253,7 +257,7 @@
     ]
   },
   "time": {
-    "from": "now-1h",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
@@ -271,8 +275,8 @@
     ]
   },
   "timezone": "",
-  "title": "Logs / Apps",
-  "uid": "loki-apps-dashboard",
-  "version": 2,
+  "title": "Logs / App",
+  "uid": "sadlil-loki-apps-dashboard",
+  "version": 1,
   "weekStart": ""
 }
