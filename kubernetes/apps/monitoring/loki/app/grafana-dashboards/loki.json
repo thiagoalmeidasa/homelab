@@ -17,11 +17,10 @@
     ]
   },
   "description": "Log Viewer Dashboard for Loki",
-  "editable": false,
+  "editable": true,
   "fiscalYearStartMonth": 0,
   "gnetId": 13639,
   "graphTooltip": 0,
-  "id": 37,
   "links": [
     {
       "$$hashKey": "object:59",
@@ -47,8 +46,9 @@
   "panels": [
     {
       "datasource": {
+        "name": "${DS_LOKI}",
         "type": "loki",
-        "uid": "P8E80F9AEF21F6940"
+        "uid": "${DS_LOKI}"
       },
       "fieldConfig": {
         "defaults": {
@@ -131,7 +131,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "P8E80F9AEF21F6940"
+            "uid": "${DS_LOKI}"
           },
           "expr": "sum(count_over_time({job=\"$app\"} |= \"$search\" [$__interval]))",
           "legendFormat": "",
@@ -142,8 +142,9 @@
     },
     {
       "datasource": {
+        "name": "${DS_LOKI}",
         "type": "loki",
-        "uid": "P8E80F9AEF21F6940"
+        "uid": "${DS_LOKI}"
       },
       "gridPos": {
         "h": 25,
@@ -167,7 +168,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "P8E80F9AEF21F6940"
+            "uid": "${DS_LOKI}"
           },
           "expr": "{job=\"$app\"} |= \"$search\" | logfmt",
           "hide": false,
@@ -186,13 +187,14 @@
     "list": [
       {
         "current": {
+          "isNone": true,
           "selected": false,
-          "text": "cert-manager/cainjector",
-          "value": "cert-manager/cainjector"
+          "text": "None",
+          "value": ""
         },
         "datasource": {
           "type": "loki",
-          "uid": "P8E80F9AEF21F6940"
+          "uid": "${DS_LOKI}"
         },
         "definition": "label_values(job)",
         "hide": 0,
@@ -230,6 +232,23 @@
         "query": "",
         "skipUrlSync": false,
         "type": "textbox"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "Loki",
+          "value": "P8E80F9AEF21F6940"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "DS_LOKI",
+        "options": [],
+        "query": "loki",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
       }
     ]
   },
@@ -254,6 +273,6 @@
   "timezone": "",
   "title": "Logs / Apps",
   "uid": "loki-apps-dashboard",
-  "version": 1,
+  "version": 2,
   "weekStart": ""
 }
