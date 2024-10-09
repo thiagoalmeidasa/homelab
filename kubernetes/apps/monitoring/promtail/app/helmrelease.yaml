@@ -16,6 +16,17 @@ spec:
       interval: 30m
   dependsOn:
     - name: loki
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              version: v1
+              kind: Service
+              name: promtail-syslog
+            patch: |
+              - op: add
+                path: /metadata/annotations/lbipam.cilium.io~1ips
+                value: "${PROMTAIL_SYSLOG}"
   values:
     daemonset:
       enabled: true
@@ -97,14 +108,3 @@ spec:
       - name: run-journal
         mountPath: /run/log/journal
         readOnly: true
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              version: v1
-              kind: Service
-              name: promtail-syslog
-            patch: |
-              - op: add
-                path: /metadata/annotations/"lbipam.cilium.io/ips"
-                value: "${PROMTAIL_SYSLOG}"
