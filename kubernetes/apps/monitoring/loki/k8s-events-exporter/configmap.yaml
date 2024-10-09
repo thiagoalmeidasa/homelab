@@ -1,0 +1,41 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: event-exporter-cfg
+  namespace: monitoring
+data:
+  config.yaml: |
+    logLevel: debug
+    logFormat: json
+    route:
+      routes:
+        - match:
+          - receiver: "dump"
+          - receiver: "loki"
+        - drop:
+          - namespace: "monitoring"
+      receivers:
+        - name: "dump"
+          stdout: {}
+        - name: "loki"
+          webhook:
+            endpoint: "http://loki-gateway.monitoring.svc.cluster.local:80/loki/api/v1/push"
+            headers:
+              Content-Type: application/json
+              User-Agent: "kube-event-exporter"
+            layout:
+              streams:
+                - stream:
+                    app: kube-api
+                    source: event-exporter
+                    severity: "{{ .Type }}"
+                    reason: "{{ .Reason }}"
+                    name: "{{ .InvolvedObject.Name }}"
+                    namespace: "{{ .InvolvedObject.Namespace }}"
+                    kind: "{{ .InvolvedObject.Kind }}"
+                    host: "{{ .Source.Host }}"
+                    component: "{{ .Source.Component }}"
+                  values:
+                    - - "{{ mul .GetTimestampMs 1000000 }}"
+                      - "severity={{ .Type }} namespace={{ .InvolvedObject.Namespace }} object={{ .InvolvedObject.Kind }}/{{ .InvolvedObject.Name }} reason={{ .Reason }} message={{ .Message }}"
