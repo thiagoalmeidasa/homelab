@@ -6,12 +6,3 @@ metadata:
 resources:
   - ./helmrelease.yaml
   - ./secret.sops.yaml
-
-configMapGenerator:
-  - name: grafana-dashboards-loki
-    namespace: monitoring
-    files:
-      - ./grafana-dashboards/loki.json
-    options:
-      labels:
-        grafana_dashboard: "1"
