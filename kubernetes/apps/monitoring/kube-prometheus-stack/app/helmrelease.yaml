@@ -394,7 +394,7 @@ spec:
             datasource: "Prometheus"
           loki:
             gnetId: 13639
-            revision: 37
+            revision: 2
             datasource: "Loki"
       additionalDataSources:
         - name: Loki
