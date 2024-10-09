@@ -392,13 +392,17 @@ spec:
             gnetId: 1860
             revision: 37
             datasource: "Prometheus"
+          loki:
+            gnetId: 13639
+            revision: 37
+            datasource: "Loki"
       additionalDataSources:
-        # - name: Loki
-        #   editable: false
-        #   orgId: 1
-        #   type: loki
-        #   url: http://loki.logging.svc.cluster.local:3100
-        #   version: 1
+        - name: Loki
+          editable: false
+          orgId: 1
+          type: loki
+          url: http://loki-gateway.monitoring.svc.cluster.local:80
+          version: 1
         - name: AlertManager
           type: alertmanager
           access: proxy
