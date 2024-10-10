@@ -396,6 +396,10 @@ spec:
             gnetId: 13639
             revision: 2
             datasource: "Loki"
+          syncthing:
+            gnetId: 19560
+            revision: 1
+            datasource: "Prometheus"
       additionalDataSources:
         - name: Loki
           editable: false
