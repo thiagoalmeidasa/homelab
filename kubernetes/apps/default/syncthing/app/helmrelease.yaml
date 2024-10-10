@@ -72,15 +72,6 @@ spec:
             port: 21027
             protocol: UDP
             targetPort: 21027
-    serviceMonitor:
-      app:
-        serviceName: app
-        endpoints:
-          - port: http
-            scheme: http
-            path: /metrics
-            interval: 1m
-            scrapeTimeout: 10s
     ingress:
       app:
         className: nginx
