@@ -26,7 +26,7 @@ spec:
     keepHistory: false
   values:
     replicas: 2
-    kind: Cronjob
+    kind: CronJob
     cronJobApiVersion: "batch/v1"
     schedule: "*/30 * * * *"
     startingDeadlineSeconds: 200
