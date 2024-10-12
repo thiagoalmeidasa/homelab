@@ -1,7 +1,6 @@
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
-namespace: kube-system
 metadata:
   name: &app descheduler
   namespace: flux-system
