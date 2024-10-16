@@ -57,7 +57,7 @@ spec:
           app:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v1.118.0
+              tag: v1.118.1
 
             env:
               # General
@@ -88,7 +88,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /api/server-info/ping
+                    path: /api/server/ping
                     port: 3001
                   initialDelaySeconds: 0
                   periodSeconds: 10
@@ -100,7 +100,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /api/server-info/ping
+                    path: /api/server/ping
                     port: 3001
                   failureThreshold: 30
                   periodSeconds: 5
