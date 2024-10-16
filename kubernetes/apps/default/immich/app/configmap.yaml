@@ -5,8 +5,7 @@ metadata:
   name: immich-configmap
 data:
   # URLS
-  IMMICH_WEB_URL: http://photos.${SECRET_DOMAIN}:3000
-  IMMICH_SERVER_URL: http://photos.${SECRET_DOMAIN}:3001
+  IMMICH_SERVER_URL: http://photos.${SECRET_DOMAIN}:2283
   IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning.default.svc.cluster.local:3003
   PUBLIC_IMMICH_SERVER_URL: https://photos.${PUBLIC_DOMAIN}
 

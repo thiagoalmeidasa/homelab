@@ -27,7 +27,6 @@ spec:
       immich-machine-learning:
         annotations:
           reloader.stakater.com/auto: "true"
-        strategy: RollingUpdate
         pod:
           enableServiceLinks: false
           topologySpreadConstraints:
