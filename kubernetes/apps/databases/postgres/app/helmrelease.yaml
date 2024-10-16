@@ -36,7 +36,7 @@ spec:
       registry: ghcr.io
       repository: thiagoalmeidasa/bitnami-postgres-pgvecto-rs
       # renovate: datasource=docker image=ghcr.io/thiagoalmeidasa/bitnami-postgres-pgvecto-rs
-      tag: 16.4.0-debian-12-r13@sha256:b43566d275f0b026928ef1b1becf33b2390ba317a262a47f4c5f3069e702722e
+      tag: 16.4.0-debian-12-r13@sha256:b11acf0d5e58711256b63f0f05503dadb0b115b150aa1c03cc135a4f14131f1a
     primary:
       persistence:
         enabled: true
