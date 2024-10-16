@@ -57,15 +57,12 @@ spec:
           app:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v1.118.1
+              tag: v1.118.1@sha256:c53300f717f9f82e645c198818a1f7155410eb4041961d09b79585ea3b4934dc
 
             env:
               # General
               LOG_LEVEL: verbose
               IMMICH_MEDIA_LOCATION: &mediaLocation /usr/src/app/upload
-              # Ports
-              SERVER_PORT: &port 3001
-              # Database on secret
 
             envFrom:
               - configMapRef:
@@ -83,36 +80,34 @@ spec:
                 gpu.intel.com/i915: 1
 
             probes:
-              liveness: &probes
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /api/server/ping
-                    port: 3001
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
               startup:
                 enabled: true
-                custom: true
                 spec:
-                  httpGet:
-                    path: /api/server/ping
-                    port: 3001
                   failureThreshold: 30
                   periodSeconds: 5
-                  successThreshold: 1
-                  timeoutSeconds: 1
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
 
     service:
       app:
-        controller: immich-server
+        controller: *app
         ports:
           http:
-            port: *port
+            port: 2283
+          metrics:
+            port: 8081
+
+    serviceMonitor:
+      app:
+        serviceName: *app
+        endpoints:
+          - port: metrics
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 10s
 
     ingress:
       app:
@@ -133,9 +128,7 @@ spec:
                 service:
                   identifier: app
                   port: http
-        tls:
-          - hosts:
-              - *domain
+        tls: []
       public:
         enabled: true
         className: nginx
@@ -151,9 +144,7 @@ spec:
                 service:
                   identifier: app
                   port: http
-        tls:
-          - hosts:
-              - *public-domain
+        tls: []
 
     persistence:
       library:
