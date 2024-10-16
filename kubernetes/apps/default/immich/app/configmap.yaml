@@ -12,3 +12,6 @@ data:
   # REDIS
   REDIS_HOSTNAME: "redis-master.databases.svc.cluster.local"
   REDIS_PORT: "6379"
+
+  # CONFIGS
+  IMMICH_METRICS: "true"
