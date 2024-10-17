@@ -19,10 +19,12 @@ spec:
 
   maxHistory: 2
   install:
+    timeout: 15m
     createNamespace: false
     remediation:
       retries: 3
   upgrade:
+    timeout: 15m
     cleanupOnFail: true
     remediation:
       retries: 3
