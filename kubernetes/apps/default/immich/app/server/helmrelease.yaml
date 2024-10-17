@@ -80,22 +80,37 @@ spec:
                 gpu.intel.com/i915: 1
 
             probes:
+              liveness: &probe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /server/ping
+                    port: &port 2283
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probe
               startup:
                 enabled: true
+                custom: true
                 spec:
-                  failureThreshold: 30
-                  periodSeconds: 5
-              liveness:
-                enabled: true
-              readiness:
-                enabled: true
+                  httpGet:
+                    path: /server/ping
+                    port: *port
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 60
 
     service:
       app:
         controller: *app
         ports:
           http:
-            port: 2283
+            port: *port
+            primary: true
           metrics:
             port: 8081
 
