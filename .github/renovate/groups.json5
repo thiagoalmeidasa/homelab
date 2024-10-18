@@ -10,6 +10,16 @@
         "commitMessageTopic": "{{{groupName}}} group"
       },
       "separateMinorPatch": true
+    },
+    {
+      "description": "intel-gpu-plugin images and tags",
+      "groupName": "intel-gpu-plugin",
+      "matchPackagePatterns": ["intel-gpu-plugin"],
+      "matchDatasources": ["docker", "github-releases"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
+      "separateMinorPatch": true
     }
   ]
 }

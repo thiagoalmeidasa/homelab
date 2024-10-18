@@ -3,7 +3,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: kube-system
 resources:
-  # renovate: datasource=docker image=intel/intel-gpu-plugin
+  # renovate: datasource=github-releases depName=intel/intel-gpu-plugin
   - https://github.com/intel/intel-device-plugins-for-kubernetes/deployments/gpu_plugin/overlays/nfd_labeled_nodes?ref=v0.31.0
 images:
   - name: intel/intel-gpu-plugin
