@@ -28,7 +28,7 @@ spec:
     replicas: 2
     kind: CronJob
     cronJobApiVersion: "batch/v1"
-    schedule: "*/30 * * * *"
+    schedule: "*/15 * * * *"
     startingDeadlineSeconds: 200
     successfulJobsHistoryLimit: 3
     failedJobsHistoryLimit: 1
@@ -47,6 +47,10 @@ spec:
                 evictSystemCriticalPods: true
                 nodeFit: true
             - name: RemovePodsViolatingInterPodAntiAffinity
+            - name: RemovePodsHavingTooManyRestarts
+              args:
+                includingInitContainers: true
+                podRestartThreshold: 5
             - name: RemovePodsViolatingNodeAffinity
               args:
                 nodeAffinityType:
@@ -80,6 +84,7 @@ spec:
                 - RemovePodsViolatingInterPodAntiAffinity
                 - RemovePodsViolatingNodeAffinity
                 - RemovePodsViolatingNodeTaints
+                - RemovePodsHavingTooManyRestarts
     service:
       enabled: true
     serviceMonitor:
