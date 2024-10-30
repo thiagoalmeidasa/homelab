@@ -109,6 +109,9 @@ spec:
         annotations:
           hajimari.io/icon: mdi:home-assistant
           nginx.ingress.kubernetes.io/proxy-body-size: 1000M
+          nginx.ingress.kubernetes.io/proxy-connect-timeout: "20"
+          nginx.ingress.kubernetes.io/proxy-read-timeout: "14400"
+          nginx.ingress.kubernetes.io/proxy-send-timeout: "14400"
         hosts:
           - host: &host "hass.${SECRET_DOMAIN}"
             paths:
