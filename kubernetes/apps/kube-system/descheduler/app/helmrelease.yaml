@@ -50,7 +50,7 @@ spec:
             - name: RemovePodsHavingTooManyRestarts
               args:
                 includingInitContainers: true
-                podRestartThreshold: 5
+                podRestartThreshold: 100
             - name: RemovePodsViolatingNodeAffinity
               args:
                 nodeAffinityType:
