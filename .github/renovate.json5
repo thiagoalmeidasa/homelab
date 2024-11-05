@@ -1,84 +1,95 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:base",
-    "docker:enableMajor",
-    ":disableRateLimiting",
-    ":dependencyDashboard",
-    ":semanticCommits",
-    ":enablePreCommit",
-    ":automergeDigest",
-    ":automergeBranch",
-    "github>thiagoalmeidasa/homelab//.github/renovate/autoMerge.json5",
-    "github>thiagoalmeidasa/homelab//.github/renovate/commitMessage.json5",
-    "github>thiagoalmeidasa/homelab//.github/renovate/groups.json5",
-    "github>thiagoalmeidasa/homelab//.github/renovate/labels.json5",
-    "github>thiagoalmeidasa/homelab//.github/renovate/semanticCommits.json5",
-    "helpers:pinGitHubActionDigests"
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
+    'docker:enableMajor',
+    ':disableRateLimiting',
+    ':dependencyDashboard',
+    ':semanticCommits',
+    ':enablePreCommit',
+    ':automergeDigest',
+    ':automergeBranch',
+    'github>thiagoalmeidasa/homelab//.github/renovate/autoMerge.json5',
+    'github>thiagoalmeidasa/homelab//.github/renovate/commitMessage.json5',
+    'github>thiagoalmeidasa/homelab//.github/renovate/groups.json5',
+    'github>thiagoalmeidasa/homelab//.github/renovate/labels.json5',
+    'github>thiagoalmeidasa/homelab//.github/renovate/semanticCommits.json5',
+    'helpers:pinGitHubActionDigests',
   ],
-  "dependencyDashboard": true,
-  "dependencyDashboardTitle": "Renovate Dashboard 🤖",
-  "suppressNotifications": ["prIgnoreNotification"],
-  "rebaseWhen": "conflicted",
-  "schedule": ["every saturday"],
-  "pre-commit": {
-    "enabled": true
+  dependencyDashboard: true,
+  dependencyDashboardTitle: 'Renovate Dashboard 🤖',
+  suppressNotifications: [
+    'prIgnoreNotification',
+  ],
+  rebaseWhen: 'conflicted',
+  schedule: [
+    'on saturday',
+  ],
+  'pre-commit': {
+    enabled: true,
   },
-  "flux": {
-    "fileMatch": ["kubernetes/.+\\.ya?ml$"]
+  flux: {
+    fileMatch: [
+      'kubernetes/.+\\.ya?ml$',
+    ],
   },
-  "helm-values": {
-    "fileMatch": ["kubernetes/.+\\.ya?ml$"]
+  'helm-values': {
+    fileMatch: [
+      'kubernetes/.+\\.ya?ml$',
+    ],
   },
-  "kubernetes": {
-    "fileMatch": [
-      "ansible/.+\\.ya?ml.j2$",
-      "kubernetes/.+\\.ya?ml$"
-    ]
+  kubernetes: {
+    fileMatch: [
+      'ansible/.+\\.ya?ml.j2$',
+      'kubernetes/.+\\.ya?ml$',
+    ],
   },
-  "packageRules": [
-    // packages with custom versioning
+  packageRules: [
     {
-      "matchDatasources": [
-        "docker"
+      matchDatasources: [
+        'docker',
       ],
-      "versioning": "regex:^(?<major>\\d{6})$",
-      "matchPackageNames": [
-        "docker.io/photoprism/photoprism"
-      ]
+      versioning: 'regex:^(?<major>\\d{6})$',
+      matchPackageNames: [
+        'docker.io/photoprism/photoprism',
+      ],
     },
     {
-      "matchDatasources": [
-        "docker"
+      matchDatasources: [
+        'docker',
       ],
-      "versioning": "regex:^RELEASE\\.(?<major>\\d+)-(?<minor>\\d+)-(?<patch>\\d+)T.*Z(-(?<compatibility>.*))?$",
-      "matchPackageNames": [
-        "minio/minio"
-      ]
+      versioning: 'regex:^RELEASE\\.(?<major>\\d+)-(?<minor>\\d+)-(?<patch>\\d+)T.*Z(-(?<compatibility>.*))?$',
+      matchPackageNames: [
+        'minio/minio',
+      ],
     },
     {
-      "matchDatasources": [
-        "docker"
+      matchDatasources: [
+        'docker',
       ],
-      "automerge": true,
-      "matchUpdateTypes": ["minor", "patch"],
-      "matchPackageNames": [
-        "linuxserver/jackett"
-      ]
-    }
+      automerge: true,
+      matchUpdateTypes: [
+        'minor',
+        'patch',
+      ],
+      matchPackageNames: [
+        'linuxserver/jackett',
+      ],
+    },
   ],
-  "regexManagers": [
+  customManagers: [
     {
-      "description": "Process various other dependencies",
-      "fileMatch": [
-        "ansible/.+\\.ya?ml$",
-        "kubernetes/.+\\.ya?ml$"
+      customType: 'regex',
+      description: 'Process various other dependencies',
+      fileMatch: [
+        'ansible/.+\\.ya?ml$',
+        'kubernetes/.+\\.ya?ml$',
       ],
-      "matchStrings": [
-        "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( versioning=(?<versioning>\\S+))?\n.*?\"(?<currentValue>.*)\"\n"
+      matchStrings: [
+        'datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( versioning=(?<versioning>\\S+))?\n.*?"(?<currentValue>.*)"\n',
       ],
-      "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}",
-      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
-    }
-  ]
+      datasourceTemplate: '{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}',
+      versioningTemplate: '{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}',
+    },
+  ],
 }
