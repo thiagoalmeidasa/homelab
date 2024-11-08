@@ -14,4 +14,4 @@ data:
   REDIS_PORT: "6379"
 
   # CONFIGS
-  IMMICH_METRICS: "true"
+  IMMICH_TELEMETRY_INCLUDE: "all"
