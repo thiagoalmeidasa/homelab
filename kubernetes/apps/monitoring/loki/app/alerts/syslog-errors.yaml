@@ -1,0 +1,14 @@
+---
+groups:
+  - name: syslog_errors
+    limit: 10
+    interval: 1m
+    rules:
+      - alert: SyslogErrorRate
+        expr: |
+          sum(rate({job="syslog"} | logfmt | level="error"[1m])) by (host, facility) > 0.1
+        for: 1m
+        labels:
+          severity: page
+        annotations:
+          summary: Syslog high error rate

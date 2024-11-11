@@ -6,3 +6,13 @@ metadata:
 resources:
   - ./helmrelease.yaml
   - ./secret.sops.yaml
+configMapGenerator:
+  - name: loki-rules
+    namespace: monitoring
+    files:
+      - SyslogErrorRate.yaml=./alerts/syslog-errors.yaml
+    options:
+      labels:
+        loki_rule: "true"
+generatorOptions:
+  disableNameSuffixHash: true
