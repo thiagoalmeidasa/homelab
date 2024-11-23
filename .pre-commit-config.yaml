@@ -8,8 +8,8 @@ repos:
           - --config-file
           - .yamllint.yaml
         id: yamllint
-  - repo: https://github.com/tarioch/flux-check-hook
-    rev: v0.5.0
+  - repo: https://github.com/dahvo13/flux-check-hook
+    rev: d42a28ee0eaca65773109526b2444c0f4af6c6a5
     hooks:
       - id: check-flux-helm-values
   - repo: https://github.com/pre-commit/pre-commit-hooks
