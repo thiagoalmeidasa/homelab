@@ -55,7 +55,7 @@ spec:
       cronjob:
         storage:
           storageClass: longhorn
-          size: 20Gi
+          size: 40Gi
         command:
           - /bin/sh
           - -c
