@@ -36,7 +36,6 @@ spec:
           image:
             repository: docker.io/qmcgaw/gluetun
             tag: v3.39.1@sha256:6a8058e626763cbf735ac2f78c774dbb24fec2490bd9d9f7d67e22592cb4a991
-
         envFrom:
           - secretRef:
               name: vpn-gateway-pod-gateway
@@ -49,7 +48,7 @@ spec:
             cpu: 100m
             memory: 40Mi
           limits:
-            cpu: 150m
+            cpu: 100m
             memory: 100Mi
         networkPolicy:
           enabled: false
@@ -60,10 +59,13 @@ spec:
       - media
     settings:
       NOT_ROUTED_TO_GATEWAY_CIDRS: "10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
-      VPN_BLOCK_OTHER_TRAFFIC: true
-      VPN_INTERFACE: "tun0"
+      VPN_BLOCK_OTHER_TRAFFIC: false
+      # 51820 is for wireguard
+      VPN_TRAFFIC_PORT: 51820
+      # 1194 is for openvpn
+      # VPN_TRAFFIC_PORT: 1194
+      VPN_INTERFACE: "wg0"
       VPN_LOCAL_CIDRS: "10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
-      VPN_TRAFFIC_PORT: "1194"
       VXLAN_PORT: 4789
     webhook:
       image:
