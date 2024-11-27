@@ -48,7 +48,7 @@ spec:
             cpu: 100m
             memory: 40Mi
           limits:
-            cpu: 100m
+            cpu: 175m
             memory: 100Mi
         networkPolicy:
           enabled: false
