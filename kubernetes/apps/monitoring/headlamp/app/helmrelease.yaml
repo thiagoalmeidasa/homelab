@@ -1,0 +1,95 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: headlamp
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: headlamp
+      version: 0.26.0
+      sourceRef:
+        kind: HelmRepository
+        name: headlamp
+        namespace: flux-system
+  driftDetection:
+    mode: enabled
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    fullnameOverride: headlamp
+    initContainers:
+      - image: ghcr.io/headlamp-k8s/headlamp-plugin-flux:v0.1.0-beta-1@sha256:5274c581d69b36af6899dfccfc73adeda414e0ae6046f009db8ed3c4271c6add
+        command:
+          - /bin/sh
+          - -c
+          - mkdir -p /build/plugins && cp -r /plugins/* /build/plugins/
+        name: headlamp-plugins
+        volumeMounts:
+          - mountPath: /build/plugins
+            name: headlamp-plugins
+    config:
+      oidc:
+        secret:
+          create: true
+      pluginsDir: /build/plugins
+    podAnnotations:
+      reloader.stakater.com/auto: "true"
+    affinity:
+      nodeAffinity:
+        requiredDuringSchedulingIgnoredDuringExecution:
+          nodeSelectorTerms:
+            - matchExpressions:
+                - key: "kubernetes.io/arch"
+                  operator: In
+                  values: ["amd64"]
+    volumeMounts:
+      - mountPath: /build/plugins
+        name: headlamp-plugins
+    volumes:
+      - name: headlamp-plugins
+        persistentVolumeClaim:
+          claimName: headlamp
+    persistentVolumeClaim:
+      enabled: true
+      accessModes:
+        - ReadWriteOnce
+      size: 1Gi
+      # @TODO: update with 0.27.0
+      # ref: https://github.com/headlamp-k8s/headlamp/commit/989e3a65e4b3d814c591edea78c206ae872dc434
+      # storageClassName: "longhorn"
+      storageClass: "longhorn"
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      annotations:
+        nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
+      hosts:
+        - host: &host "headlamp.${SECRET_DOMAIN}"
+          paths:
+            - path: /
+              type: ImplementationSpecific
+              service:
+                identifier: app
+                port: http
+      tls:
+        - hosts:
+            - *host
+
+    extraManifests:
+      - |
+        apiVersion: v1
+        kind: Secret
+        type: kubernetes.io/service-account-token
+        metadata:
+          name: {{ include "headlamp.fullname" . }}-admin-token
+          namespace: {{ .Release.Namespace }}
+          annotations:
+            kubernetes.io/service-account.name: {{ include "headlamp.serviceAccountName" . }}

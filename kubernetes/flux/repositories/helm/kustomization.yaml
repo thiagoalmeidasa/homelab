@@ -12,6 +12,7 @@ resources:
   - ./fairwinds-charts.yaml
   - ./grafana.yaml
   - ./hajimari.yaml
+  - ./headlamp.yaml
   - ./ingress-nginx.yaml
   - ./jetstack.yaml
   - ./k8s-gateway.yaml
