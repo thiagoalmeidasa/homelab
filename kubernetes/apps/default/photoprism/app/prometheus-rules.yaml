@@ -1,0 +1,17 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: photoprism-rules
+spec:
+  groups:
+    - name: photoprism.rules
+      rules:
+        - alert: PhotoprismComponentAbsent
+          annotations:
+            summary: Photoprism Component has disappeared from Prometheus target discovery.
+          expr: absent(up{job="photoprism"} == 1)
+          for: 15m
+          labels:
+            severity: critical

@@ -71,6 +71,20 @@ spec:
                 memory: 400Mi
                 gpu.intel.com/i915: 1
 
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v1/status
+                    port: http
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+
     persistence:
       config:
         accessMode: ReadWriteOnce
