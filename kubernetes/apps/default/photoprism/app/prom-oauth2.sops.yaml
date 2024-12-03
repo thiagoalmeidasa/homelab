@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: photoprism-prometheus-oauth2
+    namespace: default
+type: Opaque
+stringData:
+    id: ENC[AES256_GCM,data:CHXseZpmilJYUSSwwx13qw==,iv:ZDAgmoNUpq6s/R9MYXs107RjcJ9IS8xNLWdxeIjuhas=,tag:+zNHizl7ekGJ7iECjGH2/g==,type:str]
+    secret: ENC[AES256_GCM,data:LoJERLR6ecwVBrPjKFtN38vj/C8vZXexLMhoF9QS3qw=,iv:NCdUAlGrisr42cnrTEqs6YYZIE9ljNkvMs+cjXiTTRA=,tag:lFRU/5SfF+w9DNheQf5MjA==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1w02zzfg0y4ast9mgnd9w0yuym0wqx6q967kmrmq355w4cnw0xytq2x369r
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBQbm5ReFEyTVpLM0x3QUFs
+            MjVLR0lhbm81Nnp4RkNPRFB4UVVJVWZuaEJvCjNiSnRjMnR1R25OdVVSNFAxQU9x
+            Z21SbjN6aWJjRXN5TEVsVks0amVVdXMKLS0tIHFIOFJMUWtQdi9DaTFjWlkzREVt
+            WDN0bDUrZDA5TTRnSmFobWVLdVdxUGsKePoCPlO+d3dRyf7O6sK0BbcAFr7eUUzQ
+            O90hgrbjDau6wXBpZzAPr1s6oPG6cEIlG6gNd50jjvjKomxI9O1HAQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2024-12-02T23:53:05Z"
+    mac: ENC[AES256_GCM,data:3RPVvDlamBWNusN6yJAafeP4ciO1Dw8Cw5U2MaH00BEXRoOn/Me+hhvNM6JmAG4JXgc8IC98M1fNuCoYCQ1UPsIHSQQhz5JgBIOWiDONsxc6ocYBB2Ey1JkUF4C/7ENgOGcmFYVZ9WYANVS+8F/9vvH2RB4Hx3UqjhRrrEwMLuA=,iv:x49u0z11Uvy0TQxIbW3b4uJN0vEO1cIpy1vmwre0t/Q=,tag:bXgrKYqDjr43vgwqA/lleg==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData)$
+    version: 3.9.0
