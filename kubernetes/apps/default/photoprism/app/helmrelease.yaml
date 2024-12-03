@@ -78,7 +78,7 @@ spec:
                 spec:
                   httpGet:
                     path: /api/v1/status
-                    port: http
+                    port: 2342
                   initialDelaySeconds: 10
                   periodSeconds: 10
                   timeoutSeconds: 1
