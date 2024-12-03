@@ -6,3 +6,4 @@ resources:
   - ./pdb.yaml
   - ./secret.sops.yaml
   - ./prom-oauth2.sops.yaml
+  - ./prometheus-rules.yaml
