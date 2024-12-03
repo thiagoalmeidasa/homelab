@@ -111,6 +111,27 @@ spec:
         ports:
           http:
             port: 2342
+    serviceMonitor:
+      app:
+        enabled: true
+        serviceName: *app
+        endpoints:
+          - port: http
+            scheme: http
+            path: "/api/v1/metrics"
+            oauth2:
+              clientId:
+                secret:
+                  key: id
+                  name: photoprism-prometheus-oauth2
+              clientSecret:
+                key: secret
+                name: photoprism-prometheus-oauth2
+              tokenUrl: "http://photoprism.default.svc.cluster.local:2342/api/v1/oauth/token"
+              scopes:
+                - 'metrics'
+              endpoint_params:
+                grant_type: "client_credentials"
     ingress:
       app:
         enabled: true

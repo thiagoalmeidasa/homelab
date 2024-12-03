@@ -5,3 +5,4 @@ resources:
   - ./helmrelease.yaml
   - ./pdb.yaml
   - ./secret.sops.yaml
+  - ./prom-oauth2.sops.yaml
