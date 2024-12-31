@@ -62,10 +62,7 @@ spec:
       accessModes:
         - ReadWriteOnce
       size: 1Gi
-      # @TODO: update with 0.27.0
-      # ref: https://github.com/headlamp-k8s/headlamp/commit/989e3a65e4b3d814c591edea78c206ae872dc434
-      # storageClassName: "longhorn"
-      storageClass: "longhorn"
+      storageClassName: "longhorn"
     ingress:
       enabled: true
       ingressClassName: nginx
