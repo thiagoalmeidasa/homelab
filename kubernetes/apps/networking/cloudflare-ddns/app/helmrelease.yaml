@@ -38,7 +38,7 @@ spec:
               - --zone-name
               - ${PUBLIC_DOMAIN}
               - --record-name
-              - ipv4.${PUBLIC_DOMAIN}
+              - ipv4.${SECRET_DOMAIN}
               - --record-ttl
               - "300"
               - --provider
