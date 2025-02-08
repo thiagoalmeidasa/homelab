@@ -7,7 +7,7 @@ resources:
   - https://github.com/intel/intel-device-plugins-for-kubernetes/deployments/gpu_plugin/overlays/nfd_labeled_nodes?ref=v0.31.1
 images:
   - name: intel/intel-gpu-plugin
-    newTag: 0.31.1
+    newTag: 0.32.0
 
 patches:
   - patch: |-
