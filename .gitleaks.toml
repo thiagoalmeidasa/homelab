@@ -3,6 +3,7 @@ useDefault = true
 
 [allowlist]
 description = "Skip encrypted secrets"
+regexTarget = "match"
 regexes = [
   '''(?i)!!enveloped:''', # Encrypted secrets
   '''ENC\[AES256_GCM,data:''', # sops secrets
