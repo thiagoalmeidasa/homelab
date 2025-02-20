@@ -28,7 +28,7 @@ spec:
     controllers:
       umami:
         annotations:
-          reloader.stakater.com/search: "true"
+          reloader.stakater.com/auto: "true"
         strategy: Recreate
         containers:
           app:
