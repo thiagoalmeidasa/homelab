@@ -89,6 +89,22 @@ spec:
         tls:
           - hosts:
               - *host
+      public:
+        enabled: true
+        className: nginx
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "ingress.${PUBLIC_DOMAIN}"
+          hajimari.io/enable: "false"
+          hajimari.io/icon: simple-icons:jellyfin
+        hosts:
+          - host: &public-domain media.${PUBLIC_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: main
+                  port: http
+        tls: []
     persistence:
       config:
         accessMode: ReadWriteOnce
