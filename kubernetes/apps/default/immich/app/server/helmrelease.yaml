@@ -154,6 +154,10 @@ spec:
           hajimari.io/enable: "false"
           nginx.ingress.kubernetes.io/proxy-body-size: "0"
           nginx.ingress.kubernetes.io/upstream-hash-by: "$client_ip"
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            sub_filter </head>
+                '</head><script defer src="https://analytics.thiagoalmeida.xyz/script.js" data-website-id="086445c0-1f67-46c4-9246-bd1f74278421"></script>';
+            sub_filter_once on;
         hosts:
           - host: &public-domain photos.${PUBLIC_DOMAIN}
             paths:
