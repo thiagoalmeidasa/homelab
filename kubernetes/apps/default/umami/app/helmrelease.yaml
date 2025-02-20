@@ -28,7 +28,7 @@ spec:
     controllers:
       umami:
         annotations:
-          reloader.stakater.com/search: "true"
+          reloader.stakater.com/auto: "true"
         strategy: Recreate
         containers:
           app:
@@ -41,7 +41,7 @@ spec:
               DATABASE_URL:
                 valueFrom:
                   secretKeyRef:
-                    name: &db_secret umami
+                    name: &db_secret umami-secret
                     key: POSTGRES_URL
               DISABLE_TELEMETRY: "true"
               IGNORE_IP: "${LOCAL_SUBNETS}"
