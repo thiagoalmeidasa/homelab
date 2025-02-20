@@ -8,3 +8,4 @@ resources:
   - ./immich/ks.yaml
   - ./photoprism/ks.yaml
   - ./syncthing/ks.yaml
+  - ./umami/ks.yaml
