@@ -56,7 +56,7 @@
     },
     {
       matchDatasources: [
-        'github-releases',
+        'docker',
       ],
       versioning: 'regex:^RELEASE\\.(?<major>\\d+)-(?<minor>\\d+)-(?<patch>\\d+)T.*Z(-(?<compatibility>.*))?$',
       matchPackageNames: [
