@@ -32,6 +32,8 @@ spec:
         auth:
           existingSecret: postgresql-secret
           database: main
+      security:
+        allowInsecureImages: true
     image:
       registry: ghcr.io
       repository: thiagoalmeidasa/bitnami-postgres-pgvecto-rs
