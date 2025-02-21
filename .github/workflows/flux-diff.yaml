@@ -52,8 +52,9 @@ jobs:
         id: diff
         run: |
           cat diff.patch
+          DIFF=$(cat diff.patch)
           echo "diff<<EOF" >> $GITHUB_OUTPUT
-          cat diff.patch >> $GITHUB_OUTPUT
+          echo "${PLAN:0:65436}" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
       - if: ${{ steps.diff.outputs.diff != '' }}
@@ -63,14 +64,6 @@ jobs:
           message-id: "${{ github.event.pull_request.number }}/${{ matrix.paths }}/${{ matrix.resources }}"
           message-failure: Diff was not successful
           message: |
-            {{#isNotNullOrEmpty(steps.diff.outputs.diff)}}
-            {{#if (gt (length steps.diff.outputs.diff) 50000)}}
             ```diff
-            {{substring steps.diff.outputs.diff 0 4800}}
+            ${{ steps.diff.outputs.diff }}
             ```
-            Note: The diff output has been truncated due to its size exceeding 50,000 characters. Please check the build logs for the full diff.
-            {{else}}
-            ```diff
-            {{steps.diff.outputs.diff}}
-            {{/if}}
-            {{/isNotNullOrEmpty}}
