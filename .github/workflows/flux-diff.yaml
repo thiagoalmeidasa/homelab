@@ -54,7 +54,7 @@ jobs:
           cat diff.patch
           DIFF=$(cat diff.patch)
           echo "diff<<EOF" >> $GITHUB_OUTPUT
-          echo "${PLAN:0:65436}" >> $GITHUB_OUTPUT
+          echo "${DIFF:0:65436}" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
       - if: ${{ steps.diff.outputs.diff != '' }}
