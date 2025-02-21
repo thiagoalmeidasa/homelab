@@ -35,7 +35,7 @@ jobs:
           path: default
 
       - name: Diff Resources
-        uses: docker://ghcr.io/allenporter/flux-local:main
+        uses: docker://ghcr.io/allenporter/flux-local:v7.0.0
         with:
           args: >-
             diff ${{ matrix.resources }}
@@ -63,6 +63,14 @@ jobs:
           message-id: "${{ github.event.pull_request.number }}/${{ matrix.paths }}/${{ matrix.resources }}"
           message-failure: Diff was not successful
           message: |
+            {{#isNotNullOrEmpty(steps.diff.outputs.diff)}}
+            {{#if (gt (length steps.diff.outputs.diff) 50000)}}
             ```diff
-            ${{ steps.diff.outputs.diff }}
+            {{substring steps.diff.outputs.diff 0 4800}}
             ```
+            Note: The diff output has been truncated due to its size exceeding 50,000 characters. Please check the build logs for the full diff.
+            {{else}}
+            ```diff
+            {{steps.diff.outputs.diff}}
+            {{/if}}
+            {{/isNotNullOrEmpty}}
