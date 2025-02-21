@@ -42,6 +42,7 @@ spec:
         containers:
           app:
             image:
+              # renovate: datasource=github-releases depName=minio/minio
               repository: quay.io/minio/minio
               tag: RELEASE.2024-09-22T00-33-43Z
             env:
