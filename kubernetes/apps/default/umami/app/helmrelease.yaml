@@ -44,7 +44,8 @@ spec:
                     name: &db_secret umami-secret
                     key: POSTGRES_URL
               DISABLE_TELEMETRY: "true"
-              IGNORE_IP: "${LOCAL_SUBNETS}"
+              # Ignores data collection comming from these IPs
+              IGNORE_IP: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,127.0.0.1/32"
             envFrom:
               - secretRef:
                   name: umami-secret
