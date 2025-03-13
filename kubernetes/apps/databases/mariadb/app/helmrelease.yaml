@@ -39,7 +39,7 @@ spec:
     primary:
       pdb:
         create: true
-        minAvailable: 1
+        minAvailable: "1"
     metrics:
       enabled: true
       serviceMonitor:
