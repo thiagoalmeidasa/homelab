@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: mariadb
-      version: 20.1.1
+      version: 20.4.1
       sourceRef:
         kind: HelmRepository
         name: bitnami
@@ -39,7 +39,7 @@ spec:
     primary:
       pdb:
         create: true
-        minAvailable: 1
+        minAvailable: "1"
     metrics:
       enabled: true
       serviceMonitor:
