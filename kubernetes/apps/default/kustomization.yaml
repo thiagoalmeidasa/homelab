@@ -7,5 +7,6 @@ resources:
   - ./hajimari/ks.yaml
   - ./immich/ks.yaml
   - ./photoprism/ks.yaml
+  - ./pingvin-share/ks.yaml
   - ./syncthing/ks.yaml
   - ./umami/ks.yaml
