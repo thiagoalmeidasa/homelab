@@ -1,0 +1,94 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app pingvin
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.7.2
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      pingvin:
+        containers:
+          app:
+            image:
+              repository: ghcr.io/stonith404/pingvin-share
+              tag: v1.10.2@sha256:c118c1be1ad0c4828a604ff93387e9387c7467212640b95e7ef5d4a81243174b
+            env:
+              TZ: "${TIMEZONE}"
+              TRUST_PROXY: "true"
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 512Mi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 3000
+    ingress:
+      app:
+        className: nginx
+        annotations:
+          external-dns.alpha.kubernetes.io/enabled: "true"
+          external-dns.alpha.kubernetes.io/target: "ingress.${PUBLIC_DOMAIN}"
+          nginx.ingress.kubernetes.io/proxy-body-size: "0"
+          hajimari.io/icon: mdi:account-arrow-up
+        hosts:
+          - host: &host "share.${PUBLIC_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      tmp:
+        type: emptyDir
+
+      data:
+        type: persistentVolumeClaim
+        storageClass: longhorn
+        accessMode: ReadWriteOnce
+        size: 1Gi
+        globalMounts:
+          - path: /opt/app/backend/data
+
+      uploads:
+        enabled: true
+        accessMode: ReadWriteOnce
+        storageClass: nfs-provision
+        size: 20Gi # ignored
+        globalMounts:
+          - path: /opt/app/backend/data/uploads/
