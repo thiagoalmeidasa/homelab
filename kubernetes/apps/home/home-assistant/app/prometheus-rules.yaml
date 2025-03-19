@@ -1,0 +1,18 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: hass-rules
+  namespace: home
+spec:
+  groups:
+    - name: hass.rules
+      rules:
+        - alert: hassComponentAbsent
+          annotations:
+            summary: Home-assistant Component has disappeared from Prometheus target discovery.
+          expr: absent(up{job="home-assistant"} == 1)
+          for: 15m
+          labels:
+            severity: critical
