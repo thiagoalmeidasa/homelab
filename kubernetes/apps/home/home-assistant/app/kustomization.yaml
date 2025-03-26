@@ -7,3 +7,13 @@ resources:
   - ./code-server-hass.sops.yaml
   - ./hass.sops.yaml
   - ./prometheus-rules.yaml
+configMapGenerator:
+  - name: loki-rules
+    namespace: monitoring
+    files:
+      - HassLogs.yaml=./loki-rules.yaml
+    options:
+      labels:
+        loki_rule: "true"
+generatorOptions:
+  disableNameSuffixHash: true

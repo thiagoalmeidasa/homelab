@@ -1,0 +1,17 @@
+---
+groups:
+  - name: hass_log_errors
+    rules:
+      - alert: hassDbConnectionFailed
+        annotations:
+          summary: "Home Assistant cannot connect to PostgreSQL ({{ $labels.instance }})"
+          description: |
+            The error rate for SQLAlchemy errors from Home Assistant has exceeded {{ $value }}
+            in a 3-minute period. This indicates potential connectivity issues with PostgreSQL.
+            Potential causes may include network disruptions, database server overload,
+            or configuration changes. Recommended action: Check the database connection settings
+            and logs for any anomalies or error messages.
+        expr: sum by (app)(count_over_time({app=~"home-assistant"} |~ "SQLAlchemyError" [3m])) > 5
+        for: 2m
+        labels:
+          severity: critical
