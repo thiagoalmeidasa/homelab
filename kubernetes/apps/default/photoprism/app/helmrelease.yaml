@@ -87,17 +87,21 @@ spec:
 
     persistence:
       config:
+        accessMode: ReadWriteOnce
         enabled: true
         type: persistentVolumeClaim
         storageClass: longhorn
-        accessMode: ReadWriteOnce
         size: 7Gi
         retain: true
         globalMounts:
           - path: *storage
 
       cache:
-        type: emptyDir
+        type: persistentVolumeClaim
+        storageClass: longhorn
+        size: 7Gi
+        retain: true
+        accessMode: ReadWriteOnce
         globalMounts:
           - path: "/photoprism/storage/cache"
 
@@ -121,7 +125,6 @@ spec:
         ports:
           http:
             port: 2342
-
     serviceMonitor:
       app:
         enabled: true
