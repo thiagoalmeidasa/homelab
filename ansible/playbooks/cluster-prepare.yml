@@ -95,6 +95,12 @@
                 devnode "^sd[a-z0-9]+"
               }
           notify: RestartMultipathd
+        - name: System Configuration (1) | Setup Journald Max Space
+          ansible.builtin.lineinfile:
+            dest: /etc/systemd/journald.conf
+            regexp: "^.*SystemMaxUse"
+            line: "SystemMaxUse=500M"
+          notify: RestartJournald
 
     - name: System Configuration (2)
       block:
@@ -159,4 +165,8 @@
     - name: RestartMultipathd
       ansible.builtin.systemd:
         service: multipathd.service
+        state: restarted
+    - name: RestartJournald
+      ansible.builtin.systemd:
+        service: systemd-journald.service
         state: restarted
