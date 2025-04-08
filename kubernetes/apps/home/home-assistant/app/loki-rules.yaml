@@ -11,7 +11,7 @@ groups:
             Potential causes may include network disruptions, database server overload,
             or configuration changes. Recommended action: Check the database connection settings
             and logs for any anomalies or error messages.
-        expr: sum by (app)(count_over_time({app=~"home-assistant"} |~ "SQLAlchemyError" [3m])) > 5
+        expr: sum by (app)(count_over_time({app=~"home-assistant"} |= "psycopg2.OperationalError" [3m])) > 5
         for: 2m
         labels:
           severity: critical
