@@ -29,7 +29,7 @@ spec:
           app:
             image:
               repository: ghcr.io/stonith404/pingvin-share
-              tag: v1.11.0@sha256:1c35387f112570e51cb9541b6653a3d59b5082f8d9bbf475299fde4c27555e82
+              tag: v1.11.1@sha256:bf73383fb8998b41220c96c8d09bfa2e54b9eb54f7e205e741bc811a1b4515b8
             env:
               TZ: "${TIMEZONE}"
               TRUST_PROXY: "true"
