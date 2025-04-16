@@ -9,7 +9,7 @@ spec:
   chart:
     spec:
       chart: external-dns
-      version: 1.15.2
+      version: 1.16.1
       sourceRef:
         kind: HelmRepository
         name: external-dns
@@ -27,7 +27,8 @@ spec:
     keepHistory: false
   values:
     fullnameOverride: *app
-    provider: cloudflare
+    provider:
+      name: cloudflare
     env:
       - name: CF_API_EMAIL
         valueFrom:
