@@ -1,0 +1,33 @@
+# yamllint disable
+apiVersion: v1
+kind: Secret
+metadata:
+    name: jellyseerr-secret
+    namespace: media
+type: Opaque
+stringData:
+    DB_TYPE: ENC[AES256_GCM,data:NYSQDrRrLj0=,iv:ZH3a8kkXAC40Zf+PasmryYlJdqwgOBDZaq7c4b7bsCg=,tag:d0b4Dhzxl9A4+LcbzpUYvg==,type:str]
+    DB_HOST: ENC[AES256_GCM,data:sG46906lRM9rQWbpjWMyMhmXELd0A/sbqRvzrEvz7xDt5pQ/4L0=,iv:Nml1ysNxGoNnKfiBy6fOSuI3+mVWNIUxxgOD2dshVvk=,tag:V7kYLhgUSEKZ8BISt08T3g==,type:str]
+    DB_PORT: ENC[AES256_GCM,data:raB/zA==,iv:M7yoTPqepKzEnRvJQoTvqCXLrDF3KGxb4c/SuaWk7CI=,tag:rr2sLGUwQ3jl5MJGXF+qww==,type:str]
+    DB_USER: ENC[AES256_GCM,data:eYfAw99DZkdmtw==,iv:H51HyQVaquEKRzbKqZHVKDl3k7XEZqLT14zJ2oGivXE=,tag:uCYlsB6owMqFvlZuVHUdng==,type:str]
+    DB_PASSWORD: ENC[AES256_GCM,data:GH/Ss1+Oqb/hMQfhqU/4XI2Luno8zwWPsEiGG+xZYd0=,iv:sBRu2Qcb01HYh8hB2iSk3ERDGp3OvAvD0VnTBasqm/k=,tag:zTLcKUAcdrC3J2L5r1Z/hQ==,type:str]
+sops:
+    kms: []
+    gcp_kms: []
+    azure_kv: []
+    hc_vault: []
+    age:
+        - recipient: age1w02zzfg0y4ast9mgnd9w0yuym0wqx6q967kmrmq355w4cnw0xytq2x369r
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBoRGdmVUFsejVWc214TGM2
+            dHpQTitJbFlNWWNzN08zOU9vT3BUd1EzblRVClhodnMzdzZ6STYwaG1jT0Fma3VU
+            TWVtS0t0QzltTjRWR0haSlFFajJaRFUKLS0tIEhoZUpFcXg5Sk1oSXArRG44Ulpa
+            MC92UWQ3cE1OTmxYaUVzSnEzZ1FZcEUKSRrOrbXTkgBWuct/41n+QGqXN63vTbPl
+            djPVZZ1G5qBV+HXdz/VfPuP7J4zG3ZXNnDMXnu++9lc77cqdXUHsdw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-04-17T15:32:30Z"
+    mac: ENC[AES256_GCM,data:CDJlvHW8SGOU7N5yFwaeCUdVMpVvQiNZiZaHoFPIXL4r9am5NfI6Hg11VgbB8362ha69mIkPHNTXVkzk278b6+JekyjvSZYcGO0UmV+qC/4lk3kOaJVjIOKxmU8Ro++a91pC1Jpbg7kqKqiTj5J6j0c30MLKJB7dO+3oJ2h+N0k=,iv:QnKUdD+//+Lp0YySrx2WnsQdJdlDsjL+b45eIqMDD0E=,tag:zHvQgD0IUJMPXcHQ3ssAEg==,type:str]
+    pgp: []
+    encrypted_regex: ^(data|stringData)$
+    version: 3.9.0
