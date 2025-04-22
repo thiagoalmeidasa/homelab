@@ -34,6 +34,9 @@ spec:
           database: main
       security:
         allowInsecureImages: true
+    ## Disable due to: https://github.com/bitnami/charts/issues/32959
+    auth:
+      usePasswordFiles: false
     image:
       registry: ghcr.io
       repository: thiagoalmeidasa/bitnami-postgres-pgvecto-rs
