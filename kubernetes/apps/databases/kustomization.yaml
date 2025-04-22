@@ -5,4 +5,5 @@ resources:
   - ./namespace.yaml
   - ./mariadb/ks.yaml
   - ./postgres/ks.yaml
+  - ./postgres17/ks.yaml
   - ./redis/ks.yaml
