@@ -6,6 +6,7 @@ resources:
   - ./echo-server/ks.yaml
   - ./hajimari/ks.yaml
   - ./immich/ks.yaml
+  - ./openspeedtest/ks.yaml
   - ./photoprism/ks.yaml
   - ./pingvin-share/ks.yaml
   - ./syncthing/ks.yaml
