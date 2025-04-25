@@ -81,6 +81,8 @@ spec:
         annotations:
           nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
           hajimari.io/enable: "true"
+          hajimari.io/appName: "Jellyseerr"
+          hajimari.io/info: "Jellyfin media request"
         hosts:
           - host: &host requests.${SECRET_DOMAIN}
             paths:

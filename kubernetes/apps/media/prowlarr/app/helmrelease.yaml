@@ -88,7 +88,6 @@ spec:
         annotations:
           nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
           hajimari.io/enable: "true"
-          hajimari.io/icon: simple-icons:prowlarr
         className: nginx
         hosts:
           - host: &host "{{ .Release.Name }}.${SECRET_DOMAIN}"
