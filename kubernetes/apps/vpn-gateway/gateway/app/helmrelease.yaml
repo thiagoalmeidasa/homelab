@@ -22,6 +22,25 @@ spec:
   upgrade:
     remediation:
       retries: 5
+  postRenderers:
+    # temp solution for https://github.com/angelnu/gateway-admision-controller/issues/299
+    - kustomize:
+        patches:
+          - target:
+              version: v1
+              kind: Deployment
+              name: vpn-gateway-pod-gateway-webhook
+            patch: |
+              - op: add
+                path: /spec/template/spec/affinity
+                value:
+                  nodeAffinity:
+                    requiredDuringSchedulingIgnoredDuringExecution:
+                      nodeSelectorTerms:
+                        - matchExpressions:
+                            - key: "kubernetes.io/arch"
+                              operator: In
+                              values: ["amd64"]
   values:
     image:
       repository: ghcr.io/angelnu/pod-gateway
