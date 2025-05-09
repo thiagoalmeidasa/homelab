@@ -49,6 +49,15 @@
       matchDatasources: [
         'docker',
       ],
+      versioning: 'regex:^v(?<major>\\d+)(\\.(?<minor>\\d+))?(\\.(?<patch>\\d+))$',
+      matchPackageNames: [
+        'docker.io/kopia/kopia',
+      ],
+    },
+    {
+      matchDatasources: [
+        'docker',
+      ],
       versioning: 'regex:^(?<major>\\d{6})$',
       matchPackageNames: [
         'docker.io/photoprism/photoprism',
