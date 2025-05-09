@@ -29,19 +29,19 @@
     enabled: true,
   },
   flux: {
-    fileMatch: [
-      'kubernetes/.+\\.ya?ml$',
+    managerFilePatterns: [
+      '/kubernetes/.+\\.ya?ml$/',
     ],
   },
   'helm-values': {
-    fileMatch: [
-      'kubernetes/.+\\.ya?ml$',
+    managerFilePatterns: [
+      '/kubernetes/.+\\.ya?ml$/',
     ],
   },
   kubernetes: {
-    fileMatch: [
-      'ansible/.+\\.ya?ml.j2$',
-      'kubernetes/.+\\.ya?ml$',
+    managerFilePatterns: [
+      '/ansible/.+\\.ya?ml.j2$/',
+      '/kubernetes/.+\\.ya?ml$/',
     ],
   },
   packageRules: [
@@ -72,7 +72,6 @@
         'ghcr.io/umami-software/umami',
       ],
     },
-
     {
       matchDatasources: [
         'docker',
@@ -90,10 +89,12 @@
   customManagers: [
     {
       customType: 'regex',
-      description: ['Process various other dependencies'],
-      fileMatch: [
-        'ansible/.+\\.ya?ml$',
-        'kubernetes/.+\\.ya?ml$',
+      description: [
+        'Process various other dependencies',
+      ],
+      managerFilePatterns: [
+        '/ansible/.+\\.ya?ml$/',
+        '/kubernetes/.+\\.ya?ml$/',
       ],
       matchStrings: [
         'datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( versioning=(?<versioning>\\S+))?\n.*?"(?<currentValue>.*)"\n',
