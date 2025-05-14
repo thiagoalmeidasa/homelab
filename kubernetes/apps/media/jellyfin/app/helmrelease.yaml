@@ -127,6 +127,12 @@ spec:
         path: "${NFS_MEDIA}/tvshows"
         globalMounts:
           - path: "/media/tvshows"
+      intros:
+        type: nfs
+        server: "${NFS_SERVER}"
+        path: "${NFS_MEDIA}/intros"
+        globalMounts:
+          - path: "/media/intros"
       transcode:
         enabled: true
         type: emptyDir
