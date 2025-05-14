@@ -108,7 +108,7 @@ spec:
         type: persistentVolumeClaim
         accessMode: ReadWriteOnce
         storageClass: longhorn
-        size: 3Gi
+        size: 10Gi
         labels:
           recurring-job-group.longhorn.io/backup: enabled
       downloads:
