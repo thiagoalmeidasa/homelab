@@ -400,6 +400,10 @@ spec:
             gnetId: 19560
             revision: 1
             datasource: "Prometheus"
+          nginx-ingress-controller:
+            gnetId: 14314
+            revision: 2
+            datasource: "Prometheus"
       additionalDataSources:
         - name: Loki
           editable: false
