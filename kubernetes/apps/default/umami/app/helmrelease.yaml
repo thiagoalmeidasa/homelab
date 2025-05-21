@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: ghcr.io/umami-software/umami
-              tag: postgresql-v2.18.1
+              tag: postgresql-v2.17.0
             env:
               TZ: ${TIMEZONE}
               DATABASE_TYPE: postgresql
@@ -75,8 +75,8 @@ spec:
 
     defaultPodOptions:
       securityContext:
-        runAsGroup: 1001
-        runAsUser: 1001
+        runAsGroup: 65534
+        runAsUser: 65534
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
