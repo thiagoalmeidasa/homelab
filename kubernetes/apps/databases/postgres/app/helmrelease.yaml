@@ -40,7 +40,7 @@ spec:
     image:
       registry: ghcr.io
       repository: thiagoalmeidasa/bitnami-postgres-pgvecto-rs-vchord
-      tag: 16.4.0-debian-12-r16@sha256:12852f64cd26db15a5549173615c9ef8d1464ff0ad75692180fdfeaa1c7cedfe
+      tag: 16.4.0-debian-12-r16@sha256:a0075195114d1090c633223e000653c2230ab0711f12257bc01a9371adf76e93
     primary:
       persistence:
         enabled: true
