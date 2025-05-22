@@ -39,8 +39,8 @@ spec:
       usePasswordFiles: false
     image:
       registry: ghcr.io
-      repository: thiagoalmeidasa/bitnami-postgres-pgvecto-rs
-      tag: 16.4.0-debian-12-r16@sha256:8050eecbcdac616d8ff6c9d0b9ecaff117fae219db34d1b7a8e53f92446599b1
+      repository: thiagoalmeidasa/bitnami-postgres-pgvecto-rs-vchord
+      tag: 16.4.0-debian-12-r16@sha256:12852f64cd26db15a5549173615c9ef8d1464ff0ad75692180fdfeaa1c7cedfe
     primary:
       persistence:
         enabled: true
