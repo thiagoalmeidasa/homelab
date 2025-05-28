@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: distcc
+  namespace: default
+  labels:
+    app: distcc
+spec:
+  selector:
+    matchLabels:
+      name: distcc
+  template:
+    metadata:
+      labels:
+        name: distcc
+    spec:
+      containers:
+        - name: distcc
+          image: ghcr.io/thiagoalmeidasa/manjarolinux-distcc:20250504
+          ports:
+            - containerPort: 3632
+              hostPort: 3632
+              protocol: TCP
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/arch
+                    operator: In
+                    values:
+                      - amd64
