@@ -1,5 +1,5 @@
 ---
-apiVersion: longhorn.io/v1beta1
+apiVersion: longhorn.io/v1
 kind: RecurringJob
 metadata:
   name: backup-weekly

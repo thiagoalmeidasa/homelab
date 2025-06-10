@@ -1,5 +1,5 @@
 ---
-apiVersion: longhorn.io/v1beta2
+apiVersion: longhorn.io/v1
 kind: RecurringJob
 metadata:
   name: recurring-fs-trim-per-day
