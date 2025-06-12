@@ -144,7 +144,7 @@ spec:
         storageClass: longhorn
         type: persistentVolumeClaim
         accessMode: ReadWriteOnce
-        size: 3Gi
+        size: 6Gi
         globalMounts:
           - path: /config
       ssh:
