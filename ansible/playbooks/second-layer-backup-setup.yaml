@@ -49,11 +49,39 @@
             cache_valid_time: "{{ 3600 * 7 }}"
           with_items:
             - rsync
-        - name: Setup cron for rsync
+
+        - name: Setup Longhorn Backup Rsync Cron Job
           ansible.builtin.cron:
             name: "Sync Longhorn backup folder"
-            job: "rsync -aAXHv --delete {{ longhorn_user }}@{{ longhorn_host}}:/volume1/backups/k8s/longhorn/ /mnt/data/backups/longhorn/ && curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_rsync_token }}"
+            job: >
+              rsync -aAXHv --delete {{ longhorn_user }}@{{ longhorn_host }}:/volume1/backups/k8s/longhorn/
+              /mnt/data/backups/longhorn/ &&
+              curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_tokens.longhorn }}
             user: cubie
             minute: 20
             hour: 6
+            weekday: 1,4
+
+        - name: Setup Immich Backup Rsync Cron Job
+          ansible.builtin.cron:
+            name: "Sync Immich backup folder"
+            job: >
+              rsync -aAXHv --delete {{ longhorn_user }}@{{ longhorn_host }}:/volume1/backups/k8s/immich/
+              /mnt/data/backups/immich/ &&
+              curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_tokens.immich }}
+            user: cubie
+            minute: 20
+            hour: 9
+            weekday: 1,4
+
+        - name: Setup Photoprism Backup Rsync Cron Job
+          ansible.builtin.cron:
+            name: "Sync Photoprism backup folder"
+            job: >
+              rsync -aAXHv --delete {{ longhorn_user }}@{{ longhorn_host }}:/volume1/backups/k8s/photoprism/
+              /mnt/data/backups/photoprism/ &&
+              curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_tokens.photoprism }}
+            user: cubie
+            minute: 20
+            hour: 12
             weekday: 1,4
