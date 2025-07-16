@@ -63,12 +63,12 @@ spec:
                   name: photoprism-secret
             resources:
               limits:
-                cpu: 2
-                memory: 2Gi
+                cpu: 300m
+                memory: 2.5Gi
                 gpu.intel.com/i915: 1
               requests:
-                cpu: 1
-                memory: 400Mi
+                cpu: 30m
+                memory: 100Mi
                 gpu.intel.com/i915: 1
 
             probes:
