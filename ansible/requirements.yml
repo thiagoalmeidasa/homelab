@@ -25,4 +25,4 @@ roles:
     version: 2.1.2
   - name: robertdebock.mount
     src: https://github.com/robertdebock/ansible-role-mount.git
-    version: 2.3.4
+    version: 2.3.5
