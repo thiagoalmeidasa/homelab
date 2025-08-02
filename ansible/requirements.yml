@@ -22,7 +22,7 @@ roles:
     version: 3.0.12
   - name: robertdebock.filesystem
     src: https://github.com/robertdebock/ansible-role-filesystem.git
-    version: 2.1.2
+    version: 2.1.3
   - name: robertdebock.mount
     src: https://github.com/robertdebock/ansible-role-mount.git
     version: 2.3.4
