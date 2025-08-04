@@ -19,7 +19,7 @@ roles:
     version: 7.1.2
   - name: robertdebock.luks
     src: https://github.com/robertdebock/ansible-role-luks.git
-    version: 3.0.12
+    version: 3.0.13
   - name: robertdebock.filesystem
     src: https://github.com/robertdebock/ansible-role-filesystem.git
     version: 2.1.2
