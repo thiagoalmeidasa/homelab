@@ -1,0 +1,13 @@
+---
+web:
+  config:
+    apps:
+      - admin-settings
+      - app-store
+      - epub-reader
+      - external
+      - files
+      - pdf-viewer
+      - preview
+      - search
+      - text-editor
