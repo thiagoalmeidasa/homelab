@@ -1,0 +1,156 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app ocis
+spec:
+  interval: 1h
+  timeout: 15m
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  values:
+    controllers:
+      ocis:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+        initContainers:
+          init-config:
+            image:
+              repository: docker.io/owncloud/ocis
+              tag: 7.2.0@sha256:a4b42923f0f3c4458660e1485693bf5a8399b8354c75febfedfd07e55590b8ab
+            command:
+              - /bin/sh
+              - -c
+            args:
+              - |
+                if [ ! -f /etc/ocis/ocis.yaml ]; then ocis init; else exit 0; fi
+            env:
+              OCIS_INSECURE: true
+        containers:
+          ocis:
+            image:
+              repository: docker.io/owncloud/ocis
+              tag: 7.2.0@sha256:a4b42923f0f3c4458660e1485693bf5a8399b8354c75febfedfd07e55590b8ab
+            env:
+              DEMO_USERS: false
+              OCIS_LOG_COLOR: true
+              OCIS_LOG_LEVEL: warn
+              OCIS_LOG_PRETTY: true
+              OCIS_URL: https://arai.${PUBLIC_DOMAIN}
+              OCIS_SHARING_PUBLIC_SHARE_MUST_HAVE_PASSWORD: true
+              PROXY_DEBUG_ADDR: 0.0.0.0:9205
+              PROXY_TLS: false
+              TZ: ${TIMEZONE}
+            envFrom:
+              - secretRef:
+                  name: ocis-secret
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              requests:
+                cpu: 50m
+                memory: 128Mi
+              limits:
+                memory: 2Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 9200
+            primary: true
+          metrics:
+            port: 9205
+    serviceMonitor:
+      app:
+        serviceName: *app
+        endpoints:
+          - port: metrics
+    ingress:
+      internal:
+        enabled: true
+        className: nginx
+        annotations:
+          hajimari.io/enable: "true"
+          hajimari.io/icon: arcticons:owncloud
+          nginx.ingress.kubernetes.io/proxy-body-size: "0"
+          nginx.ingress.kubernetes.io/upstream-hash-by: "$client_ip"
+        hosts:
+          - host: &domain arai.${SECRET_DOMAIN}
+            paths:
+              - path: /
+                pathType: Prefix
+                service:
+                  identifier: app
+                  port: http
+        tls: []
+      public:
+        enabled: true
+        className: nginx
+        annotations:
+          external-dns.alpha.kubernetes.io/target: "ingress.${PUBLIC_DOMAIN}"
+          hajimari.io/enable: "false"
+          nginx.ingress.kubernetes.io/proxy-body-size: "0"
+          nginx.ingress.kubernetes.io/upstream-hash-by: "$client_ip"
+          nginx.ingress.kubernetes.io/configuration-snippet: |
+            sub_filter </head>
+                '</head><script defer src="https://analytics.thiagoalmeida.xyz/script.js" data-website-id="3ba1cf3d-89e2-410e-beeb-700a854307ff"></script>';
+            sub_filter_once on;
+        hosts:
+          - host: &public-domain arai.${PUBLIC_DOMAIN}
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+        tls: []
+    persistence:
+      config:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        retain: true
+        size: 1Gi
+        storageClass: longhorn
+        globalMounts:
+          - path: /etc/ocis
+            subPath: config
+      web-config:
+        type: configMap
+        name: ocis
+        globalMounts:
+          - path: /etc/ocis/web.yaml
+            subPath: web.yaml
+            readOnly: true
+      data:
+        type: nfs
+        server: "${NFS_SERVER}"
+        path: "${NFS_KUBERNETES}/ocis"
+        globalMounts:
+          - path: /var/lib/ocis
+            subPath: data
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          ocis:
+            app:
+              - path: /tmp
+                subPath: tmp
