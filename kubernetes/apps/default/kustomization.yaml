@@ -7,6 +7,7 @@ resources:
   - ./echo-server/ks.yaml
   - ./hajimari/ks.yaml
   - ./immich/ks.yaml
+  - ./n8n/ks.yaml
   - ./ocis/ks.yaml
   - ./openspeedtest/ks.yaml
   - ./photoprism/ks.yaml
