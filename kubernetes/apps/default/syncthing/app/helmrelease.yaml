@@ -102,7 +102,7 @@ spec:
         enabled: true
         type: persistentVolumeClaim
         storageClass: longhorn
-        size: 2Gi
+        size: 8Gi
         accessMode: ReadWriteOnce
         retain: true
         globalMounts:
