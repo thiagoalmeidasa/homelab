@@ -14,7 +14,7 @@
     {
       "description": "intel-gpu-plugin images and tags",
       "groupName": "intel-gpu-plugin",
-      "matchPackagePatterns": ["intel-gpu-plugin", "intel/intel-device-plugins-for-kubernetes"],
+      "matchPackagePatterns": ["intel/intel-gpu-plugin", "intel/intel-device-plugins-for-kubernetes"],
       "matchDatasources": ["docker", "github-releases"],
       "group": {
         "commitMessageTopic": "{{{groupName}}} group"
