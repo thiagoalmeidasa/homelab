@@ -22,12 +22,12 @@ spec:
   values:
     persistence:
       defaultClass: false
-      defaultClassReplicaCount: 2
+      defaultClassReplicaCount: "2"
     defaultSettings:
       backupTarget: "nfs://nfs.lan://volume1/backups/k8s/longhorn"
-      defaultReplicaCount: 2
+      defaultReplicaCount: "2"
       v2DataEngineGuaranteedInstanceManagerCPU: "750"
-      guaranteedInstanceManagerCPU: 5
+      guaranteedInstanceManagerCPU: "5"
     ingress:
       enabled: true
       annotations:
