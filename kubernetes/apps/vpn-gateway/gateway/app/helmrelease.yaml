@@ -65,10 +65,10 @@ spec:
         resources:
           requests:
             cpu: 100m
-            memory: 40Mi
+            memory: 64Mi
           limits:
             cpu: 175m
-            memory: 100Mi
+            memory: 192Mi
         networkPolicy:
           enabled: false
     podAnnotations:
