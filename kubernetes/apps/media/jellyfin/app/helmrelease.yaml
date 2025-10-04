@@ -55,15 +55,30 @@ spec:
                 memory: 3Gi
                 gpu.intel.com/i915: 1
             probes:
+              liveness: &probe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: &port 8096
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+
+              readiness: *probe
               startup:
                 enabled: true
+                custom: true
                 spec:
+                  httpGet:
+                    path: /health
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
                   failureThreshold: 30
-                  periodSeconds: 5
-              liveness:
-                enabled: true
-              readiness:
-                enabled: true
     service:
       main:
         controller: jellyfin
