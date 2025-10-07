@@ -137,16 +137,16 @@ spec:
               - *host
 
     read:
-      replicas: 2
+      replicas: 3
 
     write:
-      replicas: 2
+      replicas: 3
       persistence:
         storageClass: longhorn
         size: 20Gi
 
     backend:
-      replicas: 2
+      replicas: 3
       persistence:
         storageClass: longhorn
         size: 20Gi
