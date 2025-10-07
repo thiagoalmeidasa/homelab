@@ -119,6 +119,23 @@ spec:
             matchLabels:
               app.kubernetes.io/name: loki
               app.kubernetes.io/component: gateway
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/component: gateway
+                  app.kubernetes.io/name: '{{ include "loki.name" . }}'
+                  app.kubernetes.io/instance: '{{ .Release.Name }}'
+              topologyKey: kubernetes.io/hostname
+
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: "kubernetes.io/arch"
+                    operator: In
+                    values: ["amd64"]
 
       ingress:
         enabled: true
