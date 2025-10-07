@@ -111,6 +111,10 @@ spec:
           external-dns.alpha.kubernetes.io/target: "ingress.${PUBLIC_DOMAIN}"
           hajimari.io/enable: "false"
           hajimari.io/icon: simple-icons:jellyfin
+          nginx.ingress.kubernetes.io/server-snippet: |
+            location /metrics {
+              return 404;
+            }
         hosts:
           - host: &public-domain media.${PUBLIC_DOMAIN}
             paths:
@@ -119,7 +123,9 @@ spec:
                 service:
                   identifier: main
                   port: http
-        tls: []
+        tls:
+          - hosts:
+              - *public-domain
     persistence:
       config:
         accessMode: ReadWriteOnce
