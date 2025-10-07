@@ -56,7 +56,7 @@ spec:
         per_stream_rate_limit_burst: 128M
         reject_old_samples: true
         reject_old_samples_max_age: 168h
-        retention_period: 7d
+        retention_period: 14d
         shard_streams:
           enabled: true
         split_queries_by_interval: 1h
@@ -119,6 +119,23 @@ spec:
             matchLabels:
               app.kubernetes.io/name: loki
               app.kubernetes.io/component: gateway
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/component: gateway
+                  app.kubernetes.io/name: '{{ include "loki.name" . }}'
+                  app.kubernetes.io/instance: '{{ .Release.Name }}'
+              topologyKey: kubernetes.io/hostname
+
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: "kubernetes.io/arch"
+                    operator: In
+                    values: ["amd64"]
 
       ingress:
         enabled: true
