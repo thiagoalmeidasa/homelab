@@ -1,0 +1,26 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: jellyfin-rules
+  namespace: media
+spec:
+  groups:
+    - name: jellyfin.rules
+      rules:
+        - alert: jellyfinComponentAbsent
+          annotations:
+            summary: Jellyfin Component has disappeared from Prometheus target discovery.
+          expr: absent(up{job="jellyfin"} == 1)
+          for: 15m
+          labels:
+            severity: critical
+        - alert: jellyfinTooManyFailedLogins
+          expr: increase(microsoft_aspnetcore_hosting_http_server_request_duration_count{http_response_status_code="401", http_route="Users/AuthenticateByName"}[1m]) > 3
+          for: 1m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Jellyfin has a high number of failed login attempts"
+            description: "More than 3 failed login attempts to /Users/AuthenticateByName in the last minute."
