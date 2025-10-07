@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: jellyfin
+  name: &app jellyfin
   namespace: media
 spec:
   interval: 15m
@@ -81,7 +81,7 @@ spec:
                   failureThreshold: 30
     service:
       main:
-        controller: jellyfin
+        controller: *app
         ports:
           http:
             port: 8096
@@ -126,6 +126,13 @@ spec:
         tls:
           - hosts:
               - *public-domain
+    serviceMonitor:
+      app:
+        serviceName: *app
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
     persistence:
       config:
         accessMode: ReadWriteOnce
