@@ -21,6 +21,7 @@ spec:
       retries: 3
   upgrade:
     cleanupOnFail: true
+    timeout: 10m
     remediation:
       retries: 3
   uninstall:
@@ -46,12 +47,18 @@ spec:
               - secretRef:
                   name: home-assistant-secret
             probes:
-              liveness:
-                enabled: false
-              readiness:
-                enabled: false
-              startup:
-                enabled: false
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: &port 8123
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
             resources:
               requests:
                 cpu: 15m
@@ -82,15 +89,28 @@ spec:
               limits:
                 cpu: 350m
                 memory: 950Mi
+            probes:
+              liveness: &codeserver-probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: &codeserverPort 12321
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *codeserver-probes
     service:
       main:
         controller: main
         type: ClusterIP
         ports:
           http:
-            port: 8123
+            port: *port
           code-server:
-            port: 8080
+            port: *codeserverPort
     serviceMonitor:
       main:
         serviceName: home-assistant
