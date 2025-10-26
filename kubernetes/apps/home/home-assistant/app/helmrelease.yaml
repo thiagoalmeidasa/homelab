@@ -54,7 +54,7 @@ spec:
                   httpGet:
                     path: /
                     port: &port 8123
-                  initialDelaySeconds: 0
+                  initialDelaySeconds: 30
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
@@ -96,8 +96,8 @@ spec:
                 spec:
                   httpGet:
                     path: /
-                    port: &codeserverPort 12321
-                  initialDelaySeconds: 0
+                    port: &codeserverPort 8080
+                  initialDelaySeconds: 30
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
