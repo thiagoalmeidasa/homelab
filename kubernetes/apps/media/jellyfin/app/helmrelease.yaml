@@ -139,7 +139,7 @@ spec:
         enabled: true
         type: persistentVolumeClaim
         storageClass: longhorn
-        size: 20Gi
+        size: 40Gi
         retain: true
         globalMounts:
           - path: /config
