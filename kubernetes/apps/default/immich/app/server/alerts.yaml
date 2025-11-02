@@ -1,0 +1,86 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: immich-server-rules
+  namespace: default
+spec:
+  groups:
+    - name: immich-server.rules
+      rules:
+        - alert: ImmichServerComponentAbsent
+          annotations:
+            summary: Immich Server Component has disappeared from Prometheus target discovery.
+          expr: absent(up{job="immich-server"} == 1)
+          for: 15m
+          labels:
+            severity: critical
+        - alert: ImmichServerHighErrorRate
+          expr: |
+            (
+              sum(rate(http_server_response_count_total{job="immich-server", status=~"5.."}[5m]))
+              /
+              sum(rate(http_server_response_count_total{job="immich-server"}[5m]))
+            ) > 0.05
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Immich Server has high error rate"
+            description: "More than 5% of HTTP requests are returning 5xx errors in the last 5 minutes."
+        - alert: ImmichServerSlowResponseTime
+          expr: |
+            histogram_quantile(0.95,
+              sum(rate(http_server_duration_bucket{job="immich-server"}[5m])) by (le, path)
+            ) > 1000
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Immich Server has slow response times"
+            description: "95th percentile response time is above 1000ms for path {{ $labels.path }}."
+        # Monitors 401 errors across all endpoints (>2% of total traffic) - detects systemic auth issues
+        - alert: ImmichServerHighUnauthorizedRate
+          expr: |
+            (
+              sum(rate(http_server_response_count_total{job="immich-server", status="401"}[5m]))
+              /
+              sum(rate(http_server_response_count_total{job="immich-server"}[5m]))
+            ) > 0.02
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Immich Server has high unauthorized request rate"
+            description: "More than 2% of HTTP requests are returning 401 (Unauthorized) errors in the last 5 minutes."
+        # Monitors 401 errors on /api/auth/login only (>0.1 req/s) - detects failed login attempts
+        - alert: ImmichServerAuthenticationFailures
+          expr: |
+            rate(http_server_response_count_total{job="immich-server", status="401", path="/api/auth/login"}[5m]) > 0.1
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Immich Server has authentication failures"
+            description: "Multiple failed login attempts detected on /api/auth/login endpoint (rate: {{ $value | humanize }} req/s)."
+        - alert: ImmichServerDatabaseSlowQueries
+          expr: |
+            histogram_quantile(0.95,
+              sum(rate(immich_asset_repository_get_by_id_duration_bucket{job="immich-server"}[5m])) by (le)
+            ) > 100
+          for: 10m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Immich Server has slow database queries"
+            description: "95th percentile of asset repository queries is above 100ms (current: {{ $value | humanize }}ms)."
+        - alert: ImmichServerHighClientErrors
+          expr: |
+            rate(http_client_request_error_count_total{job="immich-server"}[5m]) > 0.5
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Immich Server has high client error rate"
+            description: "High rate of client request errors detected (rate: {{ $value | humanize }} errors/s)."
