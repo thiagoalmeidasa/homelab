@@ -5,8 +5,6 @@ resources:
   - ./helmrelease.yaml
   - ./pdb.yaml
   - ./alerts.yaml
-  - ./jellyfin.sops.yaml
-
 
 configMapGenerator:
   - name: grafana-dashboards-jellyfin
