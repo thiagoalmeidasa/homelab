@@ -24,3 +24,35 @@ spec:
           annotations:
             summary: "Jellyfin has a high number of failed login attempts"
             description: "More than 3 failed login attempts to /Users/AuthenticateByName in the last minute."
+        - alert: JellyfinHighRequestLatency
+          expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job="jellyfin"}[5m])) by (le)) > 2
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Jellyfin has high request latency"
+            description: "95th percentile of HTTP request duration is above 2 seconds for the last 5 minutes."
+        - alert: JellyfinHighErrorRate
+          expr: sum(rate(microsoft_aspnetcore_hosting_http_server_request_duration_count{job="jellyfin", http_response_status_code=~"5.."}[5m])) / sum(rate(microsoft_aspnetcore_hosting_http_server_request_duration_count{job="jellyfin"}[5m])) > 0.05
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: "Jellyfin has high error rate"
+            description: "More than 5% of requests are returning 5xx errors for the last 5 minutes."
+        - alert: JellyfinSlowVideoStreaming
+          expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{job="jellyfin", exported_endpoint=~".*Videos/.*"}[5m])) by (le)) > 5
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Jellyfin video streaming is slow"
+            description: "95th percentile of video streaming request duration is above 5 seconds for the last 5 minutes."
+        - alert: JellyfinFailedPlaybackAttempts
+          expr: increase(microsoft_aspnetcore_hosting_http_server_request_duration_count{job="jellyfin", http_route=~".*Videos/.*", http_response_status_code=~"4..|5.."}[5m]) > 10
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "Jellyfin has failed playback attempts"
+            description: "More than 10 failed video playback requests (4xx or 5xx) in the last 5 minutes."
