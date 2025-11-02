@@ -5,3 +5,14 @@ resources:
   - ./helmrelease.yaml
   - ./pdb.yaml
   - ./alerts.yaml
+
+configMapGenerator:
+  - name: grafana-dashboards-immich
+    namespace: default
+    files:
+      - ./grafana-dashboards/main.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: Immich
