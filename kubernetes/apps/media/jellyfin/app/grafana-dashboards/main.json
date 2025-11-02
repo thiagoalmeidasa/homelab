@@ -142,7 +142,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "jellyfin_up{service=~\"$service\"}",
+          "expr": "max(jellyfin_up{service=~\"$service\"}) by (service)",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -213,7 +213,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "jellyfin_media_count{type=\"Movie\", service=~\"$service\"}",
+          "expr": "max(jellyfin_media_count{type=\"Movie\", service=~\"$service\"}) by (service)",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -283,7 +283,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "jellyfin_media_count{type=\"BoxSet\", service=~\"$service\"}",
+          "expr": "max(jellyfin_media_count{type=\"BoxSet\", service=~\"$service\"}) by (service)",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -353,7 +353,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "jellyfin_media_count{type=\"Series\", service=~\"$service\"}",
+          "expr": "max(jellyfin_media_count{type=\"Series\", service=~\"$service\"}) by (service)",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -423,7 +423,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "jellyfin_media_count{type=\"Episode\", service=~\"$service\"}",
+          "expr": "max(jellyfin_media_count{type=\"Episode\", service=~\"$service\"}) by (service)",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -503,7 +503,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum by (user_device, item_index_clean, type) (\n  label_replace(\n    label_join(\n      label_join(\n        label_join(\n          jellyfin_now_playing_state{service=~\"$service\"},\n          \"item_index\",\n          \" \",\n          \"series_season\",\n          \"series_episode\"\n        ),\n        \"full_name\",\n        \" - \",\n        \"series_title\",\n        \"item_index\",\n        \"title\"\n      ),\n      \"user_device\",\n      \" - \",\n      \"username\",\n      \"device\"\n    ),\n    \"item_index_clean\",\n    \"$1\",\n    \"full_name\",\n    \"^[- ]*(.*?)[- ]*$\"\n  )\n)\n",
+          "expr": "max by (user_device, item_index_clean, type, service) (\n  label_replace(\n    label_join(\n      label_join(\n        label_join(\n          jellyfin_now_playing_state{service=~\"$service\"},\n          \"item_index\",\n          \" \",\n          \"series_season\",\n          \"series_episode\"\n        ),\n        \"full_name\",\n        \" - \",\n        \"series_title\",\n        \"item_index\",\n        \"title\"\n      ),\n      \"user_device\",\n      \" - \",\n      \"username\",\n      \"device\"\n    ),\n    \"item_index_clean\",\n    \"$1\",\n    \"full_name\",\n    \"^[- ]*(.*?)[- ]*$\"\n  )\n)\n",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -681,7 +681,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum by (user_device, item_index_clean, type) (\n  label_replace(\n    label_join(\n      label_join(\n        label_join(\n          jellyfin_now_playing_state{service=~\"$service\"},\n          \"item_index\",\n          \" \",\n          \"series_season\",\n          \"series_episode\"\n        ),\n        \"full_name\",\n        \" - \",\n        \"series_title\",\n        \"item_index\",\n        \"title\"\n      ),\n      \"user_device\",\n      \" - \",\n      \"username\",\n      \"device\"\n    ),\n    \"item_index_clean\",\n    \"$1\",\n    \"full_name\",\n    \"^[- ]*(.*?)[- ]*$\"\n  )\n)\n",
+          "expr": "max by (user_device, item_index_clean, type, service) (\n  label_replace(\n    label_join(\n      label_join(\n        label_join(\n          jellyfin_now_playing_state{service=~\"$service\"},\n          \"item_index\",\n          \" \",\n          \"series_season\",\n          \"series_episode\"\n        ),\n        \"full_name\",\n        \" - \",\n        \"series_title\",\n        \"item_index\",\n        \"title\"\n      ),\n      \"user_device\",\n      \" - \",\n      \"username\",\n      \"device\"\n    ),\n    \"item_index_clean\",\n    \"$1\",\n    \"full_name\",\n    \"^[- ]*(.*?)[- ]*$\"\n  )\n)\n",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -859,7 +859,7 @@
             "uid": "${DS_PROMETHEUS}"
           },
           "editorMode": "code",
-          "expr": "sum by (user_device, item_index_clean, type) (\n  label_replace(\n    label_join(\n      label_join(\n        label_join(\n          jellyfin_now_playing_state{service=~\"$service\"},\n          \"item_index\",\n          \" \",\n          \"series_season\",\n          \"series_episode\"\n        ),\n        \"full_name\",\n        \" - \",\n        \"series_title\",\n        \"item_index\",\n        \"title\"\n      ),\n      \"user_device\",\n      \" - \",\n      \"username\",\n      \"device\"\n    ),\n    \"item_index_clean\",\n    \"$1\",\n    \"full_name\",\n    \"^[- ]*(.*?)[- ]*$\"\n  )\n)\n",
+          "expr": "max by (user_device, item_index_clean, type, service) (\n  label_replace(\n    label_join(\n      label_join(\n        label_join(\n          jellyfin_now_playing_state{service=~\"$service\"},\n          \"item_index\",\n          \" \",\n          \"series_season\",\n          \"series_episode\"\n        ),\n        \"full_name\",\n        \" - \",\n        \"series_title\",\n        \"item_index\",\n        \"title\"\n      ),\n      \"user_device\",\n      \" - \",\n      \"username\",\n      \"device\"\n    ),\n    \"item_index_clean\",\n    \"$1\",\n    \"full_name\",\n    \"^[- ]*(.*?)[- ]*$\"\n  )\n)\n",
           "instant": false,
           "legendFormat": "__auto",
           "range": true,
@@ -1028,7 +1028,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "sum(jellyfin_user_active{service=~\"$service\"}) by (username, client, device, version)",
+          "expr": "sum(jellyfin_user_active{service=~\"$service\"}) by (username, client, device, version, service)",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -1145,7 +1145,7 @@
           },
           "editorMode": "code",
           "exemplar": false,
-          "expr": "jellyfin_activity_count{service=~\"$service\"}",
+          "expr": "max(jellyfin_activity_count{service=~\"$service\"}) by (username, service)",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
