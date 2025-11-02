@@ -1,0 +1,24 @@
+# yamllint disable
+apiVersion: v1
+kind: Secret
+metadata:
+    name: jellyfin-secret
+    namespace: media
+type: Opaque
+data:
+    JELLYFIN_EXPORTER_API_KEY: ENC[AES256_GCM,data:oTx7dD1MAVH4F+2Tc1y86EagcOu/TsLYSpmJO0LcfOE=,iv:i3WrEWNiI3xfVhkFbOdacKxcMd8PGZ9SBgraqxTlzX8=,tag:O7ZGIaAQMhdRg0E4TbhFYg==,type:str]
+sops:
+    age:
+        - recipient: age1w02zzfg0y4ast9mgnd9w0yuym0wqx6q967kmrmq355w4cnw0xytq2x369r
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBQZk41MEc5SHdBL2hvVjcz
+            UjlQTTFTQ1VuYVpCTTZ3QlZZNzRnaEMvSURrCm5QL21seEFmZFZ0SjBlb3hjRFlX
+            VVlHZ2JOcXhFOHNrcXc5cHZ3N242d3MKLS0tIExOYzBnZ2E5aklIQVduSElOTVcv
+            bEtvbzJOWFFPYm5Zd1pTdHl5TUFPdlkKyGxRSzLCUqDSB2ejHLE1+QGAE9K98n5T
+            FByxYaUyvk7/nzoYG31512loLWSsJbiVEk6tk053LbSHRPSox+kksg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-11-02T14:13:54Z"
+    mac: ENC[AES256_GCM,data:c6QhPPqupvo1UYuLapA5SFANOWWrbP+6heCndU5lFV7Sok+UKnZj622j6ytI/Z74KjvGFjCFyE0TTl0GTw0j/oi9TkBWzewxrT17+9ehxLlDU468963GkiMFjAoONC2jNef4rA4FtQ6eS/vLlU5MO/6Cpm7o62Wai9wFAdHU0xE=,iv:D2rjLQT5BxKI19/lQLXfiKHXojVyJdMqTg1AAGfEiUw=,tag:1HbwEao1pPy/WEfhMJq8qg==,type:str]
+    encrypted_regex: ^(data|stringData)$
+    version: 3.10.2

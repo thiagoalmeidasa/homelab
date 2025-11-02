@@ -5,3 +5,16 @@ resources:
   - ./helmrelease.yaml
   - ./pdb.yaml
   - ./alerts.yaml
+  - ./jellyfin.sops.yaml
+
+
+configMapGenerator:
+  - name: grafana-dashboards-jellyfin
+    namespace: media
+    files:
+      - ./grafana-dashboards/main.json
+    options:
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: Jellyfin

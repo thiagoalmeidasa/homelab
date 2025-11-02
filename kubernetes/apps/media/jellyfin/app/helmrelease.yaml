@@ -20,13 +20,19 @@ spec:
     remediation:
       retries: 5
   upgrade:
+    cleanupOnFail: true
     remediation:
+      strategy: rollback
       retries: 5
   values:
+    defaultPodOptions:
+      annotations:
+        setGateway: "false"
     controllers:
       jellyfin:
         annotations:
           setGateway: "false"
+          reloader.stakater.com/auto: "true"
         pod:
           securityContext:
             runAsUser: 1000
@@ -79,12 +85,52 @@ spec:
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 30
+          exporter:
+            image:
+              repository: rebelcore/jellyfin-exporter
+              tag: v1.3.8@sha256:38145ab1a41486e611696e47f42658993ee6497c5a3bc2196d2d8a94e32adfad
+            args:
+              - --jellyfin.address=http://jellyfin:8096
+              - --jellyfin.token=${JELLYFIN_EXPORTER_API_KEY}
+            resources:
+              requests:
+                cpu: 10m
+                memory: 50Mi
+              limits:
+                memory: 225Mi
+            probes:
+              liveness: &exporterProbe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: &exporterPort 9594
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+
+              readiness: *exporterProbe
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *exporterPort
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 30
     service:
       main:
         controller: *app
         ports:
           http:
-            port: 8096
+            port: *port
+          exporter:
+            port: *exporterPort
     ingress:
       main:
         enabled: true
@@ -131,6 +177,12 @@ spec:
         serviceName: *app
         endpoints:
           - port: http
+            scheme: http
+            path: /metrics
+      exporter:
+        serviceName: *app
+        endpoints:
+          - port: exporter
             scheme: http
             path: /metrics
     persistence:
