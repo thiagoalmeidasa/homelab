@@ -1,0 +1,59 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: jellyfin-recording-rules
+  namespace: media
+spec:
+  groups:
+    - name: jellyfin.playback.recording
+      interval: 1m
+      rules:
+        # Base playback duration - counts active playback seconds per scrape
+        # When jellyfin_now_playing_state=1, this records 60 seconds of playback
+        - record: jellyfin:playback_seconds:rate1m
+          expr: |
+            jellyfin_now_playing_state{type!=""} * 60
+
+        # Total playback duration by user over 5m windows
+        # This smooths out the data and makes it easier to query
+        - record: jellyfin:playback_duration_seconds:rate5m
+          expr: |
+            sum(sum_over_time(jellyfin_now_playing_state{type!=""}[5m]) * 60) by (username, service)
+
+        # Total playback duration by user and content type over 5m windows
+        - record: jellyfin:playback_duration_seconds:rate5m:by_type
+          expr: |
+            sum(sum_over_time(jellyfin_now_playing_state{type!=""}[5m]) * 60) by (username, type, service)
+
+        # Active playback sessions count (for concurrent streams monitoring)
+        - record: jellyfin:playback_active_sessions:count
+          expr: |
+            count(jellyfin_now_playing_state{type!=""} > 0) by (service)
+
+        # Total active users with any playback activity
+        - record: jellyfin:playback_active_users:count
+          expr: |
+            count(count by (username, service) (jellyfin_now_playing_state{type!=""} > 0)) by (service)
+
+    - name: jellyfin.playback.aggregations
+      interval: 5m
+      rules:
+        # 1-hour aggregation for "Usage by Hour" panel
+        # Sum of playback time per user in the last hour
+        - record: jellyfin:playback_duration_1h:by_user
+          expr: |
+            sum(sum_over_time(jellyfin_now_playing_state{type!=""}[1h]) * 60) by (username, service)
+
+        # 1-day aggregation for "Usage by Day" panel
+        # Sum of playback time per user in the last day
+        - record: jellyfin:playback_duration_1d:by_user
+          expr: |
+            sum(sum_over_time(jellyfin_now_playing_state{type!=""}[1d]) * 60) by (username, service)
+
+        # 1-week aggregation for "Usage by Week" panel
+        # Sum of playback time per user in the last week
+        - record: jellyfin:playback_duration_7d:by_user
+          expr: |
+            sum(sum_over_time(jellyfin_now_playing_state{type!=""}[7d]) * 60) by (username, service)
