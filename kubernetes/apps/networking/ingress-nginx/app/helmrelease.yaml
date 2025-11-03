@@ -50,6 +50,7 @@ spec:
         enable-real-ip: "true"
         use-forwarded-headers: "true"
         compute-full-forwarded-for: "true"
+        forwarded-for-header: "X-Forwarded-For"
         proxy-real-ip-cidr: "10.42.0.0/16,192.168.1.0/24,192.168.100.0/24"
         hsts-max-age: 31449600
         keep-alive-requests: 10000
