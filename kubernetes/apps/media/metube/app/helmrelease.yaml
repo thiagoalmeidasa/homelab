@@ -1,0 +1,112 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &name metube
+  namespace: media
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    fullnameOverride: *name
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      hostname: *name
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: "OnRootMismatch"
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+    controllers:
+      metube:
+        annotations:
+          setGateway: "false"
+        containers:
+          metube:
+            image:
+              repository: ghcr.io/alexta69/metube
+              tag: 2025.10.23@sha256:46be73330a37503772249bee27d03dd2c831ab3d135c932abbc448fcbe7e57a6
+            env:
+              TZ: "${TIMEZONE}"
+              DOWNLOAD_DIR: "/downloads"
+              STATE_DIR: "/config"
+              TEMP_DIR: "/tmp"
+              OUTPUT_TEMPLATE: "%(title)s_-_[%(id)s].%(ext)s"
+              YTDL_OPTIONS: |
+                {
+                  "format": "bestvideo[height<=1080][vcodec!*=av01]+bestaudio/best",
+                  "restrictfilenames": true,
+                  "merge_output_format": "mp4",
+                  "verbose": true,
+                  "clean_infojson":true,
+                  "writethumbnail":true,
+                  "postprocessors": [
+                        {"key":"SponsorBlock"},
+                        {"key":"EmbedThumbnail"}
+                  ]
+                }
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: {drop: ["ALL"]}
+            resources:
+              requests:
+                cpu: 10m
+                memory: 100Mi
+              limits:
+                memory: 600Mi
+    service:
+      metube:
+        controller: *name
+        ports:
+          http:
+            port: 8081
+    ingress:
+      metube:
+        className: nginx
+        annotations:
+          nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
+          hajimari.io/icon: simple-icons:youtube
+        enabled: true
+        hosts:
+          - host: &host "metube.${SECRET_DOMAIN}"
+            paths:
+              - path: /
+                service:
+                  identifier: metube
+                  port: http
+        tls:
+          - hosts:
+              - *host
+    persistence:
+      config:
+        enabled: true
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        retain: true
+        size: 1Gi
+        storageClass: longhorn
+      tmp:
+        enabled: true
+        type: emptyDir
+      media:
+        enabled: true
+        type: nfs
+        server: "${NFS_SERVER}"
+        path: "${NFS_KUBERNETES}/ytdlp"
+        globalMounts:
+          - path: /downloads
