@@ -21,7 +21,7 @@ spec:
       retries: 3
   upgrade:
     cleanupOnFail: true
-    timeout: 10m
+    timeout: 15m
     remediation:
       retries: 3
   uninstall:
@@ -47,18 +47,36 @@ spec:
               - secretRef:
                   name: home-assistant-secret
             probes:
-              liveness: &probes
+              liveness:
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
                     path: /
                     port: &port 8123
-                  initialDelaySeconds: 30
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
-              readiness: *probes
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 30
             resources:
               requests:
                 cpu: 15m
@@ -97,11 +115,20 @@ spec:
                   httpGet:
                     path: /
                     port: &codeserverPort 8080
-                  initialDelaySeconds: 30
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *codeserver-probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *codeserverPort
+                  periodSeconds: 5
+                  timeoutSeconds: 1
+                  failureThreshold: 30
     service:
       main:
         controller: main
