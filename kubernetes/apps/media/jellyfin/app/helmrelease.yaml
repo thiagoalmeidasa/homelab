@@ -88,7 +88,7 @@ spec:
           exporter:
             image:
               repository: rebelcore/jellyfin-exporter
-              tag: v1.3.8@sha256:38145ab1a41486e611696e47f42658993ee6497c5a3bc2196d2d8a94e32adfad
+              tag: v1.3.9@sha256:b90a980524e93a153294459f718bea6f3bf33b29b23b78f577c6c61286c9e26f
             args:
               - --jellyfin.address=http://jellyfin:8096
               - --jellyfin.token=${JELLYFIN_EXPORTER_API_KEY}
