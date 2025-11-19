@@ -66,6 +66,8 @@ spec:
         proxy-buffer-size: "32k"
         proxy-busy-buffers-size: "32k"
         ssl-protocols: TLSv1.3 TLSv1.2
+        custom-http-errors: >-
+          401,403,404,500,501,502,503
       metrics:
         enabled: true
         serviceMonitor:
