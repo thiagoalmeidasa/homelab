@@ -32,7 +32,7 @@ spec:
           metrics:
             image:
               repository: docker.io/oliver006/redis_exporter
-              tag: v1.80.2
+              tag: v1.81.0
             env:
               REDIS_ADDR: localhost:6379
             resources:
