@@ -22,7 +22,7 @@ spec:
           affine-migration:
             image:
               repository: ghcr.io/toeverything/affine
-              tag: 0.26.1@sha256:81aee30114a5766da35751046915bc02b603e6c9c4643182a2f591a098e05f67
+              tag: 0.26.2@sha256:0690dd1be1feafe8a9a31f28391d2f531f2d2cac5d9f31b43c44ed7266d3be19
             command: ['sh', '-c', 'node ./scripts/self-host-predeploy.js']
             env:
               AFFINE_INDEXER_ENABLED: false
@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: ghcr.io/toeverything/affine
-              tag: 0.26.1@sha256:81aee30114a5766da35751046915bc02b603e6c9c4643182a2f591a098e05f67
+              tag: 0.26.2@sha256:0690dd1be1feafe8a9a31f28391d2f531f2d2cac5d9f31b43c44ed7266d3be19
             env:
               TZ: "${TIMEZONE:=Etc/UTC}"
               NODE_ENV: production
