@@ -42,7 +42,7 @@ spec:
           main:
             image:
               repository: ghcr.io/home-operations/home-assistant
-              tag: 2026.1.3@sha256:9f094e0531e5784d1df9bcb817d95830d1da9d4a03c914f8fd1b3cc6168c4e65
+              tag: 2026.2.2@sha256:57d87be8a6065c994d75dd6c3e842ccfa669ea537518dbbe2e2fc692d3d00d97
             envFrom:
               - secretRef:
                   name: home-assistant-secret
