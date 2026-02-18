@@ -33,7 +33,7 @@ spec:
       enabled: true
     image:
       repository: grafana/promtail
-      tag: 3.6.3@sha256:130b6dd63277d99ce87560c0266c0c30d07bc15ba0a8a590d42215465d4f5363
+      tag: 3.6.6@sha256:73440757b88c8cd4452f199b2ec109590d27cdbbd594264e317466dcd7de7932
     serviceMonitor:
       enabled: true
     resources:
