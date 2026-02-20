@@ -3,19 +3,14 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app jellyseerr
+  name: &app seer
   namespace: media
 spec:
   interval: 30m
-  chart:
-    spec:
-      chart: app-template
-      version: 3.7.3
-      interval: 30m
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
   install:
     remediation:
       retries: 3
@@ -26,18 +21,21 @@ spec:
       retries: 3
   values:
     controllers:
-      jellyseerr:
+      seer:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
-              repository: ghcr.io/fallenbagel/jellyseerr
-              tag: 2.7.3@sha256:9cc9e9ee6cd5cf5a23feb45c37742ba34cfd6314d81d259cddb373a97ac92cdd
+              repository: ghcr.io/seerr-team/seerr
+              tag: v3.0.1
             env:
               TZ: ${TIMEZONE}
               LOG_LEVEL: "info"
               PORT: &port 80
+            envFrom:
+              - secretRef:
+                  name: seer-secret
             probes:
               liveness: &probes
                 enabled: true
@@ -70,7 +68,7 @@ spec:
         seccompProfile: {type: RuntimeDefault}
     service:
       app:
-        controller: jellyseerr
+        controller: seer
         ports:
           http:
             port: *port
@@ -79,10 +77,11 @@ spec:
         enabled: true
         className: nginx
         annotations:
+          nginx.ingress.kubernetes.io/custom-http-errors: "418"
           nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
           hajimari.io/enable: "true"
-          hajimari.io/appName: "Jellyseerr"
-          hajimari.io/info: "Jellyfin media request"
+          hajimari.io/appName: "Seer"
+          hajimari.io/info: "Media requests"
         hosts:
           - host: &host requests.${SECRET_DOMAIN}
             paths:
@@ -97,6 +96,7 @@ spec:
         enabled: true
         className: nginx
         annotations:
+          nginx.ingress.kubernetes.io/custom-http-errors: "418"
           external-dns.alpha.kubernetes.io/target: "ingress.${PUBLIC_DOMAIN}"
           hajimari.io/enable: "false"
         hosts:
