@@ -77,6 +77,11 @@ spec:
             any: true
       extraArgs:
         default-ssl-certificate: "networking/${SECRET_DOMAIN/./-}-production-tls"
+      tolerations:
+        - key: "node-role/small"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
       resources:
         requests:
           cpu: 20m

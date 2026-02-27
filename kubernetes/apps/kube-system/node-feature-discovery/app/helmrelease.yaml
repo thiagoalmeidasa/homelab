@@ -28,6 +28,11 @@ spec:
         limits:
           memory: 64M
     worker:
+      tolerations:
+        - key: "node-role/small"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
       resources:
         requests:
           cpu: 15m
