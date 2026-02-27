@@ -42,3 +42,9 @@ spec:
       tls:
         - hosts:
             - "longhorn.${SECRET_DOMAIN}"
+    longhornManager:
+      tolerations:
+        - key: "node-role/small"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
