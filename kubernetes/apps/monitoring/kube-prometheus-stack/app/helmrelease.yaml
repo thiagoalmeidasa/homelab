@@ -349,6 +349,11 @@ spec:
                       source_name: [spec, sourceRef, name]
     prometheus-node-exporter:
       fullnameOverride: node-exporter
+      tolerations:
+        - key: "node-role/small"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
       prometheus:
         monitor:
           enabled: true
