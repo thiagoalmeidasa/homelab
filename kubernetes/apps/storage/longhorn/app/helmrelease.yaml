@@ -20,6 +20,12 @@ spec:
   upgrade:
     crds: CreateReplace
   values:
+    global:
+      tolerations:
+        - key: "node-role/small"
+          operator: "Equal"
+          value: "true"
+          effect: "NoSchedule"
     persistence:
       defaultClass: false
       defaultClassReplicaCount: "2"
@@ -28,6 +34,7 @@ spec:
       defaultReplicaCount: "2"
       v2DataEngineGuaranteedInstanceManagerCPU: "750"
       guaranteedInstanceManagerCPU: "5"
+      taintToleration: "node-role/small=true:NoSchedule"
     ingress:
       enabled: true
       annotations:
@@ -42,9 +49,3 @@ spec:
       tls:
         - hosts:
             - "longhorn.${SECRET_DOMAIN}"
-    longhornManager:
-      tolerations:
-        - key: "node-role/small"
-          operator: "Equal"
-          value: "true"
-          effect: "NoSchedule"
