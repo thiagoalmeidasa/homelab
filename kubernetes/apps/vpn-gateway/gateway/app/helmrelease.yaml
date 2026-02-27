@@ -50,6 +50,8 @@ spec:
               repository: ghcr.io/angelnu/pod-gateway
               tag: v1.13.0@sha256:a5b032e15f7570493977b330a5a86dcffebb807d35685ad803e47afb62d105f2
           gluetun:
+            enabled: true
+            dependsOn: main
             image:
               repository: docker.io/qmcgaw/gluetun
               tag: v3.40.3@sha256:ef4a44819a60469682c7b5e69183e6401171891feaa60186652d292c59e41b30
@@ -74,6 +76,15 @@ spec:
           annotations:
             configmap.reloader.stakater.com/reload: vpn-gateway-pod-gateway
             secret.reloader.stakater.com/reload: vpn-gateway-pod-gateway
+      webhook:
+        containers:
+          main:
+            image:
+              repository: ghcr.io/angelnu/gateway-admision-controller
+              tag: v3.12.0@sha256:6f6ab596afd5fef0ca4648eadfb21cd37ba86fa5afa8b85edcc072976a61fbed
+    networkpolicies:
+      main:
+        enabled: false
     routed_namespaces:
       - media
     settings:
@@ -87,9 +98,6 @@ spec:
       VPN_LOCAL_CIDRS: "10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
       VXLAN_PORT: 4789
     webhook:
-      image:
-        repository: ghcr.io/angelnu/gateway-admision-controller
-        tag: v3.12.0@sha256:6f6ab596afd5fef0ca4648eadfb21cd37ba86fa5afa8b85edcc072976a61fbed
       gatewayDefault: true
       gatewayLabel: setGateway
       gatewayAnnotation: setGateway
