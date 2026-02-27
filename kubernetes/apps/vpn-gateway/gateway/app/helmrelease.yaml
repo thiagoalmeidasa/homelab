@@ -42,38 +42,38 @@ spec:
                               operator: In
                               values: ["amd64"]
   values:
-    image:
-      repository: ghcr.io/angelnu/pod-gateway
-      tag: v1.13.0@sha256:a5b032e15f7570493977b330a5a86dcffebb807d35685ad803e47afb62d105f2
-    addons:
-      netshoot:
-        enabled: false
-      vpn:
-        enabled: true
-        type: gluetun
-        gluetun:
-          image:
-            repository: docker.io/qmcgaw/gluetun
-            tag: v3.40.3@sha256:ef4a44819a60469682c7b5e69183e6401171891feaa60186652d292c59e41b30
-        envFrom:
-          - secretRef:
-              name: vpn-gateway-pod-gateway
-        securityContext:
-          capabilities:
-            add:
-              - NET_ADMIN
-        resources:
-          requests:
-            cpu: 100m
-            memory: 64Mi
-          limits:
-            cpu: 175m
-            memory: 192Mi
-        networkPolicy:
-          enabled: false
-    podAnnotations:
-      configmap.reloader.stakater.com/reload: vpn-gateway-pod-gateway
-      secret.reloader.stakater.com/reload: vpn-gateway-pod-gateway
+    controllers:
+      main:
+        containers:
+          main:
+            image:
+              repository: ghcr.io/angelnu/pod-gateway
+              tag: v1.13.0@sha256:a5b032e15f7570493977b330a5a86dcffebb807d35685ad803e47afb62d105f2
+          gluetun:
+            image:
+              repository: docker.io/qmcgaw/gluetun
+              tag: v3.40.3@sha256:ef4a44819a60469682c7b5e69183e6401171891feaa60186652d292c59e41b30
+            env:
+              VPN_TYPE: wireguard
+              VPN_INTERFACE: wg0
+            envFrom:
+              - secretRef:
+                  name: vpn-gateway-pod-gateway
+            securityContext:
+              capabilities:
+                add:
+                  - NET_ADMIN
+            resources:
+              requests:
+                cpu: 100m
+                memory: 64Mi
+              limits:
+                cpu: 175m
+                memory: 192Mi
+        pod:
+          annotations:
+            configmap.reloader.stakater.com/reload: vpn-gateway-pod-gateway
+            secret.reloader.stakater.com/reload: vpn-gateway-pod-gateway
     routed_namespaces:
       - media
     settings:
