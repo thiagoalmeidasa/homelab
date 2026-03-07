@@ -42,14 +42,23 @@ spec:
               - secretRef:
                   name: home-assistant-secret
             probes:
-              liveness: &probes
+              startup:
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
                     path: /
                     port: &port 8123
-                  initialDelaySeconds: 30
+                  initialDelaySeconds: 10
+                  periodSeconds: 5
+                  failureThreshold: 60
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
