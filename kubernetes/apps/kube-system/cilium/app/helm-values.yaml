@@ -2,6 +2,8 @@
 autoDirectNodeRoutes: true
 bpf:
   masquerade: false # Required for Talos `.machine.features.hostDNS.forwardKubeDNSToHost`
+  ctTcpMax: 131072 # default 524288, reduce conntrack table size
+  ctAnyMax: 65536 # default 262144, reduce conntrack table size
 cgroup:
   automount:
     enabled: false
@@ -29,7 +31,7 @@ kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
 l2announcements:
   enabled: true
 loadBalancer:
-  algorithm: maglev
+  algorithm: random
   mode: dsr
 localRedirectPolicy: true
 operator:
@@ -58,6 +60,6 @@ securityContext:
 resources: # for agent
   requests:
     cpu: 32m
-    memory: 128Mi
-  limits:
     memory: 256Mi
+  limits:
+    memory: 512Mi
