@@ -4,7 +4,6 @@ kind: Kustomization
 namespace: home
 resources:
   - ./helmrelease.yaml
-  - ./code-server-hass.sops.yaml
   - ./hass.sops.yaml
   - ./prometheus-rules.yaml
 configMapGenerator:
