@@ -6,6 +6,7 @@ resources:
   - ./helmrelease.yaml
   - ./hass.sops.yaml
   - ./prometheus-rules.yaml
+  - ./pvc.yaml
 configMapGenerator:
   - name: loki-rules
     namespace: monitoring
