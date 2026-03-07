@@ -12,17 +12,6 @@ spec:
     namespace: flux-system
   dependsOn:
     - name: loki
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              version: v1
-              kind: Service
-              name: alloy-syslog
-            patch: |
-              - op: add
-                path: /metadata/annotations/lbipam.cilium.io~1ips
-                value: "${ALLOY_SYSLOG}"
   values:
     alloy:
       mounts:
@@ -254,23 +243,25 @@ spec:
     serviceMonitor:
       enabled: true
 
-  extraObjects:
-    - apiVersion: v1
-      kind: Service
-      metadata:
-        name: alloy-syslog
-        namespace: monitoring
-      spec:
-        type: LoadBalancer
-        externalTrafficPolicy: Local
-        selector:
-          app.kubernetes.io/name: alloy
-        ports:
-          - name: syslog-tcp
-            port: 1514
-            targetPort: 1514
-            protocol: TCP
-          - name: syslog-udp
-            port: 1514
-            targetPort: 1514
-            protocol: UDP
+    extraObjects:
+      - apiVersion: v1
+        kind: Service
+        metadata:
+          name: alloy-syslog
+          namespace: monitoring
+          annotations:
+            lbipam.cilium.io/ips: "${ALLOY_SYSLOG}"
+        spec:
+          type: LoadBalancer
+          externalTrafficPolicy: Local
+          selector:
+            app.kubernetes.io/name: alloy
+          ports:
+            - name: syslog-tcp
+              port: 1514
+              targetPort: 1514
+              protocol: TCP
+            - name: syslog-udp
+              port: 1514
+              targetPort: 1514
+              protocol: UDP
