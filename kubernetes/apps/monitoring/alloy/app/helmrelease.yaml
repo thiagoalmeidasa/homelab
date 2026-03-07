@@ -166,15 +166,31 @@ spec:
           }
 
           loki.relabel "syslog" {
-            forward_to = [loki.write.default.receiver]
+            forward_to = [loki.process.syslog.receiver]
 
             rule {
               source_labels = ["__syslog_message_hostname"]
               target_label  = "host"
             }
 
+            // Fallback: use connection hostname when message hostname is empty
             rule {
-              source_labels = ["__syslog_message_hostname"]
+              source_labels = ["host", "__syslog_connection_hostname"]
+              separator     = ";"
+              regex         = "^;(.+)$"
+              target_label  = "host"
+            }
+
+            // Fallback: use connection IP when both above are empty
+            rule {
+              source_labels = ["host", "__syslog_connection_ip_address"]
+              separator     = ";"
+              regex         = "^;(.+)$"
+              target_label  = "host"
+            }
+
+            rule {
+              source_labels = ["host"]
               target_label  = "hostname"
             }
 
@@ -197,6 +213,23 @@ spec:
               source_labels = ["__syslog_connection_hostname"]
               target_label  = "connection_hostname"
             }
+          }
+
+          loki.process "syslog" {
+            forward_to = [loki.write.default.receiver]
+
+            stage.multiline {
+              firstline     = "^\\S"
+              max_wait_time = "3s"
+              max_lines     = 128
+            }
+          }
+
+          // Kubernetes events
+          loki.source.kubernetes_events "cluster" {
+            job_name   = "kubernetes-events"
+            log_format = "logfmt"
+            forward_to = [loki.write.default.receiver]
           }
 
           // Write to Loki
