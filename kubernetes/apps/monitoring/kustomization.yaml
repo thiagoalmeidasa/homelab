@@ -6,4 +6,4 @@ resources:
   - ./headlamp/ks.yaml
   - ./kube-prometheus-stack/ks.yaml
   - ./loki/ks.yaml
-  - ./promtail/ks.yaml
+  - ./alloy/ks.yaml
