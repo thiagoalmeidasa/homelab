@@ -100,24 +100,9 @@ spec:
               separator     = "/"
               target_label  = "job"
             }
-
-            rule {
-              source_labels = ["__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
-              separator     = "/"
-              target_label  = "__path__"
-              replacement   = "/var/log/pods/*$1/*.log"
-            }
-
-            rule {
-              source_labels = ["__meta_kubernetes_pod_container_id"]
-              regex         = "^(\\w+):\\/\\/.+$"
-              target_label  = "__path__"
-              replacement   = "/var/log/pods/*$1/*.log"
-              action        = "replace"
-            }
           }
 
-          loki.source.file "pods" {
+          loki.source.kubernetes "pods" {
             targets    = discovery.relabel.pods.output
             forward_to = [loki.write.default.receiver]
           }
