@@ -32,7 +32,7 @@ spec:
           memory: 128Mi
         limits:
           cpu: 200m
-          memory: 128Mi
+          memory: 256Mi
       extraPorts:
         - name: syslog-tcp
           port: 1514
@@ -107,18 +107,10 @@ spec:
             forward_to = [loki.write.default.receiver]
           }
 
-          // Systemd journal
-          loki.source.journal "journal" {
-            path       = "/var/log/journal"
-            max_age    = "12h"
-            forward_to = [loki.relabel.journal.receiver]
-            labels     = {
-              job = "systemd-journal",
-            }
-          }
-
+          // Journal relabel rules - applied inside the journal source
+          // before __journal_* internal labels are stripped.
           loki.relabel "journal" {
-            forward_to = [loki.write.default.receiver]
+            forward_to = []
 
             rule {
               source_labels = ["__journal__systemd_unit"]
@@ -136,44 +128,27 @@ spec:
             }
           }
 
-          // Syslog - TCP listener
-          loki.source.syslog "syslog_tcp" {
-            listener {
-              address               = "0.0.0.0:1514"
-              protocol              = "tcp"
-              syslog_format         = "rfc3164"
-              idle_timeout          = "60s"
-              label_structured_data = true
-              labels                = {
-                job = "syslog",
-              }
+          // Systemd journal
+          loki.source.journal "journal" {
+            path          = "/var/log/journal"
+            max_age       = "12h"
+            relabel_rules = loki.relabel.journal.rules
+            forward_to    = [loki.write.default.receiver]
+            labels        = {
+              job = "systemd-journal",
             }
-            forward_to = [loki.relabel.syslog.receiver]
           }
 
-          // Syslog - UDP listener
-          loki.source.syslog "syslog_udp" {
-            listener {
-              address               = "0.0.0.0:1514"
-              protocol              = "udp"
-              syslog_format         = "rfc3164"
-              label_structured_data = true
-              labels                = {
-                job = "syslog",
-              }
-            }
-            forward_to = [loki.relabel.syslog.receiver]
-          }
-
+          // Syslog relabel rules - applied inside the syslog source
+          // before __syslog_* internal labels are stripped (grafana/alloy#2266).
           loki.relabel "syslog" {
-            forward_to = [loki.process.syslog.receiver]
+            forward_to = []
 
             rule {
               source_labels = ["__syslog_message_hostname"]
               target_label  = "host"
             }
 
-            // Fallback: use connection hostname when message hostname is empty
             rule {
               source_labels = ["host", "__syslog_connection_hostname"]
               separator     = ";"
@@ -181,7 +156,6 @@ spec:
               target_label  = "host"
             }
 
-            // Fallback: use connection IP when both above are empty
             rule {
               source_labels = ["host", "__syslog_connection_ip_address"]
               separator     = ";"
@@ -213,6 +187,37 @@ spec:
               source_labels = ["__syslog_connection_hostname"]
               target_label  = "connection_hostname"
             }
+          }
+
+          // Syslog - TCP listener
+          loki.source.syslog "syslog_tcp" {
+            listener {
+              address               = "0.0.0.0:1514"
+              protocol              = "tcp"
+              syslog_format         = "rfc3164"
+              idle_timeout          = "60s"
+              label_structured_data = true
+              labels                = {
+                job = "syslog",
+              }
+            }
+            relabel_rules = loki.relabel.syslog.rules
+            forward_to    = [loki.process.syslog.receiver]
+          }
+
+          // Syslog - UDP listener
+          loki.source.syslog "syslog_udp" {
+            listener {
+              address               = "0.0.0.0:1514"
+              protocol              = "udp"
+              syslog_format         = "rfc3164"
+              label_structured_data = true
+              labels                = {
+                job = "syslog",
+              }
+            }
+            relabel_rules = loki.relabel.syslog.rules
+            forward_to    = [loki.process.syslog.receiver]
           }
 
           loki.process "syslog" {
