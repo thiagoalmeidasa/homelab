@@ -92,6 +92,7 @@
       ],
       matchPackageNames: [
         'ghcr.io/alexta69/metube',
+        'ghcr.io/home-operations/prowlarr',
       ],
     },
   ],
