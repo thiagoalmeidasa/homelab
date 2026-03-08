@@ -31,8 +31,8 @@ spec:
           cpu: 100m
           memory: 128Mi
         limits:
-          cpu: 200m
           memory: 256Mi
+      timeoutSeconds: 1
       extraPorts:
         - name: syslog-tcp
           port: 1514
