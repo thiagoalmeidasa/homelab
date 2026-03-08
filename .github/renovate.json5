@@ -91,7 +91,7 @@
         'patch',
       ],
       matchPackageNames: [
-        'linuxserver/jackett',
+        'ghcr.io/alexta69/metube',
       ],
     },
   ],
