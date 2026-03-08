@@ -57,3 +57,6 @@ k3s_server:
     - "system-reserved=cpu=200m,memory=256Mi"
     - "image-gc-low-threshold=50"
     - "image-gc-high-threshold=55"
+    - "eviction-hard=memory.available<5%,nodefs.available<10%"
+    - "eviction-soft=memory.available<10%,nodefs.available<15%"
+    - "eviction-soft-grace-period=memory.available=2m,nodefs.available=2m"
