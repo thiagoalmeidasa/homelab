@@ -1,0 +1,34 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-apps-cnpg
+  namespace: flux-system
+spec:
+  path: ./kubernetes/apps/cnpg-system/cnpg/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: true
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-apps-cnpg-barman-cloud
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: cluster-apps-cnpg
+  path: ./kubernetes/apps/cnpg-system/cnpg/plugin-barman-cloud
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: true
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
