@@ -62,7 +62,7 @@ spec:
           main:
             image:
               repository: ghcr.io/angelnu/gateway-admision-controller
-              tag: dev@sha256:61c18ad1b8fbd9594d6e4678c75d122858366892bbfdc45e7d92e055ec50fb12
+              tag: dev@sha256:c894f191ab95a31cff8bfa4405c92b2a985403ee0c05e24e08acd96a5ed82043
     networkpolicies:
       main:
         enabled: false
