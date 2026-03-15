@@ -3,15 +3,23 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: cnpg-default
+  name: cnpg-immich
   namespace: databases
 spec:
   instances: 1
-  imageName: ghcr.io/cloudnative-pg/postgresql:17.5
+  imageName: ghcr.io/tensorchord/cloudnative-vectorchord:17.5-0.4.3
+  postgresql:
+    shared_preload_libraries:
+      - vchord.so
   bootstrap:
     initdb:
-      database: hass
-      owner: hass
+      database: immich
+      owner: immich
+      postInitSQL:
+        - CREATE EXTENSION IF NOT EXISTS vector;
+        - CREATE EXTENSION IF NOT EXISTS vchord CASCADE;
+        - CREATE EXTENSION IF NOT EXISTS cube;
+        - CREATE EXTENSION IF NOT EXISTS earthdistance CASCADE;
   resources:
     requests:
       cpu: 100m
@@ -19,7 +27,7 @@ spec:
     limits:
       memory: 768Mi
   storage:
-    size: 10Gi
+    size: 20Gi
     storageClass: longhorn
   backup:
     volumeSnapshot:
@@ -28,4 +36,4 @@ spec:
     - name: barman-cloud.cloudnative-pg.io
       isWALArchiver: true
       parameters:
-        barmanObjectName: cnpg-default-object-store
+        barmanObjectName: cnpg-immich-object-store

@@ -3,21 +3,21 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: cnpg-default
+  name: cnpg-media
   namespace: databases
 spec:
   instances: 1
   imageName: ghcr.io/cloudnative-pg/postgresql:17.5
   bootstrap:
     initdb:
-      database: hass
-      owner: hass
+      database: seer
+      owner: postgres
   resources:
     requests:
-      cpu: 100m
-      memory: 256Mi
+      cpu: 50m
+      memory: 128Mi
     limits:
-      memory: 768Mi
+      memory: 512Mi
   storage:
     size: 10Gi
     storageClass: longhorn
@@ -28,4 +28,4 @@ spec:
     - name: barman-cloud.cloudnative-pg.io
       isWALArchiver: true
       parameters:
-        barmanObjectName: cnpg-default-object-store
+        barmanObjectName: cnpg-media-object-store

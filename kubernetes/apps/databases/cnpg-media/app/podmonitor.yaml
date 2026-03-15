@@ -1,0 +1,12 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: cnpg-media
+  namespace: databases
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/cluster: cnpg-media
+  podMetricsEndpoints:
+    - port: metrics
