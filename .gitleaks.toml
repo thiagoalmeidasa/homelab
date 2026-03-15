@@ -8,3 +8,6 @@ regexes = [
   '''(?i)!!enveloped:''', # Encrypted secrets
   '''ENC\[AES256_GCM,data:''', # sops secrets
 ]
+paths = [
+  '''\.sops\.yaml$''', # sopsdiffer decrypts in diffs; forbid-secrets hook guards unencrypted files
+]

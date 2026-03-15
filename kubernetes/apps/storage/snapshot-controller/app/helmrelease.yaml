@@ -1,0 +1,19 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: snapshot-controller
+  namespace: storage
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: snapshot-controller
+    namespace: flux-system
+  values:
+    controller:
+      replicaCount: 2
+      serviceMonitor:
+        create: true
+    webhook:
+      enabled: false

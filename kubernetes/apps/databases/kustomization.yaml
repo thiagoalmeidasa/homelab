@@ -3,6 +3,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ./namespace.yaml
+  - ./cnpg-default/ks.yaml
+  - ./cnpg-immich/ks.yaml
+  - ./cnpg-media/ks.yaml
   - ./mariadb/ks.yaml
   - ./postgres/ks.yaml
   - ./redis/ks.yaml
