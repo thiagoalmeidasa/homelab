@@ -7,5 +7,4 @@ resources:
   - ./cnpg-immich/ks.yaml
   - ./cnpg-media/ks.yaml
   - ./mariadb/ks.yaml
-  - ./postgres/ks.yaml
   - ./redis/ks.yaml
