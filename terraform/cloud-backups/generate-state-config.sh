@@ -28,8 +28,8 @@ set -o pipefail # Enable pipefail to exit script if last command fails
 
 # Define the function to run
 get_bitwarden_notes() {
-  # Fetch notes from Bitwarden using bw get notes minio-tf-creds
-  notes=$(bw get notes minio-tf-creds)
+  # Fetch notes from Bitwarden using rbw
+  notes=$(rbw get --field notes minio-tf-creds)
 
   # Generate a state-config file with the fetched notes
   echo "$notes" > state.config
