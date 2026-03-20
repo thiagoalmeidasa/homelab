@@ -5,14 +5,10 @@ metadata:
   name: headlamp
 spec:
   interval: 30m
-  chart:
-    spec:
-      chart: headlamp
-      version: 0.40.1
-      sourceRef:
-        kind: HelmRepository
-        name: headlamp
-        namespace: flux-system
+  chartRef:
+    kind: OCIRepository
+    name: headlamp
+    namespace: flux-system
   driftDetection:
     mode: enabled
   install:
@@ -55,14 +51,9 @@ spec:
         name: headlamp-plugins
     volumes:
       - name: headlamp-plugins
-        persistentVolumeClaim:
-          claimName: headlamp
+        emptyDir: {}
     persistentVolumeClaim:
-      enabled: true
-      accessModes:
-        - ReadWriteOnce
-      size: 1Gi
-      storageClassName: "longhorn"
+      enabled: false
     ingress:
       enabled: true
       ingressClassName: nginx
