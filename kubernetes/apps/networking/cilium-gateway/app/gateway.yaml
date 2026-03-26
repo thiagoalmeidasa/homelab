@@ -1,0 +1,29 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: cilium-gateway
+  namespace: networking
+  annotations:
+    io.cilium/lb-ipam-ips: "${GATEWAY_ADDR}"
+spec:
+  gatewayClassName: cilium
+  listeners:
+    - name: http
+      protocol: HTTP
+      port: 80
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https
+      protocol: HTTPS
+      port: 443
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: "${SECRET_DOMAIN/./-}-production-tls"
+            namespace: networking
+      allowedRoutes:
+        namespaces:
+          from: All
