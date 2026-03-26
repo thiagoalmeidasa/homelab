@@ -2,6 +2,7 @@
 autoDirectNodeRoutes: true
 bpf:
   masquerade: false # Required for Talos `.machine.features.hostDNS.forwardKubeDNSToHost`
+  tproxy: false # Required: breaks Gateway API with Envoy
   ctTcpMax: 131072 # default 524288, reduce conntrack table size
   ctAnyMax: 65536 # default 262144, reduce conntrack table size
 cgroup:
@@ -18,7 +19,13 @@ cni:
 endpointRoutes:
   enabled: true
 envoy:
-  enabled: false
+  enabled: true
+  resources:
+    requests:
+      cpu: 20m
+      memory: 128Mi
+    limits:
+      memory: 512Mi
 hubble:
   enabled: false
 ipam:
@@ -57,9 +64,13 @@ securityContext:
       - NET_ADMIN
       - SYS_ADMIN
       - SYS_RESOURCE
+gatewayAPI:
+  enabled: true
+  enableAlpn: true
+  xffNumTrustedHops: 1
 resources: # for agent
   requests:
     cpu: 32m
     memory: 256Mi
   limits:
-    memory: 512Mi
+    memory: 768Mi
