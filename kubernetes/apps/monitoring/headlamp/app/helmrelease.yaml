@@ -32,6 +32,8 @@ spec:
           - mountPath: /build/plugins
             name: headlamp-plugins
     config:
+      # https://github.com/kubernetes-sigs/headlamp/issues/4883
+      sessionTTL: null
       oidc:
         secret:
           create: true
