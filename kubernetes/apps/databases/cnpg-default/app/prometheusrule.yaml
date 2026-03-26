@@ -1,0 +1,50 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cnpg-rules
+  namespace: databases
+spec:
+  groups:
+    - name: cnpg.rules
+      rules:
+        - alert: CNPGLastBackupTooOld
+          expr: |
+            (time() - cnpg_collector_last_available_backup_timestamp{namespace="databases"}) > 93600
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: CNPG last backup too old ({{ $labels.pod }})
+            description: "Last available backup for {{ $labels.namespace }}/{{ $labels.pod }} is older than 26 hours.\n  VALUE = {{ $value | humanizeSeconds }}"
+
+        - alert: CNPGWALArchivingFailing
+          expr: |
+            increase(cnpg_pg_stat_archiver_failed_count{namespace="databases"}[5m]) > 0
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: CNPG WAL archiving failures detected ({{ $labels.pod }})
+            description: "WAL archiving is failing on {{ $labels.namespace }}/{{ $labels.pod }}. Point-in-time recovery may be at risk.\n  VALUE = {{ $value }}"
+
+        - alert: CNPGWALArchivingLagging
+          expr: |
+            cnpg_pg_stat_archiver_seconds_since_last_archival{namespace="databases"} > 3600
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: CNPG WAL archiving lagging ({{ $labels.pod }})
+            description: "No WAL archived in over 1 hour for {{ $labels.namespace }}/{{ $labels.pod }}. Point-in-time recovery is at risk.\n  VALUE = {{ $value | humanizeSeconds }}"
+
+        - alert: CNPGClusterNotHealthy
+          expr: |
+            cnpg_collector_up{namespace="databases"} != 1
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: CNPG cluster not healthy ({{ $labels.cluster }})
+            description: "CNPG cluster {{ $labels.namespace }}/{{ $labels.cluster }} collector is reporting unhealthy.\n  VALUE = {{ $value }}"
