@@ -53,22 +53,20 @@ spec:
         ports:
           http:
             port: *port
-    ingress:
+    route:
       main:
-        className: nginx
+        parentRefs:
+          - name: cilium-gateway
+            namespace: networking
+            sectionName: https
+        hostnames:
+          - "{{ .Release.Name }}.${PUBLIC_DOMAIN}"
+        rules:
+          - backendRefs:
+              - identifier: main
+                port: http
         annotations:
           external-dns.alpha.kubernetes.io/target: "ingress.${PUBLIC_DOMAIN}"
-          hajimari.io/icon: video-input-antenna
-        hosts:
-          - host: &host "{{ .Release.Name }}.${PUBLIC_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: main
-                  port: http
-        tls:
-          - hosts:
-              - *host
     topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname
