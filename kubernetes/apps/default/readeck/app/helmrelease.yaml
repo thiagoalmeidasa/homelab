@@ -40,8 +40,8 @@ spec:
               READECK_LOG_FORMAT: text
               READECK_SERVER_HOST: 0.0.0.0
               READECK_SERVER_PORT: &port 8000
-              READECK_SERVER_BASE_URL: https://readeck.${SECRET_DOMAIN}/
-              READECK_SERVER_ALLOWED_HOSTS: readeck.${SECRET_DOMAIN},readeck.${PUBLIC_DOMAIN}
+              READECK_SERVER_BASE_URL: https://readeck.${PUBLIC_DOMAIN}/
+              READECK_SERVER_ALLOWED_HOSTS: readeck.${PUBLIC_DOMAIN},readeck.${SECRET_DOMAIN}
               READECK_SERVER_TRUSTED_PROXIES: 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
               READECK_DATA_DIRECTORY: /readeck
             envFrom:
