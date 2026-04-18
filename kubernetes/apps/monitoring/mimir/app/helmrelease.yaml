@@ -69,7 +69,7 @@ spec:
       enabled: false
 
     nginx:
-      enabled: true
+      enabled: false
 
     ruler:
       enabled: false
