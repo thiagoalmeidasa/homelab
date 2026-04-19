@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -5,18 +6,11 @@ metadata:
   name: mimir
   namespace: monitoring
 spec:
-  interval: 30m
-  timeout: 15m
-  chart:
-    spec:
-      # renovate: registryUrl=https://grafana.github.io/helm-charts
-      chart: mimir-distributed
-      version: 6.0.6
-      sourceRef:
-        kind: HelmRepository
-        name: grafana
-        namespace: flux-system
-  maxHistory: 2
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
   install:
     remediation:
       retries: 3
@@ -24,142 +18,171 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
-  uninstall:
-    keepHistory: false
   values:
-    deploymentMode: monolithic
+    configMaps:
+      config:
+        enabled: true
+        data:
+          config.yaml: |
+            multitenancy_enabled: false
 
-    mimir:
-      auth_enabled: false
-      structuredConfig:
-        common:
-          storage:
-            backend: s3
-            s3:
-              insecure: false
-              s3forcepathstyle: true
-        blocks_storage:
-          backend: s3
-          s3:
-            bucket_name: mimir
-          tsdb:
-            dir: /data/tsdb
-        compactor:
-          data_dir: /data/compactor
-          sharding_ring:
-            kvstore:
-              store: memberlist
-        limits:
-          compactor_blocks_retention_period: 2160h # 90 days
-          max_global_series_per_user: 0
-          ingestion_rate: 50000
-          ingestion_burst_size: 100000
-        ruler_storage:
-          backend: s3
-          s3:
-            bucket_name: mimir
-        alertmanager_storage:
-          backend: s3
-          s3:
-            bucket_name: mimir
-        server:
-          log_level: info
+            server:
+              http_listen_port: 8080
+              log_level: info
 
-    minio:
-      enabled: false
+            common:
+              storage:
+                backend: s3
+                s3:
+                  endpoint: $${BUCKET_HOST}
+                  access_key_id: $${AWS_ACCESS_KEY_ID}
+                  secret_access_key: $${AWS_SECRET_ACCESS_KEY}
+                  insecure: false
+                  bucket_lookup_type: path
 
-    nginx:
-      enabled: false
+            distributor:
+              ring:
+                kvstore:
+                  store: memberlist
 
-    ruler:
-      enabled: false
-    alertmanager:
-      enabled: false
-    overrides_exporter:
-      enabled: false
+            ingester:
+              ring:
+                final_sleep: 0s
+                num_tokens: 512
+                kvstore:
+                  store: memberlist
+                replication_factor: 1
 
-    ingester:
-      replicas: 1
-      persistentVolume:
+            memberlist:
+              join_members:
+                - localhost:7946
+
+            store_gateway:
+              sharding_ring:
+                replication_factor: 1
+                kvstore:
+                  store: memberlist
+
+            blocks_storage:
+              backend: s3
+              s3:
+                bucket_name: mimir
+              storage_prefix: blocks
+              bucket_store:
+                sync_dir: /data/tsdb-sync
+              tsdb:
+                dir: /data/tsdb
+
+            compactor:
+              data_dir: /data/compactor
+              sharding_ring:
+                kvstore:
+                  store: memberlist
+
+            ruler:
+              rule_path: /data/ruler
+
+            ruler_storage:
+              backend: s3
+              s3:
+                bucket_name: mimir
+              storage_prefix: ruler
+
+            limits:
+              compactor_blocks_retention_period: 2160h
+              max_global_series_per_user: 0
+              ingestion_rate: 50000
+              ingestion_burst_size: 100000
+
+    controllers:
+      mimir:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: docker.io/grafana/mimir
+              tag: 3.0.4@sha256:686138d9f941508c99c931cc9e69bf9f6100dd4d2d623bf57b38d5c25ee645c1
+            args:
+              - -config.file=/etc/mimir/config.yaml
+              - -config.expand-env=true
+              - -target=all
+              - -activity-tracker.filepath=/tmp/metrics-activity.log
+            envFrom:
+              - secretRef:
+                  name: mimir-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ready
+                    port: &port 8080
+                  initialDelaySeconds: 45
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ready
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 5
+                  timeoutSeconds: 1
+                  failureThreshold: 60
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+
+    service:
+      app:
+        controller: mimir
+        ports:
+          http:
+            port: *port
+            protocol: HTTP
+            primary: true
+          grpc:
+            port: 9095
+            protocol: TCP
+          memberlist:
+            port: 7946
+            protocol: TCP
+
+    persistence:
+      data:
+        type: persistentVolumeClaim
         storageClass: longhorn
+        accessMode: ReadWriteOnce
         size: 10Gi
-      resources:
-        requests:
-          cpu: 100m
-          memory: 512Mi
-        limits:
-          memory: 1Gi
-
-    store_gateway:
-      replicas: 1
-      persistentVolume:
-        storageClass: longhorn
-        size: 5Gi
-      resources:
-        requests:
-          cpu: 50m
-          memory: 128Mi
-        limits:
-          memory: 512Mi
-
-    compactor:
-      replicas: 1
-      persistentVolume:
-        storageClass: longhorn
-        size: 5Gi
-      resources:
-        requests:
-          cpu: 50m
-          memory: 128Mi
-        limits:
-          memory: 512Mi
-
-    distributor:
-      replicas: 1
-      resources:
-        requests:
-          cpu: 50m
-          memory: 128Mi
-        limits:
-          memory: 512Mi
-
-    querier:
-      replicas: 1
-      resources:
-        requests:
-          cpu: 50m
-          memory: 128Mi
-        limits:
-          memory: 512Mi
-
-    query_frontend:
-      replicas: 1
-      resources:
-        requests:
-          cpu: 50m
-          memory: 128Mi
-        limits:
-          memory: 256Mi
-
-    query_scheduler:
-      replicas: 1
-      resources:
-        requests:
-          cpu: 10m
-          memory: 64Mi
-        limits:
-          memory: 128Mi
-
-  valuesFrom:
-    - kind: Secret
-      targetPath: mimir.structuredConfig.common.storage.s3.endpoint
-      name: mimir-secret
-      valuesKey: BUCKET_HOST
-    - kind: Secret
-      targetPath: mimir.structuredConfig.common.storage.s3.access_key_id
-      name: mimir-secret
-      valuesKey: AWS_ACCESS_KEY_ID
-    - kind: Secret
-      targetPath: mimir.structuredConfig.common.storage.s3.secret_access_key
-      name: mimir-secret
-      valuesKey: AWS_SECRET_ACCESS_KEY
+        globalMounts:
+          - path: /data
+      config:
+        type: configMap
+        name: mimir
+        globalMounts:
+          - path: /etc/mimir
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
