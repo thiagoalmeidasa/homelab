@@ -27,9 +27,10 @@ spec:
     limits:
       memory: 768Mi
   storage:
-    size: 20Gi
+    size: 30Gi
     storageClass: longhorn
   backup:
+    retentionPolicy: "7d"
     volumeSnapshot:
       className: longhorn-snapshot-class
   plugins:
