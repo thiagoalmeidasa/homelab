@@ -120,55 +120,84 @@ spec:
               Media:
                 style: row
                 columns: 4
+              Photos:
+                style: row
+                columns: 4
+              Productivity:
+                style: row
+                columns: 4
+              Storage:
+                style: row
+                columns: 4
               Monitoring:
                 style: row
                 columns: 4
-              k8s-at-home:
-                header: true
-                style: column
-              Tech:
-                header: true
-                style: column
+              Home:
+                style: row
+                columns: 4
             providers: {}
           services.yaml: |
             - Media:
-                - Transmission:
-                    href: http://storage.lan:9092/
-                    icon: mdi-folder-download
+                - Jellyfin:
+                    href: https://jellyfin.${SECRET_DOMAIN}
+                - Seer:
+                    href: https://requests.${SECRET_DOMAIN}
+                - Sonarr:
+                    href: https://sonarr.${SECRET_DOMAIN}
+                - Radarr:
+                    href: https://radarr.${SECRET_DOMAIN}
+                - Prowlarr:
+                    href: https://prowlarr.${SECRET_DOMAIN}
+                - Bazarr:
+                    href: https://bazarr.${SECRET_DOMAIN}
+                - qBittorrent:
+                    href: https://qb.${SECRET_DOMAIN}
+                - MeTube:
+                    href: https://metube.${SECRET_DOMAIN}
+            - Photos:
+                - Immich:
+                    href: https://immich.${SECRET_DOMAIN}
+                - PhotoPrism:
+                    href: https://photoprism.${SECRET_DOMAIN}
+            - Productivity:
+                - Affine:
+                    href: https://affine.${SECRET_DOMAIN}
+                - n8n:
+                    href: https://n8n.${SECRET_DOMAIN}
+                - oCIS:
+                    href: https://ocis.${SECRET_DOMAIN}
+                - Readeck:
+                    href: https://readeck.${SECRET_DOMAIN}
+                - Pingvin Share:
+                    href: https://pingvin-share.${SECRET_DOMAIN}
+                - Umami:
+                    href: https://umami.${SECRET_DOMAIN}
+            - Storage:
+                - MinIO:
+                    href: https://minio.${SECRET_DOMAIN}
+                - Longhorn:
+                    href: https://longhorn.${SECRET_DOMAIN}
+                - Kopia:
+                    href: https://kopia.${SECRET_DOMAIN}
+                - Syncthing:
+                    href: https://syncthing.${SECRET_DOMAIN}
             - Monitoring:
+                - Grafana:
+                    href: https://grafana.${SECRET_DOMAIN}
+                - Headlamp:
+                    href: https://headlamp.${SECRET_DOMAIN}
+                - Prometheus:
+                    href: https://prometheus.${SECRET_DOMAIN}
+                - Alertmanager:
+                    href: https://alertmanager.${SECRET_DOMAIN}
                 - PagerDuty:
                     href: https://smoothship.eu.pagerduty.com/
                     icon: mdi-alert
+            - Home:
+                - Home Assistant:
+                    href: https://hass.${SECRET_DOMAIN}
           bookmarks.yaml: |
-            - k8s-at-home:
-                - thiagoalmeidasa/homelab:
-                    - abbr: HL
-                      href: https://github.com/thiagoalmeidasa/homelab/
-                - Template repo:
-                    - abbr: TR
-                      href: https://github.com/onedr0p/flux-cluster-template
-                - Helm charts:
-                    - abbr: HC
-                      href: https://github.com/bjw-s/helm-charts/tree/main/charts/library/common
-                - onedr0p/home-cluster:
-                    - abbr: O7
-                      href: https://github.com/onedr0p/home-cluster
-                - cbirkenbeul/homelab:
-                    - abbr: CB
-                      href: https://github.com/cbirkenbeul/homelab
-                - bjw-s/home-ops:
-                    - abbr: BJ
-                      href: https://github.com/bjw-s/home-ops
-            - Tech:
-                - Hacker News:
-                    - abbr: HN
-                      href: https://news.ycombinator.com/
-                - The Verge:
-                    - abbr: TV
-                      href: https://theverge.com/
-                - MIT Technology Review:
-                    - abbr: MT
-                      href: https://www.technologyreview.com/
+            []
           widgets.yaml: |
             - kubernetes:
                 cluster:
