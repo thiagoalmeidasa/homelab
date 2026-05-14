@@ -1,0 +1,5 @@
+---
+- name: Reload dnsmasq
+  # raw, not ansible.builtin.command — we run python-free on this host.
+  ansible.builtin.raw: /etc/init.d/dnsmasq reload
+  changed_when: true

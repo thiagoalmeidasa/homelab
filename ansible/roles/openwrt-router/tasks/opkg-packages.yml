@@ -1,0 +1,13 @@
+---
+- name: Packages | Update opkg cache
+  community.openwrt.opkg:
+    name: "*"
+    state: present
+    update_cache: true
+  changed_when: false
+
+- name: Packages | Ensure packages are installed
+  community.openwrt.opkg:
+    name: "{{ item }}"
+    state: present
+  loop: "{{ opkg_packages }}"

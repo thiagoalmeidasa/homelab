@@ -1,0 +1,27 @@
+---
+# Additive only: we never call `absent` here, so unmanaged host sections on
+# the router are left untouched. MAC address is the natural unique key.
+
+- name: DHCP | Upsert host reservation
+  community.openwrt.uci:
+    command: section
+    config: dhcp
+    type: host
+    find:
+      mac: "{{ item.mac }}"
+    value: >-
+      {{
+        {'name': item.name, 'ip': item.ip}
+        | combine({'dns': item.dns} if item.dns is defined else {})
+      }}
+    set_find: true
+  loop: "{{ dhcp_reservations }}"
+  loop_control:
+    label: "{{ item.name }} ({{ item.mac }} -> {{ item.ip }})"
+  notify: Reload dnsmasq
+
+- name: DHCP | Commit dhcp config
+  community.openwrt.uci:
+    command: commit
+    config: dhcp
+  notify: Reload dnsmasq
