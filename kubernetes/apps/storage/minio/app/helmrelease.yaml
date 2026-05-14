@@ -100,41 +100,6 @@ spec:
             interval: 1m
             scrapeTimeout: 10s
 
-    ingress:
-      app:
-        className: nginx
-        annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
-        hosts:
-          - host: &console-host minio.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *console-host
-      s3:
-        className: nginx
-        annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
-          nginx.ingress.kubernetes.io/proxy-connect-timeout: "180"
-          nginx.ingress.kubernetes.io/proxy-body-size: 4096m
-          nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-          nginx.ingress.kubernetes.io/configuration-snippet: |
-            chunked_transfer_encoding off;
-        hosts:
-          - host: &api-host s3.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: api
-        tls:
-          - hosts:
-              - *api-host
-
     persistence:
       config:
         enabled: true

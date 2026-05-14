@@ -55,24 +55,6 @@ spec:
         ports:
           http:
             port: 3000
-    ingress:
-      app:
-        className: nginx
-        annotations:
-          external-dns.alpha.kubernetes.io/enabled: "true"
-          external-dns.alpha.kubernetes.io/target: "ingress.${PUBLIC_DOMAIN}"
-          nginx.ingress.kubernetes.io/proxy-body-size: "0"
-          hajimari.io/icon: mdi:account-arrow-up
-        hosts:
-          - host: &host "share.${PUBLIC_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
     persistence:
       tmp:
         type: emptyDir

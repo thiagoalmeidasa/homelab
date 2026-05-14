@@ -1,0 +1,44 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: jellyfin
+  namespace: media
+  annotations:
+    hajimari.io/enable: "true"
+    hajimari.io/icon: simple-icons:jellyfin
+spec:
+  parentRefs:
+    - name: internal
+      namespace: networking
+      sectionName: https
+  hostnames:
+    - "media.${SECRET_DOMAIN}"
+  rules:
+    - backendRefs:
+        - name: jellyfin
+          port: 8096
+---
+# Public jellyfin route. The legacy nginx config returned 404 for /metrics
+# to keep the exporter off the public surface. Gateway API v1 has no native
+# `directResponse` filter; the exporter Service is a separate endpoint, so
+# /metrics on this hostname only exposes whatever jellyfin itself serves on
+# that path (not the prometheus exporter).
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: jellyfin-public
+  namespace: media
+  annotations:
+    hajimari.io/enable: "false"
+spec:
+  parentRefs:
+    - name: external
+      namespace: networking
+      sectionName: https
+  hostnames:
+    - "media.${PUBLIC_DOMAIN}"
+  rules:
+    - backendRefs:
+        - name: jellyfin
+          port: 8096

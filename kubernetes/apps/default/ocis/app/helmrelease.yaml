@@ -85,44 +85,32 @@ spec:
         serviceName: *app
         endpoints:
           - port: metrics
-    ingress:
+    route:
       internal:
-        enabled: true
-        className: nginx
         annotations:
           hajimari.io/enable: "true"
           hajimari.io/icon: arcticons:owncloud
-          nginx.ingress.kubernetes.io/proxy-body-size: "0"
-          nginx.ingress.kubernetes.io/upstream-hash-by: "$client_ip"
-        hosts:
-          - host: &domain arai.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                pathType: Prefix
-                service:
-                  identifier: app
-                  port: http
-        tls: []
+        parentRefs:
+          - name: internal
+            namespace: networking
+            sectionName: https
+        hostnames: ["arai.${SECRET_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http
       public:
-        enabled: true
-        className: nginx
         annotations:
-          external-dns.alpha.kubernetes.io/target: "ingress.${PUBLIC_DOMAIN}"
           hajimari.io/enable: "false"
-          nginx.ingress.kubernetes.io/proxy-body-size: "0"
-          nginx.ingress.kubernetes.io/upstream-hash-by: "$client_ip"
-          nginx.ingress.kubernetes.io/configuration-snippet: |
-            sub_filter </head>
-                '</head><script defer src="https://analytics.thiagoalmeida.xyz/script.js" data-website-id="3ba1cf3d-89e2-410e-beeb-700a854307ff"></script>';
-            sub_filter_once on;
-        hosts:
-          - host: &public-domain arai.${PUBLIC_DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls: []
+        parentRefs:
+          - name: external
+            namespace: networking
+            sectionName: https
+        hostnames: ["arai.${PUBLIC_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http
     persistence:
       config:
         type: persistentVolumeClaim
