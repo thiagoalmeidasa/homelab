@@ -1,0 +1,127 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: recyclarr
+  namespace: media
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  maxHistory: 2
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      recyclarr:
+        type: cronjob
+        annotations:
+          reloader.stakater.com/auto: "true"
+        cronjob:
+          schedule: "0 2 * * *"
+          timeZone: ${TIMEZONE}
+          concurrencyPolicy: Forbid
+          successfulJobsHistory: 1
+          failedJobsHistory: 1
+          backoffLimit: 0
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+            seccompProfile: {type: RuntimeDefault}
+        containers:
+          app:
+            image:
+              repository: ghcr.io/recyclarr/recyclarr
+              tag: 8.6.0@sha256:3c38ceeb54438dd8327e4e65c9b48ba601a6d20fff833342d93c9b0bc4b1930b
+            args: ["sync"]
+            env:
+              TZ: ${TIMEZONE}
+              COMPlus_EnableDiagnostics: "0"
+              RECYCLARR_APP_DATA: /config
+            envFrom:
+              - secretRef:
+                  name: recyclarr-secret
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 256Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+    persistence:
+      config:
+        type: emptyDir
+        globalMounts:
+          - path: /config
+      config-file:
+        type: configMap
+        name: recyclarr-config
+        globalMounts:
+          - path: /config/recyclarr.yml
+            subPath: recyclarr.yml
+            readOnly: true
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+    configMaps:
+      config:
+        enabled: true
+        data:
+          recyclarr.yml: |
+            sonarr:
+              main:
+                base_url: http://sonarr.media.svc.cluster.local:8989
+                api_key: !env_var SONARR_API_KEY
+                delete_old_custom_formats: true
+                replace_existing_custom_formats: true
+                quality_definition:
+                  type: series
+                include:
+                  - template: sonarr-quality-definition-series
+                  - template: sonarr-v4-quality-profile-web-1080p
+                  - template: sonarr-v4-custom-formats-web-1080p
+                media_naming:
+                  series: default
+                  season: default
+                  episodes:
+                    rename: true
+                    standard: default
+                    daily: default
+                    anime: default
+            radarr:
+              main:
+                base_url: http://radarr.media.svc.cluster.local:7878
+                api_key: !env_var RADARR_API_KEY
+                delete_old_custom_formats: true
+                replace_existing_custom_formats: true
+                quality_definition:
+                  type: movie
+                include:
+                  - template: radarr-quality-definition-movie
+                  - template: radarr-quality-profile-remux-web-1080p
+                  - template: radarr-custom-formats-remux-web-1080p
+                media_naming:
+                  folder: plex
+                  movie:
+                    rename: true
+                    standard: plex
