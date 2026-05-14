@@ -1,0 +1,6 @@
+---
+# OpenWrt ships BusyBox `ash` as `/bin/sh` and has no `/bin/bash` or `sudo`,
+# so override the repo-wide `executable = /bin/bash` and `become = True`
+# defaults from `ansible.cfg` for this group.
+ansible_shell_executable: /bin/sh
+ansible_become: false
