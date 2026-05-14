@@ -22,9 +22,8 @@ spec:
   values:
     global:
       tolerations:
-        - key: "node-role/small"
-          operator: "Equal"
-          value: "true"
+        - key: "node-role.kubernetes.io/small"
+          operator: "Exists"
           effect: "NoSchedule"
     persistence:
       defaultClass: false
@@ -34,7 +33,7 @@ spec:
       defaultReplicaCount: "2"
       v2DataEngineGuaranteedInstanceManagerCPU: "750"
       guaranteedInstanceManagerCPU: "5"
-      taintToleration: "node-role/small=true:NoSchedule"
+      taintToleration: "node-role.kubernetes.io/small:NoSchedule"
     ingress:
       enabled: true
       annotations:
