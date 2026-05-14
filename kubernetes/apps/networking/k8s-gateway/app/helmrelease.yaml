@@ -29,6 +29,9 @@ spec:
     fullnameOverride: k8s-gateway
     domain: "${SECRET_DOMAIN}"
     ttl: 1
+    # Restrict watched resources so the chart doesn't try to list TLSRoute/GRPCRoute
+    # CRDs that aren't installed. Drop "Ingress" in Phase 6 once nginx is gone.
+    watchedResources: ["HTTPRoute", "Ingress"]
     service:
       type: LoadBalancer
       port: 53
