@@ -79,41 +79,31 @@ spec:
           http:
             port: *port
 
-    ingress:
+    route:
       app:
-        enabled: true
-        className: nginx
         annotations:
           hajimari.io/enable: "true"
-          nginx.ingress.kubernetes.io/proxy-body-size: "0"
-          nginx.ingress.kubernetes.io/upstream-hash-by: "$client_ip"
-        hosts:
-          - host: &domain notes.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                pathType: Prefix
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *domain
+        parentRefs:
+          - name: internal
+            namespace: networking
+            sectionName: https
+        hostnames: ["notes.${SECRET_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http
       public:
-        enabled: true
-        className: nginx
         annotations:
-          external-dns.alpha.kubernetes.io/target: "ingress.${PUBLIC_DOMAIN}"
           hajimari.io/enable: "false"
-        hosts:
-          - host: &public-domain notes.${PUBLIC_DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *public-domain
+        parentRefs:
+          - name: external
+            namespace: networking
+            sectionName: https
+        hostnames: ["notes.${PUBLIC_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http
     persistence:
       data:
         type: persistentVolumeClaim

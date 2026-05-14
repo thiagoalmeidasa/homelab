@@ -111,39 +111,29 @@ spec:
             bearerTokenSecret:
               name: home-assistant-secret
               key: HASS_BEARER_TOKEN
-    ingress:
+    route:
       main:
-        enabled: true
-        className: nginx
         annotations:
           hajimari.io/icon: mdi:home-assistant
-          nginx.ingress.kubernetes.io/proxy-body-size: 1000M
-          nginx.ingress.kubernetes.io/proxy-connect-timeout: "20"
-          nginx.ingress.kubernetes.io/proxy-read-timeout: "14400"
-          nginx.ingress.kubernetes.io/proxy-send-timeout: "14400"
-        hosts:
-          - host: &host "hass.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: main
-                  port: http
-        tls:
-          - hosts:
-              - *host
+        parentRefs:
+          - name: internal
+            namespace: networking
+            sectionName: https
+        hostnames: ["hass.${SECRET_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: main
+                port: http
       code-server:
-        enabled: true
-        className: nginx
-        hosts:
-          - host: &hostvs "hass-vscode.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: main
-                  port: code-server
-        tls:
-          - hosts:
-              - *hostvs
+        parentRefs:
+          - name: internal
+            namespace: networking
+            sectionName: https
+        hostnames: ["hass-vscode.${SECRET_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: main
+                port: code-server
     persistence:
       config:
         existingClaim: home-assistant-config
