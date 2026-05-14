@@ -3,5 +3,6 @@
 # role safe to include without arguments and lets ansible-lint pass
 # role-structure checks.
 dhcp_reservations: []
+dns_address_overrides: []
 dns_domain: lan
 opkg_packages: []
