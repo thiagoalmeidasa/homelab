@@ -20,12 +20,23 @@ endpointRoutes:
   enabled: true
 envoy:
   enabled: true
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: true
   resources:
     requests:
       cpu: 20m
       memory: 128Mi
     limits:
       memory: 512Mi
+dashboards:
+  enabled: true
+  namespace: kube-system
+  label: grafana_dashboard
+  labelValue: "1"
+  annotations:
+    grafana_folder: Cilium
 hubble:
   enabled: false
 ipam:
@@ -44,6 +55,17 @@ localRedirectPolicy: true
 operator:
   replicas: 1
   rollOutPods: true
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  dashboards:
+    enabled: true
+    namespace: kube-system
+    label: grafana_dashboard
+    labelValue: "1"
+    annotations:
+      grafana_folder: Cilium
 rollOutCiliumPods: true
 routingMode: native
 securityContext:
@@ -68,6 +90,11 @@ gatewayAPI:
   enabled: true
   enableAlpn: true
   xffNumTrustedHops: 1
+prometheus:
+  enabled: true
+  serviceMonitor:
+    enabled: true
+    trustCRDsExist: true
 resources: # for agent
   requests:
     cpu: 32m
