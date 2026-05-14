@@ -1,0 +1,38 @@
+---
+- name: Configure OpenWrt router
+  hosts: openwrt
+  gather_facts: false        # python-free per community.openwrt official guidance
+  any_errors_fatal: true
+  vars:
+    dns_domain: lan
+    opkg_packages:
+      # Prometheus node exporter + collectors
+      - prometheus-node-exporter-lua
+      - prometheus-node-exporter-lua-hostapd_stations
+      - prometheus-node-exporter-lua-hwmon
+      - prometheus-node-exporter-lua-nat_traffic
+      - prometheus-node-exporter-lua-netstat
+      - prometheus-node-exporter-lua-openwrt
+      - prometheus-node-exporter-lua-snmp6
+      - prometheus-node-exporter-lua-thermal
+      - prometheus-node-exporter-lua-uci_dhcp_host
+      - prometheus-node-exporter-lua-wifi
+      - prometheus-node-exporter-lua-wifi_stations
+      # Dynamic DNS
+      - ddns-scripts
+      - ddns-scripts-cloudflare
+      - ddns-scripts-noip
+      - ddns-scripts-services
+      - ddns-scripts-utils
+      # DNS debugging tools
+      - bind-tools
+      - drill
+    # dhcp_reservations comes from
+    # ansible/inventory/group_vars/openwrt/dhcp.sops.yml (sops-encrypted).
+    # Currently unmanaged on purpose:
+    #   - host[7]  tradfri          (no name)
+    #   - host[9]  kube-vip-invalid (no name)
+    #   - domain   mqtt.lan -> virtual hostname, no lease
+    #   - domain   console.gl-inet.com -> router self (vendor vanity)
+  roles:
+    - role: openwrt-router

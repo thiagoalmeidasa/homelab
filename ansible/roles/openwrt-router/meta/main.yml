@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  author: thiagoalmeidasa
+  description: Configure an OpenWrt router via UCI (DHCP reservations and DNS hostnames)
+  license: MIT
+  min_ansible_version: "2.18"
+  platforms:
+    - name: OpenWrt
+      versions:
+        - all
+  galaxy_tags:
+    - networking
+    - openwrt
+    - dnsmasq
+dependencies: []

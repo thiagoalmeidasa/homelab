@@ -1,0 +1,24 @@
+---
+# Mirrors the LuCI "Hostnames" tab — UCI `config domain` sections binding an
+# FQDN to an IP. Additive only: never `absent`, never `replace`.
+
+- name: DNS | Upsert hostname binding
+  community.openwrt.uci:
+    command: section
+    config: dhcp
+    type: domain
+    find:
+      name: "{{ item.hostname | default(item.name if '.' in item.name else item.name ~ '.' ~ (dns_domain | default('lan'))) }}"
+    value:
+      ip: "{{ item.ip }}"
+    set_find: true
+  loop: "{{ dhcp_reservations }}"
+  loop_control:
+    label: "{{ item.hostname | default(item.name if '.' in item.name else item.name ~ '.' ~ (dns_domain | default('lan'))) }} -> {{ item.ip }}"
+  notify: Reload dnsmasq
+
+- name: DNS | Commit dhcp config
+  community.openwrt.uci:
+    command: commit
+    config: dhcp
+  notify: Reload dnsmasq
