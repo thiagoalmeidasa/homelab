@@ -80,7 +80,7 @@ spec:
           - path: /app/config/logs
       config:
         type: configMap
-        name: homepage-config
+        identifier: config
         globalMounts:
           - path: /app/config/settings.yaml
             subPath: settings.yaml
