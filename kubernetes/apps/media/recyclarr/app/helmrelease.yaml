@@ -74,7 +74,7 @@ spec:
           - path: /config
       config-file:
         type: configMap
-        name: recyclarr-config
+        name: recyclarr
         globalMounts:
           - path: /config/recyclarr.yml
             subPath: recyclarr.yml
