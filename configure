@@ -138,8 +138,8 @@ _has_valid_ip() {
 
 verify_addressing() {
     local found_kube_vip="false"
-    local found_k8s_gateway="false"
     local found_ingress="false"
+    local found_internal_gateway="false"
     # Verify the metallb min and metallb ceiling are in the same network
     metallb_subnet_min=$(echo "${BOOTSTRAP_METALLB_LB_RANGE}" | cut -d- -f1 | cut -d. -f1,2,3)
     metallb_subnet_ceil=$(echo "${BOOTSTRAP_METALLB_LB_RANGE}" | cut -d- -f2 | cut -d. -f1,2,3)
@@ -169,9 +169,6 @@ verify_addressing() {
         if [[ "${addr}" == "${BOOTSTRAP_KUBE_VIP_ADDR}" ]]; then
             found_kube_vip="true"
         fi
-        if [[ "${addr}" == "${BOOTSTRAP_GATEWAY_DNS_ADDR}" ]]; then
-            found_k8s_gateway="true"
-        fi
         if [[ "${addr}" == "${BOOTSTRAP_GATEWAY_EXTERNAL_ADDR}" ]]; then
             found_ingress="true"
         fi
@@ -187,10 +184,6 @@ verify_addressing() {
     done
     if [[ "${found_kube_vip}" == "true" ]]; then
         _log "ERROR(${FUNCNAME[0]})" "The IP for kube-vip '${BOOTSTRAP_KUBE_VIP_ADDR}' should NOT be in the provided metallb range '${BOOTSTRAP_METALLB_LB_RANGE}'"
-        exit 1
-    fi
-    if [[ "${found_k8s_gateway}" == "false" ]]; then
-        _log "ERROR(${FUNCNAME[0]})" "The IP for k8s_gateway '${BOOTSTRAP_GATEWAY_DNS_ADDR}' should be in the provided metallb range '${BOOTSTRAP_METALLB_LB_RANGE}'"
         exit 1
     fi
     if [[ "${found_ingress}" == "false" ]]; then
@@ -251,12 +244,10 @@ verify_kubevip() {
 
 verify_metallb() {
     _has_envar "BOOTSTRAP_METALLB_LB_RANGE"
-    _has_envar "BOOTSTRAP_GATEWAY_DNS_ADDR"
     _has_envar "BOOTSTRAP_GATEWAY_EXTERNAL_ADDR"
     _has_envar "BOOTSTRAP_GATEWAY_INTERNAL_ADDR"
     _has_valid_ip "$(echo "${BOOTSTRAP_METALLB_LB_RANGE}" | cut -d- -f1)" "BOOTSTRAP_METALLB_LB_RANGE"
     _has_valid_ip "$(echo "${BOOTSTRAP_METALLB_LB_RANGE}" | cut -d- -f2)" "BOOTSTRAP_METALLB_LB_RANGE"
-    _has_valid_ip "${BOOTSTRAP_GATEWAY_DNS_ADDR}" "BOOTSTRAP_GATEWAY_DNS_ADDR"
     _has_valid_ip "${BOOTSTRAP_GATEWAY_EXTERNAL_ADDR}" "BOOTSTRAP_GATEWAY_EXTERNAL_ADDR"
     _has_valid_ip "${BOOTSTRAP_GATEWAY_INTERNAL_ADDR}" "BOOTSTRAP_GATEWAY_INTERNAL_ADDR"
 }
@@ -356,10 +347,6 @@ verify_ansible_hosts() {
         _has_optional_envar "${node_hostname}"
         if [[ "${!node_addr}" == "${BOOTSTRAP_KUBE_VIP_ADDR}" && "${BOOTSTRAP_KUBE_VIP_ENABLED}" == "true" ]]; then
             _log "ERROR(${FUNCNAME[0]})" "The kube-vip IP '${BOOTSTRAP_KUBE_VIP_ADDR}' should not be the same as the IP for node '${!node_addr}'"
-            exit 1
-        fi
-        if [[ "${!node_addr}" == "${BOOTSTRAP_GATEWAY_DNS_ADDR}" ]]; then
-            _log "ERROR(${FUNCNAME[0]})" "The k8s-gateway load balancer IP '${BOOTSTRAP_GATEWAY_DNS_ADDR}' should not be the same as the IP for node '${!node_addr}'"
             exit 1
         fi
         if [[ "${!node_addr}" == "${BOOTSTRAP_GATEWAY_EXTERNAL_ADDR}" ]]; then

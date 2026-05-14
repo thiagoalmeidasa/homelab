@@ -15,7 +15,6 @@ resources:
 
   - ./ingress-nginx.yaml
   - ./jetstack.yaml
-  - ./k8s-gateway.yaml
   - ./kubernetes-sigs-nfd.yaml
   - ./longhorn.yaml
   - ./metrics-server.yaml

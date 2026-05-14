@@ -8,10 +8,9 @@ data:
   TIMEZONE: "Europe/Stockholm"
   KUBE_VIP_ADDR: "192.168.100.100"
   METALLB_LB_RANGE: "192.168.100.220-192.168.100.230"
-  GATEWAY_DNS_ADDR: "192.168.100.220"
   # METALLB_INGRESS_ADDR is the LB IP for the legacy ingress-nginx Service. It will be
-  # removed in Phase 6 once nginx is deleted; until then GATEWAY_EXTERNAL_ADDR must
-  # be on a different free IP to avoid a Cilium LB-IPAM conflict.
+  # removed once nginx is deleted; until then GATEWAY_EXTERNAL_ADDR must be on a
+  # different free IP to avoid a Cilium LB-IPAM conflict.
   METALLB_INGRESS_ADDR: "192.168.100.221"
   GATEWAY_EXTERNAL_ADDR: "192.168.100.227"
   NFS_SERVER: nfs.lan
