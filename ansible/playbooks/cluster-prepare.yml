@@ -27,6 +27,28 @@
             block: |
               127.0.1.1   {{ inventory_hostname }}
 
+    - name: Cloud-init removal | RasPi
+      block:
+        - name: Cloud-init removal | Purge cloud-init package
+          ansible.builtin.apt:
+            name: cloud-init
+            state: absent
+            purge: true
+        - name: Cloud-init removal | Remove seed files
+          ansible.builtin.file:
+            path: "{{ item }}"
+            state: absent
+          loop:
+            - /boot/firmware/user-data
+            - /boot/firmware/meta-data
+        - name: Cloud-init removal | Wipe state directory
+          ansible.builtin.file:
+            path: /var/lib/cloud
+            state: absent
+      when:
+        - ansible_facts['distribution'] == 'Ubuntu'
+        - "'raspi' in ansible_facts['kernel']"
+
     - name: Packages | Fedora
       block:
         - name: Packages | Install required packages
@@ -54,7 +76,7 @@
             name: ["linux-modules-extra-raspi"]
             install_recommends: false
           notify: Reboot
-          when: "'raspi' in ansible_kernel and ansible_distribution_version is version('22.04', '<=')"
+          when: "'raspi' in ansible_facts['kernel'] and ansible_facts['distribution_version'] is version('22.04', '<=')"
       when: ansible_facts['distribution'] == 'Ubuntu'
 
     - name: User Configuration
@@ -142,7 +164,7 @@
           ansible.builtin.command: swapoff -a
           when:
             - ansible_facts['distribution'] == 'Ubuntu'
-            - ansible_swaptotal_mb > 0
+            - ansible_facts['swaptotal_mb'] > 0
         - name: System Configuration (2) | Disable swap at boot | Ubuntu
           ansible.posix.mount:
             name: "{{ item }}"
