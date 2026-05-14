@@ -78,9 +78,8 @@ spec:
       extraArgs:
         default-ssl-certificate: "networking/${SECRET_DOMAIN/./-}-production-tls"
       tolerations:
-        - key: "node-role/small"
-          operator: "Equal"
-          value: "true"
+        - key: "node-role.kubernetes.io/small"
+          operator: "Exists"
           effect: "NoSchedule"
       resources:
         requests:

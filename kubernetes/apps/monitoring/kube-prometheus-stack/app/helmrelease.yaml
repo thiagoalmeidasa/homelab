@@ -350,9 +350,8 @@ spec:
     prometheus-node-exporter:
       fullnameOverride: node-exporter
       tolerations:
-        - key: "node-role/small"
-          operator: "Equal"
-          value: "true"
+        - key: "node-role.kubernetes.io/small"
+          operator: "Exists"
           effect: "NoSchedule"
       prometheus:
         monitor:
