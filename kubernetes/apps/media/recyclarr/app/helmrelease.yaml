@@ -36,6 +36,8 @@ spec:
           failedJobsHistory: 1
           backoffLimit: 0
         pod:
+          annotations:
+            setGateway: "false"
           securityContext:
             runAsNonRoot: true
             runAsUser: 1000
