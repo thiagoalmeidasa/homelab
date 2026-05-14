@@ -60,6 +60,7 @@ spec:
                 drop: [ALL]
 
     defaultPodOptions:
+      automountServiceAccountToken: true
       labels:
         lan-only: "true"
 
