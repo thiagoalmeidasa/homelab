@@ -1,10 +1,9 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app echo-server
-  namespace: default
+  name: &app error-pages
+  namespace: networking
 spec:
   interval: 1h
   chartRef:
@@ -20,51 +19,51 @@ spec:
   values:
     controllers:
       main:
+        replicas: 2
+        strategy: RollingUpdate
         containers:
           main:
             image:
-              repository: docker.io/jmalloc/echo-server
-              tag: v0.3.7
+              repository: ghcr.io/tarampampam/error-pages
+              tag: 4.1.0@sha256:6adb80319c2f5cfa99d5b43888202ec34e1099f8cc036a5ca5ab1cca96503920
+            env:
+              TEMPLATE_NAME: connection
+              SHOW_DETAILS: "false"
             probes:
               liveness: &probes
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
-                    path: /health
+                    path: /healthz
                     port: &port 8080
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
               readiness: *probes
-              startup:
-                enabled: false
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
             resources:
               requests:
                 cpu: 5m
-                memory: 10Mi
+                memory: 16Mi
               limits:
-                cpu: 15m
-                memory: 50Mi
+                memory: 64Mi
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        runAsGroup: 65534
+        seccompProfile: { type: RuntimeDefault }
     service:
       main:
         controller: main
         ports:
           http:
             port: *port
-    route:
-      main:
-        parentRefs:
-          - name: external
-            namespace: networking
-            sectionName: https
-        hostnames:
-          - "{{ .Release.Name }}.${PUBLIC_DOMAIN}"
-        rules:
-          - backendRefs:
-              - identifier: main
-                port: http
     topologySpreadConstraints:
       - maxSkew: 1
         topologyKey: kubernetes.io/hostname

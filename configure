@@ -169,11 +169,14 @@ verify_addressing() {
         if [[ "${addr}" == "${BOOTSTRAP_KUBE_VIP_ADDR}" ]]; then
             found_kube_vip="true"
         fi
-        if [[ "${addr}" == "${BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR}" ]]; then
+        if [[ "${addr}" == "${BOOTSTRAP_GATEWAY_DNS_ADDR}" ]]; then
             found_k8s_gateway="true"
         fi
-        if [[ "${addr}" == "${BOOTSTRAP_METALLB_INGRESS_ADDR}" ]]; then
+        if [[ "${addr}" == "${BOOTSTRAP_GATEWAY_EXTERNAL_ADDR}" ]]; then
             found_ingress="true"
+        fi
+        if [[ "${addr}" == "${BOOTSTRAP_GATEWAY_INTERNAL_ADDR}" ]]; then
+            found_internal_gateway="true"
         fi
         for var in "${!BOOTSTRAP_ANSIBLE_HOST_ADDR_@}"; do
             if [[ "${!var}" == "${addr}" ]]; then
@@ -187,11 +190,15 @@ verify_addressing() {
         exit 1
     fi
     if [[ "${found_k8s_gateway}" == "false" ]]; then
-        _log "ERROR(${FUNCNAME[0]})" "The IP for k8s_gateway '${BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR}' should be in the provided metallb range '${BOOTSTRAP_METALLB_LB_RANGE}'"
+        _log "ERROR(${FUNCNAME[0]})" "The IP for k8s_gateway '${BOOTSTRAP_GATEWAY_DNS_ADDR}' should be in the provided metallb range '${BOOTSTRAP_METALLB_LB_RANGE}'"
         exit 1
     fi
     if [[ "${found_ingress}" == "false" ]]; then
-        _log "ERROR(${FUNCNAME[0]})" "The IP for ingress '${BOOTSTRAP_METALLB_INGRESS_ADDR}' should be in the provided metallb range '${BOOTSTRAP_METALLB_LB_RANGE}'"
+        _log "ERROR(${FUNCNAME[0]})" "The IP for the external Cilium Gateway '${BOOTSTRAP_GATEWAY_EXTERNAL_ADDR}' should be in the provided metallb range '${BOOTSTRAP_METALLB_LB_RANGE}'"
+        exit 1
+    fi
+    if [[ "${found_internal_gateway}" == "false" ]]; then
+        _log "ERROR(${FUNCNAME[0]})" "The IP for the internal Cilium Gateway '${BOOTSTRAP_GATEWAY_INTERNAL_ADDR}' should be in the provided metallb range '${BOOTSTRAP_METALLB_LB_RANGE}'"
         exit 1
     fi
 }
@@ -244,12 +251,14 @@ verify_kubevip() {
 
 verify_metallb() {
     _has_envar "BOOTSTRAP_METALLB_LB_RANGE"
-    _has_envar "BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR"
-    _has_envar "BOOTSTRAP_METALLB_INGRESS_ADDR"
+    _has_envar "BOOTSTRAP_GATEWAY_DNS_ADDR"
+    _has_envar "BOOTSTRAP_GATEWAY_EXTERNAL_ADDR"
+    _has_envar "BOOTSTRAP_GATEWAY_INTERNAL_ADDR"
     _has_valid_ip "$(echo "${BOOTSTRAP_METALLB_LB_RANGE}" | cut -d- -f1)" "BOOTSTRAP_METALLB_LB_RANGE"
     _has_valid_ip "$(echo "${BOOTSTRAP_METALLB_LB_RANGE}" | cut -d- -f2)" "BOOTSTRAP_METALLB_LB_RANGE"
-    _has_valid_ip "${BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR}" "BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR"
-    _has_valid_ip "${BOOTSTRAP_METALLB_INGRESS_ADDR}" "BOOTSTRAP_METALLB_INGRESS_ADDR"
+    _has_valid_ip "${BOOTSTRAP_GATEWAY_DNS_ADDR}" "BOOTSTRAP_GATEWAY_DNS_ADDR"
+    _has_valid_ip "${BOOTSTRAP_GATEWAY_EXTERNAL_ADDR}" "BOOTSTRAP_GATEWAY_EXTERNAL_ADDR"
+    _has_valid_ip "${BOOTSTRAP_GATEWAY_INTERNAL_ADDR}" "BOOTSTRAP_GATEWAY_INTERNAL_ADDR"
 }
 
 verify_git_repository() {
@@ -349,12 +358,16 @@ verify_ansible_hosts() {
             _log "ERROR(${FUNCNAME[0]})" "The kube-vip IP '${BOOTSTRAP_KUBE_VIP_ADDR}' should not be the same as the IP for node '${!node_addr}'"
             exit 1
         fi
-        if [[ "${!node_addr}" == "${BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR}" ]]; then
-            _log "ERROR(${FUNCNAME[0]})" "The k8s-gateway load balancer IP '${BOOTSTRAP_METALLB_K8S_GATEWAY_ADDR}' should not be the same as the IP for node '${!node_addr}'"
+        if [[ "${!node_addr}" == "${BOOTSTRAP_GATEWAY_DNS_ADDR}" ]]; then
+            _log "ERROR(${FUNCNAME[0]})" "The k8s-gateway load balancer IP '${BOOTSTRAP_GATEWAY_DNS_ADDR}' should not be the same as the IP for node '${!node_addr}'"
             exit 1
         fi
-        if [[ "${!node_addr}" == "${BOOTSTRAP_METALLB_INGRESS_ADDR}" ]]; then
-            _log "ERROR(${FUNCNAME[0]})" "The ingress load balancer IP '${BOOTSTRAP_METALLB_INGRESS_ADDR}' should not be the same as the IP for node '${!node_addr}'"
+        if [[ "${!node_addr}" == "${BOOTSTRAP_GATEWAY_EXTERNAL_ADDR}" ]]; then
+            _log "ERROR(${FUNCNAME[0]})" "The external Cilium Gateway load balancer IP '${BOOTSTRAP_GATEWAY_EXTERNAL_ADDR}' should not be the same as the IP for node '${!node_addr}'"
+            exit 1
+        fi
+        if [[ "${!node_addr}" == "${BOOTSTRAP_GATEWAY_INTERNAL_ADDR}" ]]; then
+            _log "ERROR(${FUNCNAME[0]})" "The internal Cilium Gateway load balancer IP '${BOOTSTRAP_GATEWAY_INTERNAL_ADDR}' should not be the same as the IP for node '${!node_addr}'"
             exit 1
         fi
         if ssh -q -o BatchMode=yes -o ConnectTimeout=5 "${!node_username}"@"${!var}" "true"; then
