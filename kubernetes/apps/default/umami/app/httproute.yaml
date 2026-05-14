@@ -1,0 +1,19 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: umami
+  namespace: default
+  annotations:
+    hajimari.io/enable: "true"
+spec:
+  parentRefs:
+    - name: external
+      namespace: networking
+      sectionName: https
+  hostnames:
+    - "analytics.${PUBLIC_DOMAIN}"
+  rules:
+    - backendRefs:
+        - name: umami
+          port: 3000

@@ -79,33 +79,27 @@ spec:
         storageClass: longhorn
         globalMounts:
           - path: /home/node/.n8n
-    ingress:
+    route:
       app:
-        enabled: true
-        className: nginx
-        hosts:
-          - host: n8n.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls: []
+        parentRefs:
+          - name: internal
+            namespace: networking
+            sectionName: https
+        hostnames: ["n8n.${SECRET_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http
       webhook:
-        enabled: true
-        className: nginx
-        annotations:
-          external-dns.alpha.kubernetes.io/target: "ingress.${PUBLIC_DOMAIN}"
-
-        hosts:
-          - host: *hostName
-            paths:
-              - path: /webhook
-                service:
-                  identifier: app
-                  port: http
-              - path: /rest/oauth2-credential/callback
-                service:
-                  identifier: app
-                  port: http
-        tls: []
+        parentRefs:
+          - name: external
+            namespace: networking
+            sectionName: https
+        hostnames: ["n8n.${PUBLIC_DOMAIN}"]
+        rules:
+          - matches:
+              - path: { type: PathPrefix, value: /webhook }
+              - path: { type: PathPrefix, value: /rest/oauth2-credential/callback }
+            backendRefs:
+              - identifier: app
+                port: http

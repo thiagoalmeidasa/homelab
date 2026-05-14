@@ -99,33 +99,26 @@ spec:
         globalMounts:
           - path: /readeck
 
-    ingress:
+    route:
       app:
-        enabled: true
-        className: nginx
-        hosts:
-          - host: &domain readeck.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *domain
+        parentRefs:
+          - name: internal
+            namespace: networking
+            sectionName: https
+        hostnames: ["readeck.${SECRET_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http
       public:
-        enabled: true
-        className: nginx
         annotations:
-          external-dns.alpha.kubernetes.io/target: "ingress.${PUBLIC_DOMAIN}"
           hajimari.io/enable: "false"
-        hosts:
-          - host: &public-domain readeck.${PUBLIC_DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *public-domain
+        parentRefs:
+          - name: external
+            namespace: networking
+            sectionName: https
+        hostnames: ["readeck.${PUBLIC_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http
