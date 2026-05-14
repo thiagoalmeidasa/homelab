@@ -1,0 +1,28 @@
+---
+# Wildcard catch-all for unmatched hostnames on both gateways.
+# Gateway API hostname matching prefers non-wildcard over wildcard, so this only
+# fires when no other HTTPRoute matches the requested host. Status returned is
+# the container default (200 with branded body); 5xx response-override is a
+# deferred follow-up requiring CiliumEnvoyConfig.
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: error-pages
+  namespace: networking
+  annotations:
+    external-dns.alpha.kubernetes.io/controller: none
+spec:
+  parentRefs:
+    - name: external
+      namespace: networking
+      sectionName: https
+    - name: internal
+      namespace: networking
+      sectionName: https
+  hostnames:
+    - "*.${PUBLIC_DOMAIN}"
+    - "*.${SECRET_DOMAIN}"
+  rules:
+    - backendRefs:
+        - name: error-pages
+          port: 8080

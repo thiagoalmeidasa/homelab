@@ -34,7 +34,7 @@ spec:
       service:
         annotations:
           external-dns.alpha.kubernetes.io/hostname: "ingress.${SECRET_DOMAIN}"
-          io.cilium/lb-ipam-ips: "${METALLB_INGRESS_ADDR}"
+          io.cilium/lb-ipam-ips: "${GATEWAY_EXTERNAL_ADDR}"
         externalTrafficPolicy: Local
       publishService:
         enabled: true

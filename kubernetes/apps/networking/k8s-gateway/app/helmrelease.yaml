@@ -33,7 +33,7 @@ spec:
       type: LoadBalancer
       port: 53
       annotations:
-        io.cilium/lb-ipam-ips: "${METALLB_K8S_GATEWAY_ADDR}"
+        io.cilium/lb-ipam-ips: "${GATEWAY_DNS_ADDR}"
       externalTrafficPolicy: Local
     resources:
       requests:
