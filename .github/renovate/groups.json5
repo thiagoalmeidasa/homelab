@@ -20,6 +20,19 @@
         "commitMessageTopic": "{{{groupName}}} group"
       },
       "separateMinorPatch": true
+    },
+    {
+      "description": "Prometheus Operator chart and CRDs",
+      "groupName": "prometheus-operator",
+      "matchPackageNames": [
+        "kube-prometheus-stack",
+        "prometheus-operator/prometheus-operator"
+      ],
+      "matchDatasources": ["helm", "github-releases"],
+      "group": {
+        "commitMessageTopic": "{{{groupName}}} group"
+      },
+      "separateMinorPatch": true
     }
   ]
 }
