@@ -85,23 +85,6 @@ spec:
         ports:
           http:
             port: *port
-    ingress:
-      app:
-        className: nginx
-        annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
-          hajimari.io/enable: "true"
-          hajimari.io/icon: "television-box"
-        hosts:
-          - host: &host sonarr.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
     persistence:
       config:
         enabled: true

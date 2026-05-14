@@ -77,20 +77,6 @@ spec:
         ports:
           http:
             port: *port
-    ingress:
-      app:
-        className: nginx
-        annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
-          hajimari.io/enable: "true"
-          hajimari.io/icon: simple-icons:qbittorrent
-        hosts:
-          - host: qb.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
     persistence:
       config:
         accessMode: ReadWriteOnce

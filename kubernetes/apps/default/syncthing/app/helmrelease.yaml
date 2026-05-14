@@ -84,19 +84,6 @@ spec:
             bearerTokenSecret:
               name: syncthing-secret
               key: API_BEARER_TOKEN
-    ingress:
-      app:
-        className: nginx
-        annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
-          hajimari.io/icon: "cloud"
-        hosts:
-          - host: syncthing.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
     persistence:
       config:
         enabled: true

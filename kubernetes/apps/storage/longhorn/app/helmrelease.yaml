@@ -35,16 +35,4 @@ spec:
       guaranteedInstanceManagerCPU: "5"
       taintToleration: "node-role.kubernetes.io/small:NoSchedule"
     ingress:
-      enabled: true
-      annotations:
-        nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
-        hajimari.io/enable: "true"
-        hajimari.io/appName: "Longhorn"
-        hajimari.io/icon: "nas"
-        hajimari.io/group: "storage"
-      host: "longhorn.${SECRET_DOMAIN}"
-      hosts:
-        - "longhorn.${SECRET_DOMAIN}"
-      tls:
-        - hosts:
-            - "longhorn.${SECRET_DOMAIN}"
+      enabled: false

@@ -59,20 +59,7 @@ spec:
                 - severity=~"warning|critical|page"
               continue: true
       ingress:
-        enabled: true
-        pathType: Prefix
-        ingressClassName: "nginx"
-        annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
-          hajimari.io/enable: "true"
-          hajimari.io/appName: "Alert Manager"
-          hajimari.io/icon: "alert-decagram"
-          hajimari.io/group: "monitoring"
-        hosts:
-          - "alert-manager.${SECRET_DOMAIN}"
-        tls:
-          - hosts:
-              - "alert-manager.${SECRET_DOMAIN}"
+        enabled: false
       alertmanagerSpec:
         storage:
           volumeClaimTemplate:
@@ -435,39 +422,13 @@ spec:
           enabled: true
           searchNamespace: ALL
       ingress:
-        enabled: true
-        pathType: Prefix
-        ingressClassName: "nginx"
-        annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
-          hajimari.io/enable: "true"
-          hajimari.io/appName: "Grafana"
-          hajimari.io/icon: "monitor-dashboard"
-          hajimari.io/group: "monitoring"
-        hosts:
-          - "grafana.${SECRET_DOMAIN}"
-        tls:
-          - hosts:
-              - "grafana.${SECRET_DOMAIN}"
+        enabled: false
     prometheusOperator:
       configReloaderCpu: 0
     prometheus:
       fullnameOverride: prometheus
       ingress:
-        enabled: true
-        pathType: Prefix
-        ingressClassName: "nginx"
-        annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
-          hajimari.io/enable: "true"
-          hajimari.io/appName: "Prometheus"
-          hajimari.io/icon: "database-search"
-          hajimari.io/group: "monitoring"
-        hosts:
-          - "prometheus.${SECRET_DOMAIN}"
-        tls:
-          - hosts:
-              - "prometheus.${SECRET_DOMAIN}"
+        enabled: false
       prometheusSpec:
         additionalScrapeConfigs:
           - job_name: node-exporter

@@ -57,21 +57,7 @@ spec:
     persistentVolumeClaim:
       enabled: false
     ingress:
-      enabled: true
-      ingressClassName: nginx
-      annotations:
-        nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
-      hosts:
-        - host: &host "headlamp.${SECRET_DOMAIN}"
-          paths:
-            - path: /
-              type: ImplementationSpecific
-              service:
-                identifier: app
-                port: http
-      tls:
-        - hosts:
-            - *host
+      enabled: false
 
     extraManifests:
       - |
