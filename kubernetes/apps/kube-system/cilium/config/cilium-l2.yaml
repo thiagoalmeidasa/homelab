@@ -1,15 +1,38 @@
 ---
 # https://docs.cilium.io/en/latest/network/l2-announcements
+#
+# L2 announcement is split across two policies so the external Cilium Gateway
+# Service (`cilium-gateway-external`, label `io.cilium.gateway/owning-gateway=external`)
+# is NOT announced on the LAN. External traffic for `*.thiagoalmeida.xyz`
+# arrives via the Cloudflare Tunnel daemon — which reaches the Gateway through
+# the in-cluster Service DNS — so the LB IP is unused at the L2 level.
+#
+# Standard k8s label selectors are AND-only, so "all LB services except the
+# external Gateway" is expressed as two policies that together cover everything
+# else: (1) non-Cilium-gateway LB services and (2) the internal Cilium Gateway.
 apiVersion: cilium.io/v2alpha1
 kind: CiliumL2AnnouncementPolicy
 metadata:
-  name: l2-policy
+  name: l2-policy-services
 spec:
   loadBalancerIPs: true
-  # NOTE: interfaces might need to be set if you have more than one active NIC on your hosts
-  # interfaces:
-  #   - ^eno[0-9]+
-  #   - ^eth[0-9]+
+  serviceSelector:
+    matchExpressions:
+      - key: io.cilium.gateway/owning-gateway
+        operator: DoesNotExist
+  nodeSelector:
+    matchLabels:
+      kubernetes.io/os: linux
+---
+apiVersion: cilium.io/v2alpha1
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: l2-policy-gateway-internal
+spec:
+  loadBalancerIPs: true
+  serviceSelector:
+    matchLabels:
+      io.cilium.gateway/owning-gateway: internal
   nodeSelector:
     matchLabels:
       kubernetes.io/os: linux
