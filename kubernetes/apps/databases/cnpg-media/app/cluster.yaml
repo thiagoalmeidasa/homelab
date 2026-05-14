@@ -11,7 +11,7 @@ spec:
   bootstrap:
     initdb:
       database: seer
-      owner: postgres
+      owner: seer
   resources:
     requests:
       cpu: 50m
