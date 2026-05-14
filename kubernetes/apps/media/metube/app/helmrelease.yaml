@@ -75,23 +75,19 @@ spec:
         ports:
           http:
             port: 8081
-    ingress:
+    route:
       metube:
-        className: nginx
         annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
           hajimari.io/icon: simple-icons:youtube
-        enabled: true
-        hosts:
-          - host: &host "metube.${SECRET_DOMAIN}"
-            paths:
-              - path: /
-                service:
-                  identifier: metube
-                  port: http
-        tls:
-          - hosts:
-              - *host
+        parentRefs:
+          - name: internal
+            namespace: networking
+            sectionName: https
+        hostnames: ["metube.${SECRET_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: metube
+                port: http
     persistence:
       config:
         enabled: true

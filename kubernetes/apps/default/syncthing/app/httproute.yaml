@@ -1,0 +1,19 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: syncthing
+  namespace: default
+  annotations:
+    hajimari.io/icon: cloud
+spec:
+  parentRefs:
+    - name: internal
+      namespace: networking
+      sectionName: https
+  hostnames:
+    - "syncthing.${SECRET_DOMAIN}"
+  rules:
+    - backendRefs:
+        - name: syncthing
+          port: 8384

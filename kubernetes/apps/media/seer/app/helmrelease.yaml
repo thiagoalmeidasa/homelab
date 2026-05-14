@@ -72,42 +72,33 @@ spec:
         ports:
           http:
             port: *port
-    ingress:
+    route:
       app:
-        enabled: true
-        className: nginx
         annotations:
-          nginx.ingress.kubernetes.io/custom-http-errors: "418"
-          nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
           hajimari.io/enable: "true"
           hajimari.io/appName: "Seer"
           hajimari.io/info: "Media requests"
-        hosts:
-          - host: &host requests.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-        tls:
-          - hosts:
-              - *host
+        parentRefs:
+          - name: internal
+            namespace: networking
+            sectionName: https
+        hostnames: ["requests.${SECRET_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http
       public:
-        enabled: true
-        className: nginx
         annotations:
-          nginx.ingress.kubernetes.io/custom-http-errors: "418"
-          external-dns.alpha.kubernetes.io/target: "ingress.${PUBLIC_DOMAIN}"
           hajimari.io/enable: "false"
-        hosts:
-          - host: requests.${PUBLIC_DOMAIN}
-            paths:
-              - path: /
-                pathType: Prefix
-                service:
-                  identifier: app
-                  port: http
-        tls: []
+        parentRefs:
+          - name: external
+            namespace: networking
+            sectionName: https
+        hostnames: ["requests.${PUBLIC_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http
     persistence:
       config:
         enabled: true

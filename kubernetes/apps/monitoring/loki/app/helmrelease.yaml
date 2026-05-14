@@ -138,20 +138,7 @@ spec:
                     values: ["amd64"]
 
       ingress:
-        enabled: true
-        ingressClassName: "nginx"
-        annotations:
-          nginx.ingress.kubernetes.io/whitelist-source-range: ${LOCAL_SUBNETS}
-          hajimari.io/enable: "true"
-          hajimari.io/group: "monitoring"
-        hosts:
-          - host: &host loki.${SECRET_DOMAIN}
-            paths:
-              - path: /
-                pathType: Prefix
-        tls:
-          - hosts:
-              - *host
+        enabled: false
 
     read:
       replicas: 3
