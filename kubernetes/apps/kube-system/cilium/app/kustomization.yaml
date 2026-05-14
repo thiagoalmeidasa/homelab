@@ -7,5 +7,15 @@ configMapGenerator:
   - name: cilium-helm-values
     files:
       - values.yaml=./helm-values.yaml
+  - name: cilium-envoy-dashboard
+    files:
+      - envoy-overview.json=https://grafana.com/api/dashboards/24459/revisions/3/download
+    options:
+      disableNameSuffixHash: true
+      labels:
+        grafana_dashboard: "1"
+      annotations:
+        grafana_folder: Cilium
+        kustomize.toolkit.fluxcd.io/substitute: disabled
 configurations:
   - kustomizeconfig.yaml
