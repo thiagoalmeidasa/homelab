@@ -33,7 +33,6 @@ The following components will be installed in your [k3s](https://k3s.io/) cluste
 - [cert-manager](https://cert-manager.io/) - Operator to request SSL certificates and store them as Kubernetes resources
 - [calico](https://www.tigera.io/project-calico/) - Container networking interface for inter pod and service networking
 - [external-dns](https://github.com/kubernetes-sigs/external-dns) - Operator to publish DNS records to Cloudflare (and other providers) based on Kubernetes ingresses
-- [k8s_gateway](https://github.com/ori-edge/k8s_gateway) - DNS resolver that provides local DNS to your Kubernetes ingresses
 - [ingress-nginx](https://kubernetes.github.io/ingress-nginx/) - Kubernetes ingress controller used for a HTTP reverse proxy of Kubernetes ingresses
 - [local-path-provisioner](https://github.com/rancher/local-path-provisioner) - provision persistent local storage with Kubernetes
 
@@ -383,18 +382,18 @@ task cluster:resources
 
 ### 🌐 DNS
 
-📍 The `external-dns` application created in the `networking` namespace will handle creating public DNS records. By default, `echo-server` and the `flux-webhook` are the only public sub-domains exposed. In order to make additional applications public you must set an ingress annotation (`external-dns.alpha.kubernetes.io/target`) like done in the `HelmRelease` for `echo-server`.
+📍 The `external-dns` application created in the `networking` namespace will handle creating public DNS records via Cloudflare for any HTTPRoute attached to the `external` Cilium Gateway. By default, `echo-server` and the `flux-webhook` are the only public sub-domains exposed. To make additional applications public, attach their HTTPRoute to `parentRefs.name: external` (namespace `networking`).
 
-For split DNS to work it is required to have `${SECRET_DOMAIN}` point to the `${GATEWAY_DNS_ADDR}` load balancer IP address on your home DNS server. This will ensure DNS requests for `${SECRET_DOMAIN}` will only get routed to your `k8s_gateway` service thus providing **internal** DNS resolution to your cluster applications/ingresses from any device that uses your home DNS server.
+For **internal** DNS resolution, add a single wildcard A record on your home DNS server (router, Pi-Hole, AdGuard, Unbound, etc.) that points `*.${SECRET_DOMAIN}` at the `internal` Cilium Gateway IP (`${GATEWAY_INTERNAL_ADDR}`). The gateway dispatches by `Host:` header, so every internal HTTPRoute is reachable through that single record.
 
-For and example with Pi-Hole apply the following file and restart dnsmasq:
+For example with `dnsmasq`:
 
 ```sh
-# /etc/dnsmasq.d/99-k8s-gateway-forward.conf
-server=/${SECRET_DOMAIN}/${GATEWAY_DNS_ADDR}
+# /etc/dnsmasq.d/99-internal-gateway.conf
+address=/${SECRET_DOMAIN}/${GATEWAY_INTERNAL_ADDR}
 ```
 
-Now try to resolve an internal-only domain with `dig @${pi-hole-ip} hajimari.${SECRET_DOMAIN}` it should resolve to your `${GATEWAY_INTERNAL_ADDR}` IP.
+Now `dig @${pi-hole-ip} hajimari.${SECRET_DOMAIN}` should resolve to `${GATEWAY_INTERNAL_ADDR}`.
 
 If having trouble you can ask for help in [this](https://github.com/onedr0p/flux-cluster-template/discussions/719) Github discussion.
 
