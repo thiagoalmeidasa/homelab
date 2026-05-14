@@ -6,4 +6,5 @@ resources:
   - ./bjw-s-oci.yaml
   - ./cnpg-barman-cloud-oci.yaml
   - ./cnpg-oci.yaml
+  - ./flaresolverr-oci.yaml
   - ./headlamp-oci.yaml
