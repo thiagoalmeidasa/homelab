@@ -1,0 +1,189 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app homepage
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+      strategy: rollback
+
+  values:
+    controllers:
+      homepage:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        serviceAccount:
+          name: homepage
+        containers:
+          app:
+            image:
+              repository: ghcr.io/gethomepage/homepage
+              tag: v1.13.1@sha256:d8d784e5090111b6e4c56dfd90e272d2953a2094e87349f647165df0fa6c4401
+            env:
+              LOG_LEVEL: info
+              HOMEPAGE_ALLOWED_HOSTS: "homepage.${SECRET_DOMAIN}"
+            probes:
+              liveness: &probe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/healthcheck
+                    port: &port 3000
+                  initialDelaySeconds: 10
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness: *probe
+            resources:
+              requests:
+                cpu: 25m
+                memory: 128Mi
+              limits:
+                memory: 256Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities:
+                drop: [ALL]
+
+    defaultPodOptions:
+      labels:
+        lan-only: "true"
+
+    serviceAccount:
+      homepage: {}
+
+    service:
+      app:
+        controller: homepage
+        ports:
+          http:
+            port: *port
+
+    persistence:
+      logs:
+        type: emptyDir
+        globalMounts:
+          - path: /app/config/logs
+      config:
+        type: configMap
+        name: homepage-config
+        globalMounts:
+          - path: /app/config/settings.yaml
+            subPath: settings.yaml
+            readOnly: true
+          - path: /app/config/services.yaml
+            subPath: services.yaml
+            readOnly: true
+          - path: /app/config/bookmarks.yaml
+            subPath: bookmarks.yaml
+            readOnly: true
+          - path: /app/config/widgets.yaml
+            subPath: widgets.yaml
+            readOnly: true
+          - path: /app/config/kubernetes.yaml
+            subPath: kubernetes.yaml
+            readOnly: true
+          - path: /app/config/docker.yaml
+            subPath: docker.yaml
+            readOnly: true
+          - path: /app/config/custom.css
+            subPath: custom.css
+            readOnly: true
+          - path: /app/config/custom.js
+            subPath: custom.js
+            readOnly: true
+
+    configMaps:
+      config:
+        enabled: true
+        data:
+          settings.yaml: |
+            title: Rasp K3s
+            headerStyle: clean
+            theme: dark
+            color: slate
+            layout:
+              Media:
+                style: row
+                columns: 4
+              Monitoring:
+                style: row
+                columns: 4
+              k8s-at-home:
+                header: true
+                style: column
+              Tech:
+                header: true
+                style: column
+            providers: {}
+          services.yaml: |
+            - Media:
+                - Transmission:
+                    href: http://storage.lan:9092/
+                    icon: mdi-folder-download
+            - Monitoring:
+                - PagerDuty:
+                    href: https://smoothship.eu.pagerduty.com/
+                    icon: mdi-alert
+          bookmarks.yaml: |
+            - k8s-at-home:
+                - thiagoalmeidasa/homelab:
+                    - abbr: HL
+                      href: https://github.com/thiagoalmeidasa/homelab/
+                - Template repo:
+                    - abbr: TR
+                      href: https://github.com/onedr0p/flux-cluster-template
+                - Helm charts:
+                    - abbr: HC
+                      href: https://github.com/bjw-s/helm-charts/tree/main/charts/library/common
+                - onedr0p/home-cluster:
+                    - abbr: O7
+                      href: https://github.com/onedr0p/home-cluster
+                - cbirkenbeul/homelab:
+                    - abbr: CB
+                      href: https://github.com/cbirkenbeul/homelab
+                - bjw-s/home-ops:
+                    - abbr: BJ
+                      href: https://github.com/bjw-s/home-ops
+            - Tech:
+                - Hacker News:
+                    - abbr: HN
+                      href: https://news.ycombinator.com/
+                - The Verge:
+                    - abbr: TV
+                      href: https://theverge.com/
+                - MIT Technology Review:
+                    - abbr: MT
+                      href: https://www.technologyreview.com/
+          widgets.yaml: |
+            - kubernetes:
+                cluster:
+                  show: true
+                  cpu: true
+                  memory: true
+                  showLabel: true
+                  label: cluster
+                nodes:
+                  show: true
+                  cpu: true
+                  memory: true
+                  showLabel: true
+          kubernetes.yaml: |
+            mode: cluster
+          docker.yaml: ""
+          custom.css: ""
+          custom.js: ""
