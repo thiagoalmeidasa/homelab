@@ -5,7 +5,7 @@ metadata:
   name: external
   namespace: networking
   annotations:
-    external-dns.alpha.kubernetes.io/target: "external.${PUBLIC_DOMAIN}"
+    external-dns.alpha.kubernetes.io/target: "ingress.${PUBLIC_DOMAIN}"
 spec:
   gatewayClassName: cilium
   infrastructure:
@@ -34,8 +34,6 @@ kind: Gateway
 metadata:
   name: internal
   namespace: networking
-  annotations:
-    external-dns.alpha.kubernetes.io/target: "internal.${SECRET_DOMAIN}"
 spec:
   gatewayClassName: cilium
   infrastructure:
