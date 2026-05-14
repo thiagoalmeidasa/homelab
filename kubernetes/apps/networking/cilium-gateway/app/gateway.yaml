@@ -8,6 +8,9 @@ metadata:
     external-dns.alpha.kubernetes.io/target: "ingress.${PUBLIC_DOMAIN}"
 spec:
   gatewayClassName: cilium
+  infrastructure:
+    annotations:
+      external-dns.alpha.kubernetes.io/hostname: "ingress.${PUBLIC_DOMAIN}"
   listeners:
     - name: http
       protocol: HTTP

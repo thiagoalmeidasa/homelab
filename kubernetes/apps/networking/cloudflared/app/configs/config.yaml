@@ -8,5 +8,8 @@
 # E.g. `cloudflared tunnel route dns example-tunnel tunnel.example.com`.
 ingress:
   - hostname: "*.${PUBLIC_DOMAIN}"
+    originRequest:
+      http2Origin: true
+      originServerName: "ingress.${PUBLIC_DOMAIN}"
     service: https://cilium-gateway-external.networking.svc.cluster.local:443
   - service: http_status:404
