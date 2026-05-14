@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./bazarr/ks.yaml
+  - ./flaresolverr/ks.yaml
   - ./jellyfin/ks.yaml
   - ./seer/ks.yaml
   - ./metube/ks.yaml
