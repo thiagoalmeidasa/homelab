@@ -12,8 +12,6 @@ resources:
   - ./fairwinds-charts.yaml
   - ./grafana.yaml
   - ./hajimari.yaml
-
-  - ./ingress-nginx.yaml
   - ./jetstack.yaml
   - ./kubernetes-sigs-nfd.yaml
   - ./longhorn.yaml

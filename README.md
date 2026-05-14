@@ -32,8 +32,8 @@ The following components will be installed in your [k3s](https://k3s.io/) cluste
 - [metallb](https://metallb.universe.tf/) - Load balancer for Kubernetes services
 - [cert-manager](https://cert-manager.io/) - Operator to request SSL certificates and store them as Kubernetes resources
 - [calico](https://www.tigera.io/project-calico/) - Container networking interface for inter pod and service networking
-- [external-dns](https://github.com/kubernetes-sigs/external-dns) - Operator to publish DNS records to Cloudflare (and other providers) based on Kubernetes ingresses
-- [ingress-nginx](https://kubernetes.github.io/ingress-nginx/) - Kubernetes ingress controller used for a HTTP reverse proxy of Kubernetes ingresses
+- [external-dns](https://github.com/kubernetes-sigs/external-dns) - Operator to publish public DNS records to Cloudflare from Gateway API `HTTPRoute` resources attached to the `external` Cilium Gateway
+- [Cilium Gateway API](https://docs.cilium.io/en/stable/network/servicemesh/gateway-api/gateway-api/) - In-cluster L7 ingress, split into an `external` Gateway (Cloudflare-tunneled traffic) and an `internal` Gateway (LAN/split-DNS)
 - [local-path-provisioner](https://github.com/rancher/local-path-provisioner) - provision persistent local storage with Kubernetes
 
 _Additional applications include [hajimari](https://github.com/toboshii/hajimari), [error-pages](https://github.com/tarampampam/error-pages), [echo-server](https://github.com/Ealenn/Echo-Server), [system-upgrade-controller](https://github.com/rancher/system-upgrade-controller), [reloader](https://github.com/stakater/Reloader)_
