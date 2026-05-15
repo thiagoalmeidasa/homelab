@@ -43,6 +43,9 @@ spec:
               QBT_Preferences__WebUI__AlternativeUIEnabled: false
               QBT_Preferences__WebUI__AuthSubnetWhitelistEnabled: true
               QBT_Preferences__WebUI__AuthSubnetWhitelist: ${LOCAL_SUBNETS}
+              QBT_Preferences__Downloads__SavePath: /downloads
+              QBT_Preferences__Downloads__TempPathEnabled: true
+              QBT_Preferences__Downloads__TempPath: /downloading
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -102,13 +105,13 @@ spec:
         server: "${NFS_SERVER}"
         path: "${NFS_MEDIA}/downloads"
         globalMounts:
-          - path: "/media/downloads"
+          - path: "/downloads"
       downloading:
         type: nfs
         server: "${NFS_SERVER}"
         path: "${NFS_MEDIA}/downloading"
         globalMounts:
-          - path: "/media/downloading"
+          - path: "/downloading"
       movies:
         type: nfs
         server: "${NFS_SERVER}"
