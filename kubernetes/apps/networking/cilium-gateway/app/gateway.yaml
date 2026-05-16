@@ -28,17 +28,6 @@ spec:
         certificateRefs:
           - kind: Secret
             name: "${SECRET_DOMAIN/./-}-production-tls"
-    - name: kanidm-tls
-      protocol: TLS
-      port: 443
-      hostname: "auth.${PUBLIC_DOMAIN}"
-      tls:
-        mode: Passthrough
-      allowedRoutes:
-        namespaces:
-          from: All
-        kinds:
-          - kind: TLSRoute
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
@@ -67,17 +56,6 @@ spec:
         certificateRefs:
           - kind: Secret
             name: "${SECRET_DOMAIN/./-}-production-tls"
-    - name: kanidm-tls
-      protocol: TLS
-      port: 443
-      hostname: "auth.${PUBLIC_DOMAIN}"
-      tls:
-        mode: Passthrough
-      allowedRoutes:
-        namespaces:
-          from: All
-        kinds:
-          - kind: TLSRoute
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute

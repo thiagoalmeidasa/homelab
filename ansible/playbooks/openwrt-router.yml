@@ -44,6 +44,7 @@
     # on purpose — only GitHub calls it.
     public_lan_subdomains:
       - analytics
+      - auth
       - media
       - photos
       - portfolio

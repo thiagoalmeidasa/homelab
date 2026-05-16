@@ -5,4 +5,4 @@ namespace: auth
 resources:
   - ./certificate.yaml
   - ./helmrelease.yaml
-  - ./tlsroute.yaml
+  - ./backendtlspolicy.yaml
