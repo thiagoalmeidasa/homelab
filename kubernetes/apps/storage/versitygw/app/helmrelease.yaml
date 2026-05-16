@@ -45,6 +45,8 @@ spec:
               - /_health
               - --iam-dir
               - /iam
+              - --webui
+              - ":7071"
               - posix
               - --nometa
               - --disable-copy-file-range
@@ -94,6 +96,19 @@ spec:
         ports:
           s3:
             port: *port
+          webui:
+            port: 7071
+    route:
+      webui:
+        parentRefs:
+          - name: internal
+            namespace: networking
+            sectionName: https
+        hostnames: ["versitygw.${SECRET_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: webui
     persistence:
       data:
         accessMode: ReadWriteOnce
