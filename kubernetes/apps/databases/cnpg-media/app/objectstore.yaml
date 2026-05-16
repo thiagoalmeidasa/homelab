@@ -8,7 +8,7 @@ metadata:
 spec:
   configuration:
     destinationPath: s3://cnpg-backups/media
-    endpointURL: http://minio.storage.svc.cluster.local:9000
+    endpointURL: http://rustfs.storage.svc.cluster.local:9000
     s3Credentials:
       accessKeyId:
         name: cnpg-media-s3-secret
