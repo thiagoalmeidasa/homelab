@@ -9,12 +9,16 @@
   ansible.builtin.set_fact:
     dnsmasq_address_directives: >-
       {{
-        dns_address_overrides
-        | map(attribute='domain')
-        | zip(dns_address_overrides | map(attribute='ip'))
-        | map('join', '/')
-        | map('regex_replace', '^', '/')
-        | list
+        (dns_address_overrides | default([])
+          | map(attribute='domain')
+          | zip(dns_address_overrides | default([]) | map(attribute='ip'))
+          | map('join', '/')
+          | map('regex_replace', '^', '/')
+          | list)
+        +
+        (public_lan_subdomains | default([])
+          | map('regex_replace', '^(.*)$', '/\1.' ~ public_domain ~ '/' ~ internal_gateway_ip)
+          | list)
       }}
 
 - name: DNS | Set dnsmasq address overrides

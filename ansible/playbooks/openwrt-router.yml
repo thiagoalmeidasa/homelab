@@ -34,11 +34,19 @@
     #   - host[9]  kube-vip-invalid (no name)
     #   - domain   mqtt.lan -> virtual hostname, no lease
     #   - domain   console.gl-inet.com -> router self (vendor vanity)
+    # `internal_gateway_ip` is defined in
+    # ansible/inventory/group_vars/openwrt/network.yml.
     dns_address_overrides:
-      # Internal Cilium gateway (GATEWAY_INTERNAL_ADDR in
-      # kubernetes/flux/vars/cluster-settings.yaml) — the only LAN-routable
-      # cluster entrypoint. Wildcard covers every LAN-only homelab subdomain.
-      # `secret_domain` lives in inventory/group_vars/openwrt/vars.sops.yml.
-      - { domain: "{{ secret_domain }}", ip: 192.168.100.226 }
+      - { domain: "{{ secret_domain }}", ip: "{{ internal_gateway_ip }}" }
+    # Public-domain hostnames also served via the LAN gateway. Each entry is
+    # expanded by the role into `address=/<sub>.<public_domain>/<gateway>` so
+    # LAN clients skip the Cloudflare Tunnel hairpin. flux-webhook is excluded
+    # on purpose — only GitHub calls it.
+    public_lan_subdomains:
+      - analytics
+      - media
+      - photos
+      - portfolio
+      - share
   roles:
     - role: openwrt-router
