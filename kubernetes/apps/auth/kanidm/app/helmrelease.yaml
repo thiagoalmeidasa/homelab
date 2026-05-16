@@ -110,7 +110,7 @@ spec:
 
       config:
         type: configMap
-        name: kanidm-config
+        name: kanidm
         globalMounts:
           - path: /etc/kanidm/server.toml
             subPath: server.toml
