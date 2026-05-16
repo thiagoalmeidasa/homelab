@@ -159,6 +159,7 @@ spec:
                   showLabel: true
           kubernetes.yaml: |
             mode: cluster
+            gateway: true
           docker.yaml: ""
           custom.css: ""
           custom.js: ""
