@@ -8,3 +8,4 @@ resources:
   - ./minio/ks.yaml
   - ./rustfs/ks.yaml
   - ./snapshot-controller/ks.yaml
+  - ./versitygw/ks.yaml
