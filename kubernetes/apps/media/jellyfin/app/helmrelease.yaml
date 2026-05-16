@@ -172,6 +172,15 @@ spec:
         path: "${NFS_MEDIA}/intros"
         globalMounts:
           - path: "/media/intros"
+      jellyfin-cache:
+        type: nfs
+        server: "${NFS_SERVER}"
+        path: "${NFS_MEDIA}/.cache/jellyfin"
+        globalMounts:
+          - path: "/config/data/subtitles"
+            subPath: subtitles
+          - path: "/config/metadata/People"
+            subPath: people
       transcode:
         enabled: true
         type: emptyDir
