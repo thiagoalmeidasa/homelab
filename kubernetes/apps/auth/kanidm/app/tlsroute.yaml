@@ -1,0 +1,19 @@
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TLSRoute
+metadata:
+  name: kanidm
+spec:
+  parentRefs:
+    - name: external
+      namespace: networking
+      sectionName: kanidm-tls
+    - name: internal
+      namespace: networking
+      sectionName: kanidm-tls
+  hostnames:
+    - "auth.${PUBLIC_DOMAIN}"
+  rules:
+    - backendRefs:
+        - name: kanidm
+          port: 8443
