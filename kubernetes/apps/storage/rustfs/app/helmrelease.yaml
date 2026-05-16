@@ -95,7 +95,7 @@ spec:
           - name: internal
             namespace: networking
             sectionName: https
-        hostnames: ["rustfs.${SECRET_DOMAIN}"]
+        hostnames: ["s3-console.${SECRET_DOMAIN}"]
         rules:
           - backendRefs:
               - identifier: app
@@ -105,7 +105,7 @@ spec:
           - name: internal
             namespace: networking
             sectionName: https
-        hostnames: ["s3-rustfs.${SECRET_DOMAIN}"]
+        hostnames: ["s3.${SECRET_DOMAIN}"]
         rules:
           - backendRefs:
               - identifier: app
