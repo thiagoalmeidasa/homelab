@@ -42,7 +42,8 @@ spec:
               repository: docker.io/owncloud/ocis
               tag: 8.0.3@sha256:5fcf1ff578a8979c44696d9226c62743646f4917c87c883b432a40a5fb1c8c5b
             env:
-              DEMO_USERS: false
+              IDM_CREATE_DEMO_USERS: false
+              OCIS_INSECURE: false
               OCIS_LOG_COLOR: true
               OCIS_LOG_LEVEL: warn
               OCIS_LOG_PRETTY: true
@@ -51,9 +52,6 @@ spec:
               PROXY_DEBUG_ADDR: 0.0.0.0:9205
               PROXY_TLS: false
               TZ: ${TIMEZONE}
-            envFrom:
-              - secretRef:
-                  name: ocis-secret
             probes:
               liveness:
                 enabled: true
