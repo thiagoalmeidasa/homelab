@@ -1,0 +1,25 @@
+# yamllint disable
+apiVersion: v1
+kind: Secret
+metadata:
+    name: versitygw-secret
+    namespace: storage
+type: Opaque
+stringData:
+    ROOT_ACCESS_KEY_ID: ENC[AES256_GCM,data:D9yf29p1Y3QY13b25H/yoPfopVSaalpB,iv:xN9TQj8ouose1iMBILPZcdhSW9mrNO0/ZrkuuRVQnU8=,tag:32xk9Kp9gv1Eu2RL+zjqPg==,type:str]
+    ROOT_SECRET_ACCESS_KEY: ENC[AES256_GCM,data:xK1n+K4eR+yPE+4oH8TMcewhFYwRWcA2BISmeqZKpYwz9TTC7BbfSQ==,iv:EwGMbHr4rDlJnOI3UVAHe56me72m9qGv7a++8plObPs=,tag:hD4GigZtIg0eTjlkETRoOg==,type:str]
+sops:
+    age:
+        - recipient: age1w02zzfg0y4ast9mgnd9w0yuym0wqx6q967kmrmq355w4cnw0xytq2x369r
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA5R3EwbFB0ZGhVWURmQWoy
+            MlpTNmZBbjF1OUM0WFJyMm9HdWY3ZmUwMXhNCmVkWml0ZnppOXVlcWhDU1dzZHcz
+            TXUxMTJrNDhKcitqSVcvd1JtV2tkdlkKLS0tIDdEQzJXZUxMKzVISFhtcEExbFNq
+            dkdxZ2t4M1oyUkdZYUcwU2I4YzhqSmsKg3OM8uNuStHR9h3O3f597nZOGtnjSU6g
+            4fjNSYbNF52+sI9I7z4QnLxh9paULpF4IGsA0HvlSEJ7sl8msZSoaA==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-05-16T22:15:41Z"
+    mac: ENC[AES256_GCM,data:ym/g28pG04V9TLxlApOPgbwY1S/aVodZ1fvGNYavtS8/gCCbOVcB5iviRFFDC0HMUHUj/JOe2pQUIM3xXSjhWO5iRfVzl7IUiP4aVvbaKpmyNNm+TKcM5kU4Lj3E9kvTF/oq8QFa2s4JWLZob7tMXCPIGyfQ5Gs23VhttKVbfbY=,iv:P1aKGnHxDvD/uKgJowrao1hGxeOpWDKQOq//9ywuiwg=,tag:AKStkA75vLi60A4mixc/Uw==,type:str]
+    encrypted_regex: ^(data|stringData)$
+    version: 3.10.2
