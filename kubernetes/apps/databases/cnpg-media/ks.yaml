@@ -8,6 +8,7 @@ spec:
   dependsOn:
     - name: cluster-apps-cnpg
     - name: cluster-apps-cnpg-barman-cloud
+    - name: versitygw
   path: ./kubernetes/apps/databases/cnpg-media/app
   prune: true
   sourceRef:
