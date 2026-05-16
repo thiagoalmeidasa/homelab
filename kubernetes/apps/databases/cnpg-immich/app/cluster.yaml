@@ -8,6 +8,9 @@ metadata:
 spec:
   instances: 1
   imageName: ghcr.io/tensorchord/cloudnative-vectorchord:17.5-0.4.3
+  inheritedMetadata:
+    labels:
+      recurring-job-group.longhorn.io/backup: enabled
   postgresql:
     shared_preload_libraries:
       - vchord.so
