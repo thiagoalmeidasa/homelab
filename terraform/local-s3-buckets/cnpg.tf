@@ -12,20 +12,23 @@ resource "minio_iam_user" "cnpg" {
 resource "minio_iam_policy" "cnpg_backup" {
   name = "cnpg-backup-policy"
   policy = jsonencode({
+    ID      = ""
     Version = "2012-10-17"
     Statement = [{
+      Sid    = ""
       Effect = "Allow"
       Action = [
+        "s3:GetBucketLocation",
         "s3:GetObject",
         "s3:PutObject",
         "s3:DeleteObject",
         "s3:ListBucket",
-        "s3:GetBucketLocation",
       ]
       Resource = [
         "arn:aws:s3:::cnpg-backups",
         "arn:aws:s3:::cnpg-backups/*",
       ]
+      Condition = {}
     }]
   })
 }
