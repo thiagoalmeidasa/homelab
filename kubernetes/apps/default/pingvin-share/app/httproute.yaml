@@ -5,7 +5,10 @@ metadata:
   name: pingvin-share
   namespace: default
   annotations:
-    hajimari.io/icon: mdi:account-arrow-up
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: Pingvin Share
+    gethomepage.dev/group: Productivity
+    gethomepage.dev/icon: pingvin-share.png
 spec:
   parentRefs:
     - name: external

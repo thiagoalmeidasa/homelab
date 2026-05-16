@@ -82,7 +82,10 @@ spec:
     route:
       app:
         annotations:
-          hajimari.io/enable: "true"
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Affine
+          gethomepage.dev/group: Productivity
+          gethomepage.dev/icon: affine.png
         parentRefs:
           - name: internal
             namespace: networking
@@ -93,8 +96,6 @@ spec:
               - identifier: app
                 port: http
       public:
-        annotations:
-          hajimari.io/enable: "false"
         parentRefs:
           - name: external
             namespace: networking

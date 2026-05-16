@@ -5,10 +5,11 @@ metadata:
   name: photoprism
   namespace: default
   annotations:
-    hajimari.io/enable: "true"
-    hajimari.io/icon: arcticons:photoprism
-    hajimari.io/info: Manage Photos
-    hajimari.io/group: media
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: PhotoPrism
+    gethomepage.dev/group: Photos
+    gethomepage.dev/icon: photoprism.png
+    gethomepage.dev/description: Manage Photos
 spec:
   parentRefs:
     - name: internal

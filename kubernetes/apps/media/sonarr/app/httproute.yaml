@@ -5,8 +5,10 @@ metadata:
   name: sonarr
   namespace: media
   annotations:
-    hajimari.io/enable: "true"
-    hajimari.io/icon: television-box
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: Sonarr
+    gethomepage.dev/group: Media
+    gethomepage.dev/icon: sonarr.png
 spec:
   parentRefs:
     - name: internal

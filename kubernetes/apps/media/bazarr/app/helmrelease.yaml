@@ -81,8 +81,10 @@ spec:
     route:
       app:
         annotations:
-          hajimari.io/enable: "true"
-          hajimari.io/icon: "filmstrip"
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Bazarr
+          gethomepage.dev/group: Media
+          gethomepage.dev/icon: bazarr.png
         parentRefs:
           - name: internal
             namespace: networking

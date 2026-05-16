@@ -5,7 +5,10 @@ metadata:
   name: kopia
   namespace: storage
   annotations:
-    hajimari.io/enable: "true"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: Kopia
+    gethomepage.dev/group: Storage
+    gethomepage.dev/icon: kopia.png
 spec:
   parentRefs:
     - name: internal

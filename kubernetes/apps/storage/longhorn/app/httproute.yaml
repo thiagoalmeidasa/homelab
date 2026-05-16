@@ -5,10 +5,10 @@ metadata:
   name: longhorn
   namespace: storage
   annotations:
-    hajimari.io/enable: "true"
-    hajimari.io/appName: Longhorn
-    hajimari.io/icon: nas
-    hajimari.io/group: storage
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: Longhorn
+    gethomepage.dev/group: Storage
+    gethomepage.dev/icon: longhorn.png
 spec:
   parentRefs:
     - name: internal

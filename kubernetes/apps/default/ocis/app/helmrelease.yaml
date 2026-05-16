@@ -88,8 +88,10 @@ spec:
     route:
       internal:
         annotations:
-          hajimari.io/enable: "true"
-          hajimari.io/icon: arcticons:owncloud
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: oCIS
+          gethomepage.dev/group: Productivity
+          gethomepage.dev/icon: owncloud.png
         parentRefs:
           - name: internal
             namespace: networking
@@ -100,8 +102,6 @@ spec:
               - identifier: app
                 port: http
       public:
-        annotations:
-          hajimari.io/enable: "false"
         parentRefs:
           - name: external
             namespace: networking

@@ -6,7 +6,6 @@ resources:
   - ./affine/ks.yaml
   - ./distcc/ks.yaml
   - ./echo-server/ks.yaml
-  - ./hajimari/ks.yaml
   - ./homepage/ks.yaml
   - ./immich/ks.yaml
   - ./n8n/ks.yaml

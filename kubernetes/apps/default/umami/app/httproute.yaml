@@ -5,7 +5,10 @@ metadata:
   name: umami
   namespace: default
   annotations:
-    hajimari.io/enable: "true"
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: Umami
+    gethomepage.dev/group: Productivity
+    gethomepage.dev/icon: umami.png
 spec:
   parentRefs:
     - name: external
