@@ -18,5 +18,5 @@ spec:
     - "share.${PUBLIC_DOMAIN}"
   rules:
     - backendRefs:
-        - name: pingvin-share
+        - name: pingvin
           port: 3000
