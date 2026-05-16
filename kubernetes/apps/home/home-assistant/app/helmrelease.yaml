@@ -114,7 +114,10 @@ spec:
     route:
       main:
         annotations:
-          hajimari.io/icon: mdi:home-assistant
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Home Assistant
+          gethomepage.dev/group: Home
+          gethomepage.dev/icon: home-assistant.png
         parentRefs:
           - name: internal
             namespace: networking

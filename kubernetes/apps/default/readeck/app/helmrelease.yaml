@@ -101,6 +101,11 @@ spec:
 
     route:
       app:
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Readeck
+          gethomepage.dev/group: Productivity
+          gethomepage.dev/icon: readeck.png
         parentRefs:
           - name: internal
             namespace: networking
@@ -111,8 +116,6 @@ spec:
               - identifier: app
                 port: http
       public:
-        annotations:
-          hajimari.io/enable: "false"
         parentRefs:
           - name: external
             namespace: networking

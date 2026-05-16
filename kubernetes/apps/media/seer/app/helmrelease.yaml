@@ -75,9 +75,11 @@ spec:
     route:
       app:
         annotations:
-          hajimari.io/enable: "true"
-          hajimari.io/appName: "Seer"
-          hajimari.io/info: "Media requests"
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Seer
+          gethomepage.dev/group: Media
+          gethomepage.dev/icon: jellyseerr.png
+          gethomepage.dev/description: Media requests
         parentRefs:
           - name: internal
             namespace: networking
@@ -88,8 +90,6 @@ spec:
               - identifier: app
                 port: http
       public:
-        annotations:
-          hajimari.io/enable: "false"
         parentRefs:
           - name: external
             namespace: networking

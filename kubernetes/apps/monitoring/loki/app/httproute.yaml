@@ -5,8 +5,10 @@ metadata:
   name: loki
   namespace: monitoring
   annotations:
-    hajimari.io/enable: "true"
-    hajimari.io/group: monitoring
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: Loki
+    gethomepage.dev/group: Monitoring
+    gethomepage.dev/icon: loki.png
 spec:
   parentRefs:
     - name: internal

@@ -5,7 +5,10 @@ metadata:
   name: syncthing
   namespace: default
   annotations:
-    hajimari.io/icon: cloud
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: Syncthing
+    gethomepage.dev/group: Storage
+    gethomepage.dev/icon: syncthing.png
 spec:
   parentRefs:
     - name: internal

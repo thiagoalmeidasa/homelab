@@ -81,6 +81,11 @@ spec:
           - path: /home/node/.n8n
     route:
       app:
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: n8n
+          gethomepage.dev/group: Productivity
+          gethomepage.dev/icon: n8n.png
         parentRefs:
           - name: internal
             namespace: networking

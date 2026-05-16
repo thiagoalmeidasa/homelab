@@ -4,8 +4,6 @@ kind: HTTPRoute
 metadata:
   name: flux-webhook
   namespace: flux-system
-  annotations:
-    hajimari.io/enable: "false"
 spec:
   parentRefs:
     - name: external
