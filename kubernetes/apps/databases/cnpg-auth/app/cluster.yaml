@@ -1,0 +1,40 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/postgresql.cnpg.io/cluster_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: cnpg-auth
+  namespace: databases
+spec:
+  instances: 2
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.5
+  inheritedMetadata:
+    labels:
+      recurring-job-group.longhorn.io/backup: enabled
+  bootstrap:
+    initdb:
+      database: pocketid
+      owner: pocketid
+      secret:
+        name: pocketid-credentials
+  affinity:
+    enablePodAntiAffinity: true
+    podAntiAffinityType: required
+    topologyKey: kubernetes.io/hostname
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 768Mi
+  storage:
+    size: 10Gi
+    storageClass: longhorn
+  backup:
+    volumeSnapshot:
+      className: longhorn-snapshot-class
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: cnpg-auth-object-store
