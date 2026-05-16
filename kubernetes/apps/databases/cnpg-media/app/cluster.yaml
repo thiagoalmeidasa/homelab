@@ -22,7 +22,6 @@ spec:
     size: 5Gi
     storageClass: longhorn
   backup:
-    retentionPolicy: "7d"
     volumeSnapshot:
       className: longhorn-snapshot-class
   plugins:
