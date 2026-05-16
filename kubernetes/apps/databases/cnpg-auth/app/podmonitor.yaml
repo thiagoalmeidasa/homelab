@@ -1,0 +1,12 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: cnpg-auth
+  namespace: databases
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/cluster: cnpg-auth
+  podMetricsEndpoints:
+    - port: metrics
