@@ -19,7 +19,7 @@ spec:
     limits:
       memory: 768Mi
   storage:
-    size: 20Gi
+    size: 10Gi
     storageClass: longhorn
   backup:
     retentionPolicy: "7d"
