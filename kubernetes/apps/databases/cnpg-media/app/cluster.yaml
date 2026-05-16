@@ -8,6 +8,9 @@ metadata:
 spec:
   instances: 1
   imageName: ghcr.io/cloudnative-pg/postgresql:17.5
+  inheritedMetadata:
+    labels:
+      recurring-job-group.longhorn.io/backup: enabled
   bootstrap:
     initdb:
       database: seer

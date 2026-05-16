@@ -5,5 +5,4 @@ resources:
   - ./cluster.yaml
   - ./objectstore.yaml
   - ./podmonitor.yaml
-  - ./scheduledbackup.yaml
   - ./secret.sops.yaml
