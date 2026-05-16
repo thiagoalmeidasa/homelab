@@ -48,7 +48,8 @@ spec:
               - --webui
               - ":7071"
               - posix
-              - --nometa
+              - --sidecar
+              - /sidecar
               - --disable-copy-file-range
               - /data
             env:
@@ -126,3 +127,11 @@ spec:
         size: 1Gi
         globalMounts:
           - path: /iam
+      sidecar:
+        accessMode: ReadWriteOnce
+        enabled: true
+        type: persistentVolumeClaim
+        storageClass: nfs-provision
+        size: 5Gi
+        globalMounts:
+          - path: /sidecar
