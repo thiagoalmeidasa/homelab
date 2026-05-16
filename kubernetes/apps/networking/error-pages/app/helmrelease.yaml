@@ -25,7 +25,7 @@ spec:
           main:
             image:
               repository: ghcr.io/tarampampam/error-pages
-              tag: 4.1.0@sha256:6adb80319c2f5cfa99d5b43888202ec34e1099f8cc036a5ca5ab1cca96503920
+              tag: 4.2.0@sha256:7c57706501e6ad4ed91031c5b529591395d7cbd509a311f8210236bb608f6557
             env:
               TEMPLATE_NAME: connection
               SHOW_DETAILS: "false"
