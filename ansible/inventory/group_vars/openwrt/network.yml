@@ -1,0 +1,5 @@
+---
+# Internal Cilium gateway IP (mirrors GATEWAY_INTERNAL_ADDR in
+# kubernetes/flux/vars/cluster-settings.yaml). LAN dnsmasq points homelab
+# hostnames here so traffic stays local.
+internal_gateway_ip: 192.168.100.226
