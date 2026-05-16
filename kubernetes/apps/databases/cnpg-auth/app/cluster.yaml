@@ -28,7 +28,7 @@ spec:
     limits:
       memory: 768Mi
   storage:
-    size: 10Gi
+    size: 2Gi
     storageClass: longhorn
   backup:
     volumeSnapshot:
