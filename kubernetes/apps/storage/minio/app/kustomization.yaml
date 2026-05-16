@@ -5,4 +5,3 @@ kind: Kustomization
 resources:
   - ./minio.sops.yaml
   - ./helmrelease.yaml
-  - ./httproute.yaml
