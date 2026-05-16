@@ -31,6 +31,9 @@ spec:
     - name: external
       namespace: networking
       sectionName: https
+    - name: internal
+      namespace: networking
+      sectionName: https
   hostnames:
     - "photos.${PUBLIC_DOMAIN}"
   rules:
