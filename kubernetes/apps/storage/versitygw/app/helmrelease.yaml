@@ -110,6 +110,16 @@ spec:
           - backendRefs:
               - identifier: app
                 port: webui
+      s3:
+        parentRefs:
+          - name: internal
+            namespace: networking
+            sectionName: https
+        hostnames: ["s3.${SECRET_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: s3
     persistence:
       data:
         accessMode: ReadWriteOnce
