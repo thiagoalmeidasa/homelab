@@ -5,3 +5,4 @@ resources:
   - helmrelease.yaml
   - httproute.yaml
   - prometheusrule.yaml
+  - secret.sops.yaml
