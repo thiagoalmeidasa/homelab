@@ -40,6 +40,8 @@ spec:
               NODE_ENV: production
               # Server configuration
               PORT: &port "3010"
+              AFFINE_SERVER_EXTERNAL_URL: https://notes.${PUBLIC_DOMAIN}
+              AFFINE_SERVER_HTTPS: "true"
               AFFINE_INDEXER_ENABLED: false
               # Authentication
               OAUTH_EMAIL_LOGIN: "false"
@@ -114,3 +116,12 @@ spec:
         storageClass: longhorn
         globalMounts:
           - path: /data
+      config:
+        type: secret
+        name: affine-secret
+        advancedMounts:
+          affine:
+            app:
+              - path: /root/.affine/config/config.json
+                subPath: config.json
+                readOnly: true
