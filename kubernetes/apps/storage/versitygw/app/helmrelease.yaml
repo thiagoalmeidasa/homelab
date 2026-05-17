@@ -56,6 +56,9 @@ spec:
               TZ: "${TIMEZONE:=Etc/UTC}"
               VGW_PORT: ":7070"
               VGW_REGION: us-east-1
+              VGW_WEBUI_GATEWAYS: "https://s3.${SECRET_DOMAIN}"
+              VGW_WEBUI_ADMIN_GATEWAYS: "https://s3.${SECRET_DOMAIN}"
+              VGW_CORS_ALLOW_ORIGIN: "https://s3-console.${SECRET_DOMAIN}"
             envFrom:
               - secretRef:
                   name: versitygw-secret
@@ -105,7 +108,7 @@ spec:
           - name: internal
             namespace: networking
             sectionName: https
-        hostnames: ["versitygw.${SECRET_DOMAIN}"]
+        hostnames: ["s3-console.${SECRET_DOMAIN}"]
         rules:
           - backendRefs:
               - identifier: app
