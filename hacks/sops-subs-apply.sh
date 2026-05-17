@@ -10,8 +10,8 @@ load_env_vars() {
     local cluster_secret_file="./kubernetes/flux/vars/cluster-secrets.sops.yaml"
     local cluster_config_file="./kubernetes/flux/vars/cluster-settings.yaml"
 
-    while read -r line; do declare -x "${line}"; done < <(sops -d "${cluster_secret_file}" | yq eval '.stringData' - | sed 's/: /=/g')
-    while read -r line; do declare -x "${line}"; done < <(yq eval '.data' "${cluster_config_file}" | sed 's/: /=/g')
+    while read -r line; do export "${line}"; done < <(sops -d "${cluster_secret_file}" | yq eval '.stringData' - | sed 's/: /=/g')
+    while read -r line; do export "${line}"; done < <(yq eval '.data' "${cluster_config_file}" | sed 's/: /=/g')
 }
 
 decrypt_sops_secrets() {
