@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: cnpg-default-hoodik
+    namespace: databases
+type: kubernetes.io/basic-auth
+stringData:
+    username: ENC[AES256_GCM,data:m9jaqlQ5,iv:9ZWChIaP0nlQrz4UsO5KwSqFJdifu/cBp+LO6orx7og=,tag:TfPYzzCkAG3RG9WxSS95mw==,type:str]
+    password: ENC[AES256_GCM,data:NrWZ5gtdtLeMG39dtsPDg0iMyEoOKhVDoSNsNjFhBTLLseZisdtTCw==,iv:tVJXAedoc40O+23p5w+VfLC9nh9j+iR3cVSYcSNDbMQ=,tag:+7HQVVwI43zDmmhzLI13gw==,type:str]
+sops:
+    age:
+        - recipient: age1w02zzfg0y4ast9mgnd9w0yuym0wqx6q967kmrmq355w4cnw0xytq2x369r
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSAvbFpESVljWTg4SExpOFFn
+            aHRuU1puNTRxb3pGenhMYkZuVDZtRVJDL0FJCjJXeGtiOUgyQ2FyeTZRWG5STXFN
+            V1NwbzRNWGxETFZnOEowdmZXeTI1QmcKLS0tIDdPcDRNTitxUExqOFY2M2Z0NjRU
+            M0FJcTR5U1VyN3EyQXVqT2JLdytVaGcK8yv4KK2Ose/CugnlWM+fQmFwAftef/gl
+            xyW7MjxEeUn/3CcxJDB8NGTVJoNB/lLGt+oxwlKCpjYdK6icM6ZU3A==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-05-17T15:51:14Z"
+    mac: ENC[AES256_GCM,data:40KA6t31h+/Kavx+QlFkIJVQVPRWq/w5N51E0fimFF32t5DjGTt/Dkcbe8d5LkcTY1IP5PW8e9Mk55Zh9D6aRJWhBen9HYE1esUuBDR67Hq3BUKIuMA1jt0MUWEoUlszdPi6w5R4bVTTTjdSQrt6lKdEWUL+Ldo904ajb/bgDaM=,iv:w2pF03ax5H4cp7VLLKELbLvsawD6nMPFqteQjGjn+zU=,tag:qE6M3qrE/Pduc81iKWYeVQ==,type:str]
+    encrypted_regex: ^(data|stringData)$
+    version: 3.10.2

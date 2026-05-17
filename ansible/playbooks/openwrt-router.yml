@@ -45,6 +45,7 @@
     public_lan_subdomains:
       - analytics
       - auth
+      - drive
       - media
       - photos
       - portfolio
