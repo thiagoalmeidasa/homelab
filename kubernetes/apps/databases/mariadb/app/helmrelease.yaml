@@ -36,6 +36,9 @@ spec:
     persistence:
       storageClass: longhorn
       size: 2Gi
+      labels:
+        recurring-job-group.longhorn.io/backup: enabled
+        recurring-job.longhorn.io/source: enabled
     primary:
       pdb:
         create: true

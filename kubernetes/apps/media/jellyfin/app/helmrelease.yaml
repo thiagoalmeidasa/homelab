@@ -152,6 +152,9 @@ spec:
         storageClass: longhorn
         size: 40Gi
         retain: true
+        labels:
+          recurring-job-group.longhorn.io/backup: enabled
+          recurring-job.longhorn.io/source: enabled
         globalMounts:
           - path: /config
       movies:

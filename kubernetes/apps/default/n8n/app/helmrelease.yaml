@@ -77,6 +77,9 @@ spec:
         retain: true
         size: 10Gi
         storageClass: longhorn
+        labels:
+          recurring-job-group.longhorn.io/backup: enabled
+          recurring-job.longhorn.io/source: enabled
         globalMounts:
           - path: /home/node/.n8n
     route:

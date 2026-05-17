@@ -64,6 +64,9 @@ spec:
         storageClass: longhorn
         accessMode: ReadWriteOnce
         size: 1Gi
+        labels:
+          recurring-job-group.longhorn.io/backup: enabled
+          recurring-job.longhorn.io/source: enabled
         globalMounts:
           - path: /opt/app/backend/data
 

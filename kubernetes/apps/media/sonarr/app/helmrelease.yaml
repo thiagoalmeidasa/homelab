@@ -94,6 +94,7 @@ spec:
         size: 10Gi
         labels:
           recurring-job-group.longhorn.io/backup: enabled
+          recurring-job.longhorn.io/source: enabled
       downloads:
         enabled: true
         type: nfs

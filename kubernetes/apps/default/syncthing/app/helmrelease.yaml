@@ -92,6 +92,9 @@ spec:
         size: 8Gi
         accessMode: ReadWriteOnce
         retain: true
+        labels:
+          recurring-job-group.longhorn.io/backup: enabled
+          recurring-job.longhorn.io/source: enabled
         globalMounts:
           - path: /var/syncthing/config
       data:
