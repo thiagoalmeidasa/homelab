@@ -5,7 +5,5 @@ resources:
   - ./namespace.yaml
   - ./kopia/ks.yaml
   - ./longhorn/ks.yaml
-  - ./minio/ks.yaml
-  - ./rustfs/ks.yaml
   - ./snapshot-controller/ks.yaml
   - ./versitygw/ks.yaml
