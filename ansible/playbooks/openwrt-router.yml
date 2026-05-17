@@ -49,5 +49,7 @@
       - photos
       - portfolio
       - share
+      - notes
+      - readeck
   roles:
     - role: openwrt-router

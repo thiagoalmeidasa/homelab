@@ -107,20 +107,15 @@ spec:
           gethomepage.dev/group: Productivity
           gethomepage.dev/icon: readeck.png
         parentRefs:
-          - name: internal
-            namespace: networking
-            sectionName: https
-        hostnames: ["readeck.${SECRET_DOMAIN}"]
-        rules:
-          - backendRefs:
-              - identifier: app
-                port: http
-      public:
-        parentRefs:
           - name: external
             namespace: networking
             sectionName: https
-        hostnames: ["readeck.${PUBLIC_DOMAIN}"]
+          - name: internal
+            namespace: networking
+            sectionName: https
+        hostnames:
+          - "readeck.${SECRET_DOMAIN}"
+          - "readeck.${PUBLIC_DOMAIN}"
         rules:
           - backendRefs:
               - identifier: app
