@@ -9,7 +9,7 @@ terraform {
     access_key = "" # on ./state.config
     secret_key = ""
 
-    region                      = "main" # Region validation will be skipped
+    region                      = "us-east-1" # Versity strict-validates sigv4 credential scope
     skip_credentials_validation = true   # Skip AWS related checks and validations
     skip_requesting_account_id  = true
     skip_metadata_api_check     = true
