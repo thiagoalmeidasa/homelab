@@ -377,7 +377,8 @@ spec:
           token_url: https://auth.${PUBLIC_DOMAIN}/api/oidc/token
           api_url: https://auth.${PUBLIC_DOMAIN}/api/oidc/userinfo
           use_pkce: true
-          role_attribute_path: contains(groups[*], 'grafanaAdmins') && 'Admin' || contains(groups[*], 'grafanaEditors') && 'Editor' || 'Viewer'
+          role_attribute_path: contains(groups[*], 'grafanaAdmins') && 'Admin' || contains(groups[*], 'grafanaEditors') && 'Editor' || contains(groups[*], 'grafanaViewers') && 'Viewer'
+          role_attribute_strict: true
           allow_assign_grafana_admin: true
       dashboardProviders:
         dashboardproviders.yaml:
