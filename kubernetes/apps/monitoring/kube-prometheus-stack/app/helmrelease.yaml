@@ -355,14 +355,30 @@ spec:
       forceDeployDashboards: true
       defaultDashboardsTimezone: "Europe/Stockholm"
       folderAnnotation: grafana_folder
+      envFromSecret: grafana-secret
       env:
         GF_EXPLORE_ENABLED: true
       grafana.ini:
         users:
           viewers_can_edit: false
-        auth.anonymous:
+        server:
+          root_url: https://grafana.${SECRET_DOMAIN}
+        auth:
+          disable_login_form: true
+        auth.generic_oauth:
           enabled: true
-          org_role: Viewer
+          name: Pocket ID
+          icon: signin
+          allow_sign_up: true
+          auto_login: true
+          client_id: fe8ac74c-e731-4644-bcd4-6ae4c07b6f9a
+          scopes: openid email profile groups
+          auth_url: https://auth.${PUBLIC_DOMAIN}/authorize
+          token_url: https://auth.${PUBLIC_DOMAIN}/api/oidc/token
+          api_url: https://auth.${PUBLIC_DOMAIN}/api/oidc/userinfo
+          use_pkce: true
+          role_attribute_path: contains(groups[*], 'grafana-admins') && 'Admin' || contains(groups[*], 'grafana-editors') && 'Editor' || 'Viewer'
+          allow_assign_grafana_admin: true
       dashboardProviders:
         dashboardproviders.yaml:
           apiVersion: 1
