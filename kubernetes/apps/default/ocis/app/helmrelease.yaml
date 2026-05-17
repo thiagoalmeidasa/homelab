@@ -51,6 +51,16 @@ spec:
               PROXY_DEBUG_ADDR: 0.0.0.0:9205
               PROXY_TLS: false
               TZ: ${TIMEZONE}
+              OCIS_EXCLUDE_RUN_SERVICES: idp
+              OCIS_OIDC_ISSUER: https://auth.${PUBLIC_DOMAIN}
+              WEB_OIDC_METADATA_URL: https://auth.${PUBLIC_DOMAIN}/.well-known/openid-configuration
+              WEB_OIDC_CLIENT_ID: e31855d0-8b46-408e-94a3-37f96ab0effb
+              WEB_OIDC_SCOPE: openid profile email groups
+              PROXY_AUTOPROVISION_ACCOUNTS: true
+              PROXY_OIDC_REWRITE_WELLKNOWN: true
+              PROXY_USER_OIDC_CLAIM: preferred_username
+              PROXY_ROLE_ASSIGNMENT_DRIVER: oidc
+              PROXY_ROLE_ASSIGNMENT_OIDC_CLAIM: groups
             envFrom:
               - secretRef:
                   name: ocis-secret
