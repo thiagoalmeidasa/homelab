@@ -104,6 +104,10 @@ spec:
             sectionName: https
         hostnames: ["notes.${PUBLIC_DOMAIN}"]
         rules:
+          - matches:
+              - path:
+                  type: PathPrefix
+                  value: /admin
           - backendRefs:
               - identifier: app
                 port: http
