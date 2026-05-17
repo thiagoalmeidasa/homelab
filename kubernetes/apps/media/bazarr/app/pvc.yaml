@@ -6,6 +6,7 @@ metadata:
   namespace: media
   labels:
     recurring-job-group.longhorn.io/backup: enabled
+    recurring-job.longhorn.io/source: enabled
 spec:
   accessModes: ["ReadWriteOnce"]
   storageClassName: longhorn

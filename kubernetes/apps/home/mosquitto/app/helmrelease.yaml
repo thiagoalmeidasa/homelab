@@ -67,6 +67,9 @@ spec:
         storageClass: longhorn
         size: 1Gi
         retain: true
+        labels:
+          recurring-job-group.longhorn.io/backup: enabled
+          recurring-job.longhorn.io/source: enabled
         globalMounts:
           - path: /data
       config-file:
