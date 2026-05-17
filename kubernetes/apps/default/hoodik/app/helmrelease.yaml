@@ -1,0 +1,121 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app hoodik
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+      strategy: rollback
+  driftDetection:
+    mode: enabled
+
+  values:
+    controllers:
+      hoodik:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        replicas: 1
+        strategy: Recreate
+        pod:
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+        containers:
+          app:
+            image:
+              repository: docker.io/hudik/hoodik
+              tag: v1.15.3@sha256:e703d7cf9e6ac3abc8c0182c37c46debe1bd12d4dcb7b657c3a0a6206760f8f8
+            env:
+              TZ: ${TIMEZONE}
+              DATA_DIR: /data
+              APP_URL: https://drive.${PUBLIC_DOMAIN}
+              APP_NAME: Hoodik
+              HTTP_ADDRESS: 0.0.0.0
+              HTTP_PORT: &port 5443
+              SSL_DISABLED: "true"
+              STORAGE_PROVIDER: s3
+              S3_BUCKET: hoodik
+              S3_REGION: us-east-1
+              S3_ENDPOINT: http://versitygw.storage.svc.cluster.local:7070
+              S3_PATH_STYLE: "true"
+            envFrom:
+              - secretRef:
+                  name: hoodik-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/liveness
+                    port: *port
+                  initialDelaySeconds: 15
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness: *probes
+            resources:
+              requests:
+                cpu: 25m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ["ALL"]
+
+    service:
+      app:
+        controller: hoodik
+        ports:
+          http:
+            port: *port
+
+    route:
+      app:
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Hoodik
+          gethomepage.dev/group: Productivity
+          gethomepage.dev/icon: hoodik.png
+          gethomepage.dev/description: End-to-end encrypted file storage
+        parentRefs:
+          - name: external
+            namespace: networking
+            sectionName: https
+          - name: internal
+            namespace: networking
+            sectionName: https
+        hostnames:
+          - "drive.${PUBLIC_DOMAIN}"
+          - "drive.${SECRET_DOMAIN}"
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http
+
+    persistence:
+      data:
+        enabled: true
+        type: persistentVolumeClaim
+        storageClass: longhorn
+        accessMode: ReadWriteOnce
+        size: 2Gi
+        retain: true
+        globalMounts:
+          - path: /data

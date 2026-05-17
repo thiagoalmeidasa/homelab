@@ -16,6 +16,12 @@ spec:
     initdb:
       database: hass
       owner: hass
+  managed:
+    roles:
+      - name: hoodik
+        login: true
+        passwordSecret:
+          name: cnpg-default-hoodik
   resources:
     requests:
       cpu: 100m
