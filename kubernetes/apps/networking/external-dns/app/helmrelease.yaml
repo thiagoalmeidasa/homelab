@@ -46,7 +46,7 @@ spec:
       - --crd-source-kind=DNSEndpoint
       - --gateway-name=external
     policy: sync
-    sources: ["crd", "gateway-httproute", "gateway-tlsroute"]
+    sources: ["crd", "gateway-httproute"]
     txtPrefix: k8s.
     txtOwnerId: default
     domainFilters: ["${PUBLIC_DOMAIN}"]
