@@ -38,6 +38,7 @@
     # ansible/inventory/group_vars/openwrt/network.yml.
     dns_address_overrides:
       - { domain: "{{ secret_domain }}", ip: "{{ internal_gateway_ip }}" }
+      - { domain: "home.lan", ip: "{{ internal_gateway_ip }}" }
     # Public-domain hostnames also served via the LAN gateway. Each entry is
     # expanded by the role into `address=/<sub>.<public_domain>/<gateway>` so
     # LAN clients skip the Cloudflare Tunnel hairpin. flux-webhook is excluded
