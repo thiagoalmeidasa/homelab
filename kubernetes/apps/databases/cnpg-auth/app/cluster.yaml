@@ -18,6 +18,11 @@ spec:
       owner: pocketid
       secret:
         name: pocketid-credentials
+  postgresql:
+    parameters:
+      wal_keep_size: "128MB"
+      max_wal_size: "512MB"
+      max_slot_wal_keep_size: "512MB"
   affinity:
     enablePodAntiAffinity: true
     podAntiAffinityType: required
