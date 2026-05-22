@@ -16,6 +16,11 @@ spec:
     initdb:
       database: seer
       owner: seer
+  postgresql:
+    parameters:
+      wal_keep_size: "128MB"
+      max_wal_size: "512MB"
+      max_slot_wal_keep_size: "512MB"
   resources:
     requests:
       cpu: 50m
