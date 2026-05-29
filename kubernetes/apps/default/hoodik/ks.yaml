@@ -10,7 +10,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: cnpg-default
+    - name: cluster-apps-cnpg-default
       namespace: flux-system
   path: ./kubernetes/apps/default/hoodik/app
   prune: true
