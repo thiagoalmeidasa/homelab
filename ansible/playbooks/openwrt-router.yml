@@ -19,6 +19,7 @@
       - prometheus-node-exporter-lua-wifi
       - prometheus-node-exporter-lua-wifi_stations
       # Dynamic DNS
+      - luci-app-ddns
       - ddns-scripts
       - ddns-scripts-cloudflare
       - ddns-scripts-noip
