@@ -1,5 +1,6 @@
 ---
-- hosts:
+- name: Prepare cluster nodes
+  hosts:
     - master
     - worker
   become: true
@@ -28,6 +29,9 @@
               127.0.1.1   {{ inventory_hostname }}
 
     - name: Cloud-init removal | RasPi
+      when:
+        - ansible_facts['distribution'] == 'Ubuntu'
+        - "'raspi' in ansible_facts['kernel']"
       block:
         - name: Cloud-init removal | Purge cloud-init package
           ansible.builtin.apt:
@@ -45,11 +49,9 @@
           ansible.builtin.file:
             path: /var/lib/cloud
             state: absent
-      when:
-        - ansible_facts['distribution'] == 'Ubuntu'
-        - "'raspi' in ansible_facts['kernel']"
 
     - name: Packages | Fedora
+      when: ansible_facts['distribution'] == 'Fedora'
       block:
         - name: Packages | Install required packages
           ansible.builtin.dnf:
@@ -59,9 +61,9 @@
         - name: Packages | Remove leaf packages
           ansible.builtin.dnf:
             autoremove: true
-      when: ansible_facts['distribution'] == 'Fedora'
 
     - name: Packages | Ubuntu
+      when: ansible_facts['distribution'] == 'Ubuntu'
       block:
         - name: Packages | Install required packages
           ansible.builtin.apt:
@@ -77,7 +79,6 @@
             install_recommends: false
           notify: Reboot
           when: "'raspi' in ansible_facts['kernel'] and ansible_facts['distribution_version'] is version('22.04', '<=')"
-      when: ansible_facts['distribution'] == 'Ubuntu'
 
     - name: User Configuration
       block:
@@ -125,6 +126,7 @@
           notify: RestartJournald
 
     - name: System Configuration (2)
+      notify: Reboot
       block:
         - name: System Configuration (2) | Enable kernel modules now
           community.general.modprobe:
@@ -133,7 +135,7 @@
           loop: [br_netfilter, ip_vs, ip_vs_rr, overlay, rbd]
         - name: System Configuration (2) | Enable kernel modules on boot
           ansible.builtin.copy:
-            mode: 0644
+            mode: "0644"
             content: "{{ item }}"
             dest: "/etc/modules-load.d/{{ item }}.conf"
           loop: [br_netfilter, ip_vs, ip_vs_rr, overlay, rbd]
@@ -177,7 +179,6 @@
             state: permissive
             policy: targeted
           when: ansible_facts['distribution'] == 'Fedora'
-      notify: Reboot
 
   handlers:
     - name: Reboot

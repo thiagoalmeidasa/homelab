@@ -10,4 +10,4 @@
   community.openwrt.opkg:
     name: "{{ item }}"
     state: present
-  loop: "{{ opkg_packages }}"
+  loop: "{{ openwrt_router_opkg_packages }}"

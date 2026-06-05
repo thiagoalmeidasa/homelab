@@ -4,8 +4,8 @@
   gather_facts: false        # python-free per community.openwrt official guidance
   any_errors_fatal: true
   vars:
-    dns_domain: lan
-    opkg_packages:
+    openwrt_router_dns_domain: lan
+    openwrt_router_opkg_packages:
       # Prometheus node exporter + collectors
       - prometheus-node-exporter-lua
       - prometheus-node-exporter-lua-hostapd_stations
@@ -19,6 +19,7 @@
       - prometheus-node-exporter-lua-wifi
       - prometheus-node-exporter-lua-wifi_stations
       # Dynamic DNS
+      - luci-app-ddns
       - ddns-scripts
       - ddns-scripts-cloudflare
       - ddns-scripts-noip
@@ -27,7 +28,7 @@
       # DNS debugging tools
       - bind-tools
       - drill
-    # dhcp_reservations comes from
+    # openwrt_router_dhcp_reservations comes from
     # ansible/inventory/group_vars/openwrt/dhcp.sops.yml (sops-encrypted).
     # Currently unmanaged on purpose:
     #   - host[7]  tradfri          (no name)
@@ -36,7 +37,7 @@
     #   - domain   console.gl-inet.com -> router self (vendor vanity)
     # `internal_gateway_ip` is defined in
     # ansible/inventory/group_vars/openwrt/network.yml.
-    dns_address_overrides:
+    openwrt_router_dns_address_overrides:
       - { domain: "{{ secret_domain }}", ip: "{{ internal_gateway_ip }}" }
       - { domain: "home.lan", ip: "{{ internal_gateway_ip }}" }
     # Public-domain hostnames also served via the LAN gateway. Each entry is
@@ -54,4 +55,4 @@
       - notes
       - readeck
   roles:
-    - role: openwrt-router
+    - role: openwrt_router

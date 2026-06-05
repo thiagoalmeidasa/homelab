@@ -2,16 +2,16 @@
 # Manages dnsmasq `address=/domain/ip` directives as a UCI list under
 # `dhcp.@dnsmasq[0].address`. Unlike the per-host `domain` sections
 # (dns-hostnames.yml, additive only), this list is treated declaratively:
-# the value of `dns_address_overrides` in the playbook IS the source of
+# the value of `openwrt_router_dns_address_overrides` in the playbook IS the source of
 # truth. Entries not listed here will be removed on next run.
 
 - name: DNS | Build dnsmasq address directive list
   ansible.builtin.set_fact:
-    dnsmasq_address_directives: >-
+    openwrt_router_dnsmasq_address_directives: >-
       {{
-        (dns_address_overrides | default([])
+        (openwrt_router_dns_address_overrides | default([])
           | map(attribute='domain')
-          | zip(dns_address_overrides | default([]) | map(attribute='ip'))
+          | zip(openwrt_router_dns_address_overrides | default([]) | map(attribute='ip'))
           | map('join', '/')
           | map('regex_replace', '^', '/')
           | list)
@@ -25,13 +25,13 @@
   community.openwrt.uci:
     command: set
     key: "dhcp.@dnsmasq[0].address"
-    value: "{{ dnsmasq_address_directives }}"
-  when: dnsmasq_address_directives | length > 0
+    value: "{{ openwrt_router_dnsmasq_address_directives }}"
+  when: openwrt_router_dnsmasq_address_directives | length > 0
   notify: Reload dnsmasq
 
 - name: DNS | Commit dhcp config
   community.openwrt.uci:
     command: commit
     config: dhcp
-  when: dnsmasq_address_directives | length > 0
+  when: openwrt_router_dnsmasq_address_directives | length > 0
   notify: Reload dnsmasq

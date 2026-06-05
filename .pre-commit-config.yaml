@@ -8,6 +8,12 @@ repos:
           - --config-file
           - .yamllint.yaml
         id: yamllint
+  - repo: https://github.com/ansible/ansible-lint
+    rev: v26.4.0
+    hooks:
+      - id: ansible-lint
+        pass_filenames: false
+        args: ["ansible/"]
   - repo: https://github.com/tarioch/flux-check-hook
     rev: v0.8.0
     hooks:
