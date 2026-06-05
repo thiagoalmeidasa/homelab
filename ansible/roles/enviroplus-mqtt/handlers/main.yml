@@ -1,0 +1,11 @@
+---
+- name: Restart envlogger
+  ansible.builtin.systemd:
+    name: envlogger
+    state: restarted
+    daemon_reload: true
+    enabled: true
+
+- name: Reboot for boot config
+  ansible.builtin.reboot:
+    msg: Rebooting to apply /boot/firmware/config.txt changes (i2c/spi/uart)

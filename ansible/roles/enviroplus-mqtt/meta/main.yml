@@ -1,0 +1,16 @@
+---
+galaxy_info:
+  author: thiagoalmeidasa
+  description: Install and run enviroplus-mqtt as a systemd service on Raspberry Pi
+  license: MIT
+  min_ansible_version: "2.18"
+  platforms:
+    - name: Debian
+      versions:
+        - bookworm
+  galaxy_tags:
+    - raspberrypi
+    - mqtt
+    - sensors
+    - homeassistant
+dependencies: []

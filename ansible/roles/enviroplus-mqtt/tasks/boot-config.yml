@@ -1,0 +1,37 @@
+---
+- name: Boot config | Ensure i2c is enabled
+  ansible.builtin.lineinfile:
+    path: "{{ enviroplus_boot_config_path }}"
+    regexp: ^#?dtparam=i2c_arm=
+    line: dtparam=i2c_arm=on
+    state: present
+  notify: Reboot for boot config
+
+- name: Boot config | Ensure spi is enabled
+  ansible.builtin.lineinfile:
+    path: "{{ enviroplus_boot_config_path }}"
+    regexp: ^#?dtparam=spi=
+    line: dtparam=spi=on
+    state: present
+  notify: Reboot for boot config
+
+- name: Boot config | Ensure uart is enabled (PMS5003)
+  ansible.builtin.lineinfile:
+    path: "{{ enviroplus_boot_config_path }}"
+    regexp: ^#?enable_uart=
+    line: enable_uart=1
+    state: present
+  when: enviroplus_use_pms5003 | bool
+  notify: Reboot for boot config
+
+- name: Boot config | Disable Bluetooth to free PL011 UART (PMS5003)
+  ansible.builtin.lineinfile:
+    path: "{{ enviroplus_boot_config_path }}"
+    regexp: ^#?dtoverlay=disable-bt
+    line: dtoverlay=disable-bt
+    state: present
+  when: enviroplus_use_pms5003 | bool
+  notify: Reboot for boot config
+
+- name: Boot config | Flush reboot handler before continuing
+  ansible.builtin.meta: flush_handlers

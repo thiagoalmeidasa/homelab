@@ -1,0 +1,24 @@
+[Unit]
+Description=Enviro+ to MQTT logger
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User={{ enviroplus_service_user }}
+ExecStart=/root/.local/bin/enviroplus2mqtt \
+  --host {{ enviroplus_mqtt_host }} \
+  --port {{ enviroplus_mqtt_port }} \
+  --username {{ mqtt_username }} \
+  --password {{ mqtt_password }} \
+  --prefix {{ enviroplus_mqtt_prefix }} \
+  --room {{ enviroplus_room }} \
+  --interval {{ enviroplus_interval }} \
+  --delay {{ enviroplus_warmup_delay }}{% if enviroplus_use_pms5003 | bool %} \
+  --use-pms5003{% endif %}
+
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
