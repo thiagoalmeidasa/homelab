@@ -1,0 +1,16 @@
+---
+- name: Packages | Ensure required packages
+  ansible.builtin.import_tasks: opkg-packages.yml
+  when: openwrt_router_opkg_packages is defined and openwrt_router_opkg_packages | length > 0
+
+- name: DHCP | Apply static reservations
+  ansible.builtin.import_tasks: dhcp-reservations.yml
+  when: openwrt_router_dhcp_reservations is defined and openwrt_router_dhcp_reservations | length > 0
+
+- name: DNS | Apply hostname bindings
+  ansible.builtin.import_tasks: dns-hostnames.yml
+  when: openwrt_router_dhcp_reservations is defined and openwrt_router_dhcp_reservations | length > 0
+
+- name: DNS | Apply dnsmasq address overrides
+  ansible.builtin.import_tasks: dns-address-overrides.yml
+  when: openwrt_router_dns_address_overrides is defined and openwrt_router_dns_address_overrides | length > 0

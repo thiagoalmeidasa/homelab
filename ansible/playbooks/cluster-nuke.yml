@@ -1,5 +1,6 @@
 ---
-- hosts:
+- name: Nuke k3s cluster state
+  hosts:
     - master
     - worker
   become: true

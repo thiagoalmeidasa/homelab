@@ -2,7 +2,7 @@
 # Reservations are defined on the playbook itself; this default keeps the
 # role safe to include without arguments and lets ansible-lint pass
 # role-structure checks.
-dhcp_reservations: []
-dns_address_overrides: []
-dns_domain: lan
-opkg_packages: []
+openwrt_router_dhcp_reservations: []
+openwrt_router_dns_address_overrides: []
+openwrt_router_dns_domain: lan
+openwrt_router_opkg_packages: []
