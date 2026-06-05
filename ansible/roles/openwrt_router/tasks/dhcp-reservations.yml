@@ -15,7 +15,7 @@
         | combine({'dns': item.dns} if item.dns is defined else {})
       }}
     set_find: true
-  loop: "{{ dhcp_reservations }}"
+  loop: "{{ openwrt_router_dhcp_reservations }}"
   loop_control:
     label: "{{ item.name }} ({{ item.mac }} -> {{ item.ip }})"
   notify: Reload dnsmasq

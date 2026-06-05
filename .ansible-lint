@@ -1,0 +1,5 @@
+---
+profile: moderate
+exclude_paths:
+  - ansible/inventory/host_vars/*.sops.yml
+  - ansible/inventory/group_vars/**/*.sops.*

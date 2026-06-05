@@ -1,0 +1,46 @@
+---
+name: "Ansible Validate"
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: ["main"]
+    paths:
+      - "ansible/**"
+      - "ansible.cfg"
+      - ".ansible-lint"
+      - ".github/workflows/ansible-validate.yaml"
+
+jobs:
+  ansible-validate:
+    name: Ansible Validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Setup Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: ansible/ci-requirements.txt
+
+      - name: Install ansible-lint
+        run: pip install -r ansible/ci-requirements.txt
+
+      - name: Cache Ansible Galaxy collections and roles
+        uses: actions/cache@27d5ce7f107fe9357f9df03efb73ab90386fccae # v5.0.5
+        with:
+          path: |
+            ~/.ansible/collections
+            ~/.ansible/roles
+          key: ansible-galaxy-${{ runner.os }}-${{ hashFiles('ansible/requirements.yml') }}
+          restore-keys: |
+            ansible-galaxy-${{ runner.os }}-
+
+      - name: Install Galaxy collections and roles
+        run: ansible-galaxy install -r ansible/requirements.yml
+
+      - name: Run ansible-lint
+        run: ansible-lint ansible/

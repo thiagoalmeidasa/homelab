@@ -1,5 +1,6 @@
 ---
-- hosts:
+- name: Set up second-layer backup host
+  hosts:
     - cn3.lan
   become: true
   gather_facts: true

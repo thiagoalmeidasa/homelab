@@ -8,13 +8,13 @@
     config: dhcp
     type: domain
     find:
-      name: "{{ item.hostname | default(item.name if '.' in item.name else item.name ~ '.' ~ (dns_domain | default('lan'))) }}"
+      name: "{{ item.hostname | default(item.name if '.' in item.name else item.name ~ '.' ~ (openwrt_router_dns_domain | default('lan'))) }}"
     value:
       ip: "{{ item.ip }}"
     set_find: true
-  loop: "{{ dhcp_reservations }}"
+  loop: "{{ openwrt_router_dhcp_reservations }}"
   loop_control:
-    label: "{{ item.hostname | default(item.name if '.' in item.name else item.name ~ '.' ~ (dns_domain | default('lan'))) }} -> {{ item.ip }}"
+    label: "{{ item.hostname | default(item.name if '.' in item.name else item.name ~ '.' ~ (openwrt_router_dns_domain | default('lan'))) }} -> {{ item.ip }}"
   notify: Reload dnsmasq
 
 - name: DNS | Commit dhcp config
