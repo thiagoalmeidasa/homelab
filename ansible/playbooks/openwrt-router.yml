@@ -8,7 +8,6 @@
     openwrt_router_opkg_packages:
       # Prometheus node exporter + collectors
       - prometheus-node-exporter-lua
-      - prometheus-node-exporter-lua-hostapd_stations
       - prometheus-node-exporter-lua-hwmon
       - prometheus-node-exporter-lua-nat_traffic
       - prometheus-node-exporter-lua-netstat
