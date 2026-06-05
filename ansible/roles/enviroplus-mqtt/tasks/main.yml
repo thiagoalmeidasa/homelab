@@ -1,0 +1,12 @@
+---
+- name: Boot config | Enable i2c/spi/uart interfaces
+  ansible.builtin.import_tasks: boot-config.yml
+
+- name: Packages | Install pipx and system build dependencies
+  ansible.builtin.import_tasks: apt.yml
+
+- name: Pipx | Install enviroplus-mqtt from git
+  ansible.builtin.import_tasks: pipx.yml
+
+- name: Service | Render and enable envlogger.service
+  ansible.builtin.import_tasks: service.yml

@@ -1,0 +1,7 @@
+---
+- name: Configure enviroplus-mqtt sensors
+  hosts: enviroplus
+  become: true
+  any_errors_fatal: false
+  roles:
+    - role: enviroplus-mqtt

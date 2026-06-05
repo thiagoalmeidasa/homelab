@@ -1,0 +1,18 @@
+ansible_user: ENC[AES256_GCM,data:FG8=,iv:055iP/Q4KX/kXq8mZpQ+ZTDPLox2EmkkizK5xMLnzJk=,tag:VMqxrpoDQsZELIaoB2k3mg==,type:str]
+enviroplus_room: ENC[AES256_GCM,data:lEynxqrMWkIc0Q==,iv:Ee8mV1ocCpGRZCG+zAtZ2PvOcbmzQhPy6lHS5Z63WkQ=,tag:KjfswOAHK/Jt3TJ210n6TA==,type:str]
+enviroplus_use_pms5003: ENC[AES256_GCM,data:utuz5g==,iv:8gcjmR+M+vpx4MGK1dnFGiFu79q3nrp+PapQVWX/ba0=,tag:Agd/DevntUIpodIKWUHm9A==,type:bool]
+sops:
+    age:
+        - recipient: age1w02zzfg0y4ast9mgnd9w0yuym0wqx6q967kmrmq355w4cnw0xytq2x369r
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBVYUlLU3diaGN5SW03ODV6
+            S3dnaDVHeUpWc0VFZGFMTVZPa3VvbmtNeGhZCnFWZnVKMFhibEpYMDJUKy94VXQy
+            a3ZXL0hEckU3bUEweS9tN29ZS0dNS3cKLS0tIDhzY1NKR3ZEVXhscFBLWGRhZ1ZH
+            MnVDQmE1eW5hSUVDc0RRMXgwdDVTc1EKHeZvGtOfDM3SlJ14TnnG7Y+pmD7+N3uh
+            TSa+fqYGz8YQXQ31IHk8frGEDoVMdLT5Xs4WmtUrBYydm5jfhzvqvw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-06-05T07:52:23Z"
+    mac: ENC[AES256_GCM,data:oe80fkB6ogeorGuA6eV4jyuB/hQgv5sHFWmts4Puj7hW2fVZWmnuB/yy4x9QFAFCh6BaAo34rvtLoI75nh3e3qUwMsKo4AgrT+ZJRC6ALA/MQiYTX2hMukNZ927aM2y0JmPaOkRcTL/heNK2xTl7sP1+2+SqqRmcWruUcaGN058=,iv:IzzQO8GMikP2mrXScBC4vMEU6EOGYMVqaMuQtCoXrTA=,tag:afk6JdPhDg7ZTPQpn8vKCA==,type:str]
+    unencrypted_suffix: _unencrypted
+    version: 3.10.2

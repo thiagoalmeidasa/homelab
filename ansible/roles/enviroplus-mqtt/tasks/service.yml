@@ -1,0 +1,16 @@
+---
+- name: Service | Template envlogger.service unit
+  ansible.builtin.template:
+    src: envlogger.service.j2
+    dest: /etc/systemd/system/envlogger.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart envlogger
+
+- name: Service | Enable and start envlogger
+  ansible.builtin.systemd:
+    name: envlogger
+    enabled: true
+    state: started
+    daemon_reload: true

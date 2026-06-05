@@ -1,0 +1,10 @@
+---
+- name: Pipx | Install enviroplus-mqtt with device extras
+  community.general.pipx:
+    name: enviroplus-mqtt
+    source: "git+{{ enviroplus_repo }}@{{ enviroplus_ref }}"
+    install_apps: true
+    extras:
+      - device
+    state: latest
+  notify: Restart envlogger

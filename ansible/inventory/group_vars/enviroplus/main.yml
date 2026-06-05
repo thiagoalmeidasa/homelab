@@ -1,0 +1,9 @@
+---
+enviroplus_repo: https://github.com/thiagoalmeidasa/enviroplus-mqtt.git
+enviroplus_ref: master
+enviroplus_mqtt_host: mqtt.lan
+enviroplus_mqtt_port: 1883
+enviroplus_mqtt_prefix: homeassistant
+enviroplus_interval: 5
+enviroplus_warmup_delay: 15
+enviroplus_service_user: root

@@ -9,5 +9,5 @@ regexes = [
   '''ENC\[AES256_GCM,data:''', # sops secrets
 ]
 paths = [
-  '''\.sops\.yaml$''', # sopsdiffer decrypts in diffs; forbid-secrets hook guards unencrypted files
+  '''\.sops\.ya?ml$''', # sopsdiffer decrypts in diffs; forbid-secrets hook guards unencrypted files
 ]
