@@ -102,7 +102,7 @@ spec:
           app:
             image:
               repository: docker.io/grafana/mimir
-              tag: 3.0.6@sha256:4508fd612969dfcf4b50276856fd05d5a971b15e494ad53da911b44781446f2b
+              tag: 3.1.1@sha256:2b49dca9ee4a121cc39bfb1e6f661c1e975cf52a7d14cc6b90de2e5e29caa92e
             args:
               - -config.file=/etc/mimir/config.yaml
               - -config.expand-env=true
