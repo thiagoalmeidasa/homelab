@@ -5,8 +5,6 @@ metadata:
   name: dispatcharr
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: cluster-apps-cnpg-media
   path: ./kubernetes/apps/media/dispatcharr/app
   prune: true
   sourceRef:

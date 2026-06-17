@@ -19,10 +19,23 @@ spec:
       retries: 3
   values:
     fullnameOverride: *name
+    defaultPodOptions:
+      nodeSelector:
+        kubernetes.io/arch: amd64
     controllers:
       dispatcharr:
         annotations:
           reloader.stakater.com/auto: "true"
+        initContainers:
+          sqlite-wal-init:
+            image:
+              repository: ghcr.io/dispatcharr/dispatcharr
+              tag: 0.27.0@sha256:425129020764037869c7d1a2e74ba57ca640cb5d551ef57d869b745b6ea71c7b
+            command: ["/bin/sh", "-c"]
+            args:
+              - >-
+                mkdir -p /data &&
+                python3 -c 'import sqlite3; c=sqlite3.connect("/data/dispatcharr.db"); c.execute("PRAGMA journal_mode=WAL"); c.execute("PRAGMA synchronous=NORMAL"); c.close()'
         containers:
           app:
             image:
@@ -30,18 +43,10 @@ spec:
               tag: 0.27.0@sha256:425129020764037869c7d1a2e74ba57ca640cb5d551ef57d869b745b6ea71c7b
             env:
               TZ: ${TIMEZONE}
-              DISPATCHARR_ENV: modular
+              DISPATCHARR_ENV: aio
               DISPATCHARR_LOG_LEVEL: info
               DISPATCHARR_PORT: &port 9191
-              POSTGRES_HOST: cnpg-media-rw.databases.svc.cluster.local
-              POSTGRES_PORT: "5432"
-              POSTGRES_DB: dispatcharr
-              REDIS_HOST: redis-master.databases.svc.cluster.local
-              REDIS_PORT: "6379"
-              CELERY_BROKER_URL: redis://redis-master.databases.svc.cluster.local:6379/0
-            envFrom:
-              - secretRef:
-                  name: dispatcharr-secret
+              DB_ENGINE: sqlite
             resources:
               requests:
                 cpu: 50m
@@ -75,6 +80,9 @@ spec:
         existingClaim: *name
         advancedMounts:
           dispatcharr:
+            sqlite-wal-init:
+              - path: /data
+                subPath: data
             app:
               - path: /data
                 subPath: data
