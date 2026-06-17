@@ -48,12 +48,11 @@ spec:
               HTTP_PORT: &port 5443
               SSL_DISABLED: "true"
               MAILER_TYPE: smtp
-              SMTP_ADDRESS: smtp-relay.networking.svc.cluster.local
-              SMTP_PORT: "25"
-              SMTP_TLS_MODE: none
+              SMTP_ADDRESS: smtp.resend.com
+              SMTP_PORT: "587"
+              SMTP_TLS_MODE: starttls
               SMTP_DEFAULT_FROM_EMAIL: noreply@mail.thiagoalmeida.xyz
-              SMTP_USERNAME: relay
-              SMTP_PASSWORD: unused
+              SMTP_USERNAME: resend
               STORAGE_PROVIDER: s3
               S3_BUCKET: hoodik
               S3_REGION: us-east-1
