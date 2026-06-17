@@ -46,6 +46,11 @@ spec:
               ANALYTICS_DISABLED: "true"
               PORT: &port 1411
               TZ: ${TIMEZONE}
+              UI_CONFIG_DISABLED: "true"
+              SMTP_HOST: smtp-relay.networking.svc.cluster.local
+              SMTP_PORT: "25"
+              SMTP_FROM: noreply@mail.thiagoalmeida.xyz
+              SMTP_TLS: none
             envFrom:
               - secretRef:
                   name: pocket-id-secret
