@@ -52,6 +52,8 @@ spec:
               SMTP_PORT: "25"
               SMTP_TLS_MODE: none
               SMTP_DEFAULT_FROM_EMAIL: noreply@mail.thiagoalmeida.xyz
+              SMTP_USERNAME: relay
+              SMTP_PASSWORD: unused
               STORAGE_PROVIDER: s3
               S3_BUCKET: hoodik
               S3_REGION: us-east-1
