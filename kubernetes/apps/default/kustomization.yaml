@@ -12,7 +12,6 @@ resources:
   - ./ocis/ks.yaml
   - ./openspeedtest/ks.yaml
   - ./photoprism/ks.yaml
-  - ./pingvin-share/ks.yaml
   - ./readeck/ks.yaml
   - ./syncthing/ks.yaml
   - ./umami/ks.yaml
