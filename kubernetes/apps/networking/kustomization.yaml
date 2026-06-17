@@ -8,3 +8,4 @@ resources:
   - ./cloudflared/ks.yaml
   - ./error-pages/ks.yaml
   - ./external-dns/ks.yaml
+  - ./smtp-relay/ks.yaml

@@ -1,0 +1,48 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smtp-relay
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: smtp-relay
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: smtp-relay
+    spec:
+      containers:
+        - name: postfix
+          image: docker.io/boky/postfix:v5.1.0@sha256:aafc772384232497bed875e1eb66b4d3e54ba1ebc86e2e185a6dc1dbc48182ef
+          env:
+            - name: RELAYHOST
+              value: "[smtp.resend.com]:587"
+            - name: RELAYHOST_USERNAME
+              value: resend
+            - name: RELAYHOST_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: smtp-relay-secret
+                  key: resend-api-key
+            - name: ALLOWED_SENDER_DOMAINS
+              value: thiagoalmeida.xyz
+            - name: MASQUERADE_DOMAINS
+              value: thiagoalmeida.xyz
+            - name: HOSTNAME
+              value: mail.thiagoalmeida.xyz
+          ports:
+            - containerPort: 25
+              name: smtp
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+      securityContext:
+        runAsNonRoot: false
