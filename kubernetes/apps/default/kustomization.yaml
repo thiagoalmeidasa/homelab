@@ -5,7 +5,6 @@ resources:
   - ./namespace.yaml
   - ./affine/ks.yaml
   - ./distcc/ks.yaml
-  - ./echo-server/ks.yaml
   - ./homepage/ks.yaml
   - ./hoodik/ks.yaml
   - ./immich/ks.yaml
