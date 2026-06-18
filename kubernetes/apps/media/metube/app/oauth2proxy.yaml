@@ -29,7 +29,7 @@ spec:
           image: quay.io/oauth2-proxy/oauth2-proxy:v7.15.3@sha256:10a1165743a192e1940b4708fb9647027185ce11a681a1c5519b442ff7f1f561
           args:
             - --provider=oidc
-            - --oidc-issuer-url=https://auth.${SECRET_DOMAIN}
+            - --oidc-issuer-url=https://auth.${PUBLIC_DOMAIN}
             - --upstream=http://metube:8081
             - --http-address=0.0.0.0:4180
             - --redirect-url=https://metube.${SECRET_DOMAIN}/oauth2/callback
