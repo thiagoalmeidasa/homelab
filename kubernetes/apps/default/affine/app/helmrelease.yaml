@@ -45,6 +45,10 @@ spec:
               AFFINE_INDEXER_ENABLED: false
               # Authentication
               OAUTH_EMAIL_LOGIN: "false"
+              # SMTP
+              MAILER_HOST: smtp-relay.networking.svc.cluster.local
+              MAILER_PORT: "25"
+              MAILER_SENDER: Affine <no-reply@thiagoalmeida.xyz>
               # Storage
               DB_DATA_LOCATION: /data/database
               UPLOAD_LOCATION: /data/uploads
