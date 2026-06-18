@@ -51,6 +51,9 @@ spec:
               SMTP_PORT: "25"
               SMTP_FROM: noreply@mail.thiagoalmeida.xyz
               SMTP_TLS: none
+              EMAIL_LOGIN_NOTIFICATION_ENABLED: "true"
+              EMAIL_VERIFICATION_ENABLED: "true"
+              EMAIL_ONE_TIME_ACCESS_AS_ADMIN_ENABLED: "true"
             envFrom:
               - secretRef:
                   name: pocket-id-secret
