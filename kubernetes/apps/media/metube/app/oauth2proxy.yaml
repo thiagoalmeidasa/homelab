@@ -1,0 +1,89 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metube-oauth2-proxy
+  namespace: media
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: metube-oauth2-proxy
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: metube-oauth2-proxy
+    spec:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsUser: 65534
+        runAsGroup: 65534
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: oauth2-proxy
+          image: quay.io/oauth2-proxy/oauth2-proxy:v7.9.0@sha256:37c1570c0427e02fc7c947ef2c04e8995b8347b7abc9fcf1dbb4e376a4b221a7
+          args:
+            - --provider=oidc
+            - --oidc-issuer-url=https://auth.${PUBLIC_DOMAIN}
+            - --upstream=http://metube:8081
+            - --http-address=0.0.0.0:4180
+            - --redirect-url=https://metube.${SECRET_DOMAIN}/oauth2/callback
+            - --cookie-domain=.${SECRET_DOMAIN}
+            - --cookie-secure=true
+            - --email-domains=*
+            - --skip-provider-button=true
+          envFrom:
+            - secretRef:
+                name: metube-oauth2-proxy
+          ports:
+            - containerPort: 4180
+              name: http
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: ["ALL"]
+          resources:
+            requests:
+              cpu: 5m
+              memory: 30Mi
+            limits:
+              memory: 100Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: metube-oauth2-proxy
+  namespace: media
+spec:
+  selector:
+    app.kubernetes.io/name: metube-oauth2-proxy
+  ports:
+    - name: http
+      port: 4180
+      targetPort: http
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: metube
+  namespace: media
+  annotations:
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/name: MeTube
+    gethomepage.dev/group: Media
+    gethomepage.dev/icon: youtube.png
+spec:
+  parentRefs:
+    - name: internal
+      namespace: networking
+      sectionName: https
+  hostnames:
+    - "metube.${SECRET_DOMAIN}"
+  rules:
+    - backendRefs:
+        - name: metube-oauth2-proxy
+          port: 4180
