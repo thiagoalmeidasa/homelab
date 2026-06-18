@@ -13,6 +13,8 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: metube-oauth2-proxy
+      annotations:
+        setGateway: "false"
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
@@ -33,7 +35,7 @@ spec:
             - --redirect-url=https://metube.${SECRET_DOMAIN}/oauth2/callback
             - --cookie-domain=.${SECRET_DOMAIN}
             - --cookie-secure=true
-            - --email-domains=*
+            - --email-domain=*
             - --skip-provider-button=true
           envFrom:
             - secretRef:
