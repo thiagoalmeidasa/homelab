@@ -11,7 +11,7 @@ spec:
       rules:
         - alert: CNPGLastBackupTooOld
           expr: |
-            (time() - cnpg_collector_last_available_backup_timestamp{namespace="databases"}) > 93600
+            (time() - barman_cloud_cloudnative_pg_io_last_available_backup_timestamp{namespace="databases"}) > 93600
           for: 5m
           labels:
             severity: critical
