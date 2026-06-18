@@ -65,6 +65,7 @@ spec:
               # General
               LOG_LEVEL: verbose
               IMMICH_MEDIA_LOCATION: &mediaLocation /usr/src/app/upload
+              IMMICH_CONFIG_FILE: /config/immich-config.json
 
             envFrom:
               - configMapRef:
@@ -134,3 +135,12 @@ spec:
         path: "${NFS_KUBERNETES}/immich"
         globalMounts:
           - path: *mediaLocation
+      oauth-config:
+        type: secret
+        name: immich-secret
+        advancedMounts:
+          immich-server:
+            app:
+              - path: /config/immich-config.json
+                subPath: oauth-config.json
+                readOnly: true
