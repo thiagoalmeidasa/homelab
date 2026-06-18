@@ -75,22 +75,6 @@ spec:
         ports:
           http:
             port: 8081
-    route:
-      metube:
-        annotations:
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: MeTube
-          gethomepage.dev/group: Media
-          gethomepage.dev/icon: youtube.png
-        parentRefs:
-          - name: internal
-            namespace: networking
-            sectionName: https
-        hostnames: ["metube.${SECRET_DOMAIN}"]
-        rules:
-          - backendRefs:
-              - identifier: metube
-                port: http
     persistence:
       config:
         enabled: true
