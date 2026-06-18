@@ -13,6 +13,8 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: metube-oauth2-proxy
+      annotations:
+        setGateway: "false"
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
@@ -27,13 +29,13 @@ spec:
           image: quay.io/oauth2-proxy/oauth2-proxy:v7.9.0@sha256:37c1570c0427e02fc7c947ef2c04e8995b8347b7abc9fcf1dbb4e376a4b221a7
           args:
             - --provider=oidc
-            - --oidc-issuer-url=https://auth.${PUBLIC_DOMAIN}
+            - --oidc-issuer-url=https://auth.${SECRET_DOMAIN}
             - --upstream=http://metube:8081
             - --http-address=0.0.0.0:4180
             - --redirect-url=https://metube.${SECRET_DOMAIN}/oauth2/callback
             - --cookie-domain=.${SECRET_DOMAIN}
             - --cookie-secure=true
-            - --email-domains=*
+            - --email-domain=*
             - --skip-provider-button=true
           envFrom:
             - secretRef:
