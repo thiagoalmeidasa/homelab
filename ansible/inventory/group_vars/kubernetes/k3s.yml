@@ -42,7 +42,7 @@ k3s_registries:
 # the kube-prometheus-stack chart deployed via Flux. Cluster must be newer or
 # equal to this version.
 # renovate: datasource=github-releases depName=prometheus-operator/prometheus-operator
-prometheus_operator_version: "v0.91.0"
+prometheus_operator_version: "v0.92.0"
 
 # (list) A list of URLs to deploy on the primary control plane. Read notes below.
 k3s_server_manifests_urls:
