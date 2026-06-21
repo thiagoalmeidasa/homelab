@@ -71,10 +71,7 @@ spec:
     settings:
       NOT_ROUTED_TO_GATEWAY_CIDRS: "10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
       VPN_BLOCK_OTHER_TRAFFIC: false
-      # 51820 is for wireguard
-      VPN_TRAFFIC_PORT: 51820
-      # 1194 is for openvpn
-      # VPN_TRAFFIC_PORT: 1194
+      VPN_TRAFFIC_PORT: 1337
       VPN_INTERFACE: "wg0"
       VPN_LOCAL_CIDRS: "10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
       VXLAN_PORT: 4789
