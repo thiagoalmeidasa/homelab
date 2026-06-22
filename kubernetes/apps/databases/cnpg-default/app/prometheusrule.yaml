@@ -11,13 +11,13 @@ spec:
       rules:
         - alert: CNPGLastBackupTooOld
           expr: |
-            (time() - barman_cloud_cloudnative_pg_io_last_available_backup_timestamp{namespace="databases"}) > 93600
+            (time() - barman_cloud_cloudnative_pg_io_last_available_backup_timestamp{namespace="databases"}) > 691200
           for: 5m
           labels:
             severity: critical
           annotations:
             summary: CNPG last backup too old ({{ $labels.pod }})
-            description: "Last available backup for {{ $labels.namespace }}/{{ $labels.pod }} is older than 26 hours.\n  VALUE = {{ $value }}s"
+            description: "Last available backup for {{ $labels.namespace }}/{{ $labels.pod }} is older than 8 days.\n  VALUE = {{ $value }}s"
 
         - alert: CNPGWALArchivingFailing
           expr: |
