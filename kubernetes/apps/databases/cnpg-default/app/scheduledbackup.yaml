@@ -6,7 +6,7 @@ metadata:
   name: cnpg-default-weekly
   namespace: databases
 spec:
-  schedule: "0 0 5 * * 0"
+  schedule: "0 30 5 * * 0"
   backupOwnerReference: self
   immediate: true
   cluster:
