@@ -76,10 +76,10 @@ spec:
             resources:
               requests:
                 cpu: 100m
-                memory: 256Mi
+                memory: 1Gi
                 gpu.intel.com/i915: 1
               limits:
-                memory: 4096Mi
+                memory: 6Gi
                 gpu.intel.com/i915: 1
 
             probes:
