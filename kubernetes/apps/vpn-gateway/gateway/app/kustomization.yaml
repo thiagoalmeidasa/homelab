@@ -6,4 +6,3 @@ resources:
   - ./helmrelease.yaml
   - ./networkpolicy.yaml
   - ./secret.sops.yaml
-  - ./configmap-gateway-sidecar.yaml
