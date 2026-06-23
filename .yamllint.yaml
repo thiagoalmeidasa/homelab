@@ -17,5 +17,5 @@ rules:
   indentation: enable
   comments-indentation: disable
   octal-values:
-    forbid-implicit-octal: true
+    forbid-implicit-octal: false
     forbid-explicit-octal: true

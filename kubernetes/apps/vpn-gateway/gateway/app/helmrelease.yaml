@@ -93,3 +93,12 @@ spec:
           main:
             main:
               - path: /var/lib/misc
+      gateway-sidecar:
+        type: configMap
+        name: vpn-gateway-gateway-sidecar
+        defaultMode: 0755
+        advancedMounts:
+          main:
+            main:
+              - path: /bin/gateway_sidecar.sh
+                subPath: gateway_sidecar.sh
