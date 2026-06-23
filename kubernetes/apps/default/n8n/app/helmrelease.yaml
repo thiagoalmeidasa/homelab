@@ -49,6 +49,7 @@ spec:
               N8N_PROTOCOL: "https"
               N8N_PORT: &port 8080
               N8N_HOST: &hostName n8n.${SECRET_DOMAIN}
+              N8N_METRICS: true
               N8N_LOG_LEVEL: info
               N8N_LOG_OUTPUT: console
               N8N_PROXY_HOPS: 1
@@ -69,6 +70,14 @@ spec:
         ports:
           http:
             port: *port
+
+    serviceMonitor:
+      app:
+        serviceName: n8n
+        endpoints:
+          - port: http
+            scheme: http
+            path: /metrics
 
     persistence:
       data:
