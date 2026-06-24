@@ -42,6 +42,22 @@ spec:
             envFrom:
               - secretRef:
                   name: vpn-gateway-pod-gateway
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command:
+                      - /bin/sh
+                      - -c
+                      - |
+                        STATUS=$(wget -q -T 10 -O- https://www.privateinternetaccess.com/api/client/status 2>/dev/null)
+                        echo "$STATUS" | grep -q '"connected":true' && exit 0 || exit 1
+                  initialDelaySeconds: 30
+                  periodSeconds: 60
+                  failureThreshold: 5
+                  timeoutSeconds: 15
             securityContext:
               capabilities:
                 add:

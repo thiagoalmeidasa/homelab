@@ -1,0 +1,20 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: vpn-gateway-rules
+  namespace: vpn-gateway
+spec:
+  groups:
+    - name: vpn-gateway.rules
+      rules:
+        - alert: GluetunVPNDown
+          expr: |
+            rate(kube_pod_container_status_restarts_total{namespace="vpn-gateway",container="gluetun"}[15m]) * 900 > 3
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: VPN tunnel is down (PIA/WireGuard)
+            description: "Gluetun has restarted more than 3 times in 15 minutes. WireGuard peer is unreachable or PIA connectivity check is failing. All media namespace pods will lose network access."

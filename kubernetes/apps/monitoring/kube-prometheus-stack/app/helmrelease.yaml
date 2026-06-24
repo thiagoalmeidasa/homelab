@@ -38,6 +38,12 @@ spec:
           - name: dead-mans-switch
             webhook_configs:
               - url: ${HEALTHCHECKS_IO_URL}
+        inhibit_rules:
+          - source_matchers:
+              - alertname="GluetunVPNDown"
+            target_matchers:
+              - alertname="KubernetesPodCrashLooping"
+              - namespace=~"media|vpn-gateway"
         route:
           group_by: ["alertname", "job"]
           group_wait: 1m
