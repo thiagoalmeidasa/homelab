@@ -97,15 +97,3 @@ spec:
       gatewayAnnotation: setGateway
       namespaceSelector:
         label: "vpn-routed-gateway"
-
-    persistence:
-      dnsmasq-leases:
-        enabled: true
-        type: persistentVolumeClaim
-        storageClass: longhorn
-        accessMode: ReadWriteOnce
-        size: 32Mi
-        advancedMounts:
-          main:
-            main:
-              - path: /var/lib/misc
