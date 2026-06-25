@@ -41,7 +41,8 @@ spec:
             fsGroupChangePolicy: OnRootMismatch
             supplementalGroups:
               - 44  # video
-              - 109  # render
+              - 109  # render (cn5, cn8)
+              - 990  # render (cn3)
         containers:
           main:
             image:
