@@ -22,6 +22,7 @@ spec:
     parameters:
       wal_keep_size: "32MB"
       max_wal_size: "64MB"
+      min_wal_size: "32MB"
       max_slot_wal_keep_size: "64MB"
   affinity:
     enablePodAntiAffinity: true
