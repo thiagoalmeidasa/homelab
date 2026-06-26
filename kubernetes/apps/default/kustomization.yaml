@@ -16,3 +16,4 @@ resources:
   - ./syncthing/ks.yaml
   - ./umami/ks.yaml
   - ./whisper-cpp/ks.yaml
+  - ./qwen3-asr/ks.yaml
