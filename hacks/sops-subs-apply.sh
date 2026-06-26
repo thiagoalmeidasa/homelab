@@ -28,7 +28,11 @@ build_manifests() {
 }
 
 apply() {
-    decrypt_sops_secrets | kubectl apply --server-side -f -
+    local secrets
+    secrets=$(decrypt_sops_secrets)
+    if [[ -n "$secrets" ]]; then
+        echo "$secrets" | kubectl apply --server-side -f -
+    fi
     build_manifests | kubectl apply --server-side -f -
 }
 
