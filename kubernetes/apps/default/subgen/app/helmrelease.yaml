@@ -1,0 +1,102 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app subgen
+  namespace: default
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    controllers:
+      subgen:
+        containers:
+          app:
+            image:
+              repository: mccloud/subgen
+              tag: 2026.06.2-cpu@sha256:9047a0e1a552982ed31f9b788c0d6a44ff5510fb4480236adc2a38d7b3e825aa
+            env:
+              TRANSCRIBE_DEVICE: cpu
+              WHISPER_MODEL: large-v3-turbo
+              CONCURRENT_TRANSCRIPTIONS: "1"
+              WHISPER_THREADS: "4"
+              COMPUTE_TYPE: int8
+              WEBHOOKPORT: &port 8090
+              PROCADDEDMEDIA: "false"
+              PROCMEDIAONPLAY: "false"
+              DEBUG: "false"
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /status
+                    port: *port
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /status
+                    port: *port
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 60
+            resources:
+              requests:
+                cpu: 500m
+                memory: 2Gi
+              limits:
+                memory: 4Gi
+    service:
+      app:
+        controller: subgen
+        ports:
+          http:
+            port: *port
+    route:
+      app:
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: SubGen
+          gethomepage.dev/group: AI
+          gethomepage.dev/icon: mdi-subtitles
+        parentRefs:
+          - name: internal
+            namespace: networking
+            sectionName: https
+        hostnames: ["subgen.${SECRET_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http
+    persistence:
+      models:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        storageClass: longhorn
+        size: 5Gi
+        retain: true
+        labels:
+          recurring-job-group.longhorn.io/backup: enabled
+          recurring-job.longhorn.io/source: enabled
+        globalMounts:
+          - path: /root/.cache/huggingface
