@@ -2,14 +2,14 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app whisper-cpp
+  name: &app whisper-asr-webservice
   namespace: flux-system
 spec:
   targetNamespace: default
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./kubernetes/apps/default/whisper-cpp/app
+  path: ./kubernetes/apps/default/whisper-asr-webservice/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -17,4 +17,4 @@ spec:
   wait: true
   interval: 30m
   retryInterval: 1m
-  timeout: 5m
+  timeout: 10m

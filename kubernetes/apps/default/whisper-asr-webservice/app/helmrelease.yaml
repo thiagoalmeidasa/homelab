@@ -3,7 +3,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app whisper-cpp
+  name: &app whisper-asr-webservice
   namespace: default
 spec:
   interval: 1h
@@ -20,69 +20,49 @@ spec:
       retries: 3
   values:
     controllers:
-      whisper-cpp:
-        initContainers:
-          model:
-            image:
-              repository: busybox
-              tag: latest
-            command:
-              - sh
-              - -c
-              - |
-                if [ ! -f /models/ggml-large-v3-turbo.bin ]; then
-                  echo "Downloading Whisper Turbo model..."
-                  wget -q -O /models/ggml-large-v3-turbo.bin https://blob.handy.computer/ggml-large-v3-turbo.bin
-                  echo "Download complete."
-                else
-                  echo "Model already present, skipping download."
-                fi
-        pod:
-          securityContext:
-            supplementalGroups:
-              - 44   # video
-              - 109  # render (cn5, cn8)
-              - 990  # render (cn3)
+      whisper-asr-webservice:
         containers:
           app:
             image:
-              repository: ghcr.io/ggml-org/whisper.cpp
-              tag: main-vulkan@sha256:785a7e0577c02ed72ceaf42e0f9a17936d41766a48c2375729ef244ddfc381c7
-            command:
-              - whisper-server
-            args:
-              - --model
-              - /models/ggml-large-v3-turbo.bin
-              - --host
-              - 0.0.0.0
-              - --port
-              - "8080"
+              repository: onerahmet/openai-whisper-asr-webservice
+              tag: v1.9.1@sha256:03b402335881cdab2e4939b24620809df8d6ceec3bf2712217d41c8761a0f5d4
+            env:
+              ASR_ENGINE: faster_whisper
+              ASR_MODEL: large-v3-turbo
+              ASR_MODEL_PATH: /models
             probes:
               liveness: &probes
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
-                    path: /health
-                    port: &port 8080
-                  initialDelaySeconds: 5
-                  periodSeconds: 10
-                  timeoutSeconds: 1
+                    path: /docs
+                    port: &port 9000
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 5
                   failureThreshold: 3
               readiness: *probes
               startup:
-                enabled: false
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /docs
+                    port: *port
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 60
             resources:
               requests:
                 cpu: 500m
-                memory: 1Gi
-                gpu.intel.com/i915: 1
-              limits:
                 memory: 2Gi
-                gpu.intel.com/i915: 1
+              limits:
+                memory: 4Gi
     service:
       app:
-        controller: whisper-cpp
+        controller: whisper-asr-webservice
         ports:
           http:
             port: *port
@@ -90,14 +70,14 @@ spec:
       app:
         annotations:
           gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: Whisper
+          gethomepage.dev/name: Whisper ASR
           gethomepage.dev/group: AI
           gethomepage.dev/icon: mdi-microphone
         parentRefs:
           - name: internal
             namespace: networking
             sectionName: https
-        hostnames: ["whisper.${SECRET_DOMAIN}"]
+        hostnames: ["whisper-asr.${SECRET_DOMAIN}"]
         rules:
           - backendRefs:
               - identifier: app
