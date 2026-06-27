@@ -47,7 +47,7 @@ spec:
           app:
             image:
               repository: ghcr.io/ggml-org/whisper.cpp
-              tag: main-vulkan@sha256:2d82df4ba676351c2d2b51ece3621c9952abad07a5a8a5dfda19900e8b1ae335
+              tag: main-vulkan@sha256:785a7e0577c02ed72ceaf42e0f9a17936d41766a48c2375729ef244ddfc381c7
             command:
               - whisper-server
             args:
