@@ -45,6 +45,7 @@
     # on purpose — only GitHub calls it.
     public_lan_subdomains:
       - analytics
+      - arai
       - auth
       - drive
       - media
