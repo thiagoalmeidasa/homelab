@@ -41,12 +41,16 @@ spec:
               OXICLOUD_OIDC_ISSUER_URL: https://auth.${PUBLIC_DOMAIN}
               OXICLOUD_OIDC_CLIENT_ID: f32140c9-033d-4db5-86ac-a8dadb5255e0
               OXICLOUD_OIDC_REDIRECT_URI: https://oxicloud.${SECRET_DOMAIN}/api/auth/oidc/callback
-              OXICLOUD_OIDC_FRONTEND_URL: https://oxicloud.${SECRET_DOMAIN}
+              OXICLOUD_OIDC_FRONTEND_URL: https://oxicloud.${SECRET_DOMAIN}/login
               OXICLOUD_OIDC_SCOPES: openid profile email groups
               OXICLOUD_OIDC_AUTO_PROVISION: "true"
               OXICLOUD_OIDC_DISABLE_PASSWORD_LOGIN: "true"
               OXICLOUD_OIDC_PROVIDER_NAME: Pocket ID
               OXICLOUD_OIDC_ADMIN_GROUPS: oxicloud-admins
+              OXICLOUD_SMTP_HOST: smtp-relay.networking.svc.cluster.local
+              OXICLOUD_SMTP_PORT: "25"
+              OXICLOUD_SMTP_FROM: noreply@mail.thiagoalmeida.xyz
+              OXICLOUD_SMTP_TLS: none
             envFrom:
               - secretRef:
                   name: oxicloud-secret
