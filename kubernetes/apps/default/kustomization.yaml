@@ -9,13 +9,12 @@ resources:
   - ./hoodik/ks.yaml
   - ./immich/ks.yaml
   - ./n8n/ks.yaml
-  - ./ocis/ks.yaml
   - ./openspeedtest/ks.yaml
+  - ./oxicloud/ks.yaml
   - ./photoprism/ks.yaml
+  - ./qwen3-asr/ks.yaml
   - ./readeck/ks.yaml
+  - ./subgen/ks.yaml
   - ./syncthing/ks.yaml
   - ./umami/ks.yaml
   - ./whisper-asr-webservice/ks.yaml
-  - ./qwen3-asr/ks.yaml
-  - ./subgen/ks.yaml
-  - ./oxicloud/ks.yaml
