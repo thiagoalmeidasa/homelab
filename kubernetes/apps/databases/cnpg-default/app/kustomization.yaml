@@ -4,6 +4,8 @@ kind: Kustomization
 resources:
   - ./cluster.yaml
   - ./database-hoodik.yaml
+  - ./database-oxicloud.yaml
+  - ./role-oxicloud.sops.yaml
   - ./objectstore.yaml
   - ./podmonitor.yaml
   - ./prometheusrule.yaml

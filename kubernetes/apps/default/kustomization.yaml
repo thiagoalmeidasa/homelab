@@ -18,3 +18,4 @@ resources:
   - ./whisper-asr-webservice/ks.yaml
   - ./qwen3-asr/ks.yaml
   - ./subgen/ks.yaml
+  - ./oxicloud/ks.yaml

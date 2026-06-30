@@ -27,6 +27,10 @@ spec:
         login: true
         passwordSecret:
           name: cnpg-default-hoodik
+      - name: oxicloud
+        login: true
+        passwordSecret:
+          name: cnpg-default-oxicloud
   resources:
     requests:
       cpu: 100m
