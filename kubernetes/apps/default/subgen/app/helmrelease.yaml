@@ -25,7 +25,7 @@ spec:
           app:
             image:
               repository: mccloud/subgen
-              tag: 2026.06.2-cpu@sha256:9047a0e1a552982ed31f9b788c0d6a44ff5510fb4480236adc2a38d7b3e825aa
+              tag: 2026.06.5-cpu@sha256:7aa31d33945192c3c6d52e5c0fa96dea3f012da92d9b779f769f4dc985e1d682
             env:
               TRANSCRIBE_DEVICE: cpu
               WHISPER_MODEL: large-v3-turbo
