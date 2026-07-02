@@ -37,8 +37,23 @@ spec:
               repository: docker.io/qmcgaw/gluetun
               tag: v3.41.1@sha256:1a5bf4b4820a879cdf8d93d7ef0d2d963af56670c9ebff8981860b6804ebc8ab
             env:
-              VPN_TYPE: wireguard
-              VPN_INTERFACE: wg0
+              - name: VPN_SERVICE_PROVIDER
+                value: "private internet access"
+              - name: VPN_INTERFACE
+                value: &pia_ovpn_dev tun0
+              - name: OPENVPN_ENDPOINT_PORT
+                value: 1197
+              - name: OPENVPN_PROTOCOL
+                value: udp
+                # Make sure firewall is off, otherwise child pods cannot reach gateway pod.
+              - name: FIREWALL_ENABLED_DISABLING_IT_SHOOTS_YOU_IN_YOUR_FOOT
+                value: "off"
+              - name: DOT
+                value: "off"
+              - name: BLOCK_MALICIOUS
+                value: "off"
+              - name: SERVER_REGIONS
+                value: "SE Stockholm"
             envFrom:
               - secretRef:
                   name: vpn-gateway-pod-gateway
@@ -67,7 +82,6 @@ spec:
                 cpu: 100m
                 memory: 64Mi
               limits:
-                cpu: 175m
                 memory: 192Mi
         pod:
           annotations:
@@ -87,9 +101,9 @@ spec:
     settings:
       NOT_ROUTED_TO_GATEWAY_CIDRS: "10.42.0.0/16 10.43.0.0/16 172.16.0.0/12 192.168.0.0/16"
       VPN_BLOCK_OTHER_TRAFFIC: false
-      VPN_TRAFFIC_PORT: 1337
-      VPN_INTERFACE: "wg0"
-      VPN_LOCAL_CIDRS: "10.42.0.0/16 10.43.0.0/16 172.16.0.0/12 192.168.0.0/16"
+      VPN_TRAFFIC_PORT: 1197
+      VPN_INTERFACE: *pia_ovpn_dev
+      VPN_LOCAL_CIDRS: "10.0.0.0/8 172.16.0.0/12 192.168.0.0/16"
       VXLAN_PORT: 4789
     webhook:
       gatewayDefault: true
