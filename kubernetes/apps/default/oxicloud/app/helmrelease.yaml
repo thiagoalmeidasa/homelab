@@ -41,7 +41,7 @@ spec:
               OXICLOUD_OIDC_ISSUER_URL: https://auth.${PUBLIC_DOMAIN}
               OXICLOUD_OIDC_CLIENT_ID: f32140c9-033d-4db5-86ac-a8dadb5255e0
               OXICLOUD_OIDC_REDIRECT_URI: https://arai.${PUBLIC_DOMAIN}/api/auth/oidc/callback
-              OXICLOUD_OIDC_FRONTEND_URL: https://arai.${PUBLIC_DOMAIN}/login
+              OXICLOUD_OIDC_FRONTEND_URL: https://arai.${PUBLIC_DOMAIN}
               OXICLOUD_OIDC_SCOPES: openid profile email groups
               OXICLOUD_OIDC_AUTO_PROVISION: "true"
               OXICLOUD_OIDC_DISABLE_PASSWORD_LOGIN: "true"
