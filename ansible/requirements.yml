@@ -9,7 +9,7 @@ collections:
   - name: ansible.utils
     version: 6.0.3
   - name: kubernetes.core
-    version: 6.4.0
+    version: 6.5.0
   - name: community.openwrt
     version: 1.6.0
 roles:
