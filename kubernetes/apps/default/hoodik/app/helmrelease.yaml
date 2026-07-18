@@ -38,7 +38,7 @@ spec:
           app:
             image:
               repository: docker.io/hudik/hoodik
-              tag: v1.16.1@sha256:f9eeb4eb61b9d258504d14ff76dd5b8bbb32cc21afe6ddf88981f0d0aa6f3a00
+              tag: v2.0.0@sha256:57acf463a379344a43b59d7e24b59af7bdc9cbd392d9d42425ac4429b032f1e9
             env:
               TZ: ${TIMEZONE}
               DATA_DIR: /data
