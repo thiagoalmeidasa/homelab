@@ -46,7 +46,6 @@
     public_lan_subdomains:
       - analytics
       - arai
-      - auth
       - drive
       - media
       - photos
