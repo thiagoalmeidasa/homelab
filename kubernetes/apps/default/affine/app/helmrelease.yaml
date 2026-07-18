@@ -25,7 +25,9 @@ spec:
               tag: 0.27.0@sha256:cc309913620e153f7aaea47cd40d1eff993030cf2b2df8f88270663459db37c9
             command: ['sh', '-c', 'node ./scripts/self-host-predeploy.js']
             env:
-              AFFINE_INDEXER_ENABLED: false
+              AFFINE_INDEXER_ENABLED: "true"
+              AFFINE_INDEXER_SEARCH_PROVIDER: manticoresearch
+              AFFINE_INDEXER_SEARCH_ENDPOINT: http://affine-indexer.default.svc.cluster.local:9308
             envFrom: &envFrom
               - secretRef:
                   name: affine-secret
@@ -42,7 +44,9 @@ spec:
               PORT: &port "3010"
               AFFINE_SERVER_EXTERNAL_URL: https://notes.${PUBLIC_DOMAIN}
               AFFINE_SERVER_HTTPS: "true"
-              AFFINE_INDEXER_ENABLED: false
+              AFFINE_INDEXER_ENABLED: "true"
+              AFFINE_INDEXER_SEARCH_PROVIDER: manticoresearch
+              AFFINE_INDEXER_SEARCH_ENDPOINT: http://affine-indexer.default.svc.cluster.local:9308
               # Authentication
               OAUTH_EMAIL_LOGIN: "false"
               # SMTP
