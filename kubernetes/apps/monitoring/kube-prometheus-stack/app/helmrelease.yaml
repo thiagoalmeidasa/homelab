@@ -416,6 +416,7 @@ spec:
             datasource: "Prometheus"
       additionalDataSources:
         - name: Loki
+          uid: loki
           editable: false
           orgId: 1
           type: loki
@@ -425,6 +426,7 @@ spec:
             timeout: 60
             maxLines: 200
         - name: AlertManager
+          uid: alertmanager
           type: alertmanager
           access: proxy
           url: http://alertmanager-operated.monitoring.svc.cluster.local:9093
