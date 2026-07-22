@@ -6,7 +6,9 @@ validate:
     - ecosystem
     - "https://raw.githubusercontent.com/datreeio/CRDs-catalog/main"
   skipJsonPath:
+    - "v1/Secret:/sops"
     - "gateway.networking.k8s.io/v1/HTTPRoute:/spec/hostnames"
+    - "gateway.networking.k8s.io/v1/HTTPRoute:/spec/rules"
   skipKind:
     - "gateway.networking.k8s.io/v1/Gateway"
     - "cert-manager.io/v1/Certificate"
