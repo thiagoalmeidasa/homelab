@@ -16,7 +16,9 @@ spec:
         - 0.0.0.0/0
       toPorts:
         - ports:
-            - port: "1197"
+            - port: "443"
+              protocol: TCP
+            - port: "8080"
               protocol: UDP
     - toEntities:
         - cluster
