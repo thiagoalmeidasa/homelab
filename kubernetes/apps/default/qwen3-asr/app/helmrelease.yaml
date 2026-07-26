@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: lancelrq/qwen3-asr-service
-              tag: 2.4.0-cpu@sha256:db8dd0ec66a12e27ec225d9de480d5da871138b289ec5eadb6066e77ee3c93cf
+              tag: 2.4.1-cpu@sha256:895794b77cba2571cede761b3255c43a4363feb982152e8ab91cfebc475c6eb2
             args:
               - --enable-openai-api
             probes:
