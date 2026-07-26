@@ -25,6 +25,20 @@ spec:
   values:
     controllers:
       main:
+        initContainers:
+          update-servers:
+            image:
+              repository: docker.io/qmcgaw/gluetun
+              tag: v3.41.1@sha256:1a5bf4b4820a879cdf8d93d7ef0d2d963af56670c9ebff8981860b6804ebc8ab
+            command:
+              - /gluetun-entrypoint
+              - update
+              - -providers
+              - private internet access
+              - -enduser
+            env:
+              - name: STORAGE_FILEPATH
+                value: /gluetun-shared/servers.json
         containers:
           main:
             image:
@@ -37,6 +51,8 @@ spec:
               repository: docker.io/qmcgaw/gluetun
               tag: v3.41.1@sha256:1a5bf4b4820a879cdf8d93d7ef0d2d963af56670c9ebff8981860b6804ebc8ab
             env:
+              - name: STORAGE_FILEPATH
+                value: /gluetun-shared/servers.json
               - name: VPN_SERVICE_PROVIDER
                 value: "private internet access"
               - name: VPN_INTERFACE
@@ -54,6 +70,10 @@ spec:
                 value: "off"
               - name: SERVER_REGIONS
                 value: "SE Stockholm"
+              - name: OPENVPN_FLAGS
+                value: "--pull-filter ignore \"route-ipv6\" --pull-filter ignore \"ifconfig-ipv6\""
+              - name: UPDATER_PERIOD
+                value: "480h"
             envFrom:
               - secretRef:
                   name: vpn-gateway-pod-gateway
@@ -96,6 +116,15 @@ spec:
     networkpolicies:
       main:
         enabled: false
+    persistence:
+      gluetun-servers-dir:
+        type: emptyDir
+        advancedMounts:
+          main:
+            update-servers:
+              - path: /gluetun-shared
+            gluetun:
+              - path: /gluetun-shared
     routed_namespaces:
       - media
     settings:
