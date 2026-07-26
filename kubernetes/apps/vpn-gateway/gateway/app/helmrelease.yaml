@@ -35,6 +35,9 @@ spec:
               - update
               - -providers
               - private internet access
+            env:
+              - name: UPDATER_PREFER_DIRECT_DOWNLOAD
+                value: "on"
         containers:
           main:
             image:
@@ -70,6 +73,10 @@ spec:
                 value: "--pull-filter ignore \"route-ipv6\" --pull-filter ignore \"ifconfig-ipv6\""
               - name: UPDATER_PERIOD
                 value: "480h"
+              - name: UPDATER_PREFER_DIRECT_DOWNLOAD
+                value: "on"
+              - name: UPDATER_VPN_SERVICE_PROVIDERS
+                value: "private internet access"
             envFrom:
               - secretRef:
                   name: vpn-gateway-pod-gateway
