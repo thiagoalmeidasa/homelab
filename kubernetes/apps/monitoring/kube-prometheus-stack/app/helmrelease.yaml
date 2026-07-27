@@ -425,13 +425,6 @@ spec:
           jsonData:
             timeout: 60
             maxLines: 200
-        - name: AlertManager
-          uid: alertmanager
-          type: alertmanager
-          access: proxy
-          url: http://alertmanager-operated.monitoring.svc.cluster.local:9093
-          jsonData:
-            implementation: "prometheus"
       sidecar:
         dashboards:
           enabled: true
