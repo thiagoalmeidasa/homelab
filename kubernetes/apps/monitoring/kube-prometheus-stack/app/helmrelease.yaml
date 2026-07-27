@@ -25,6 +25,19 @@ spec:
       retries: 3
   values:
     fullnameOverride: prometheus
+    defaultRules:
+      create: true
+      rules:
+        kubeApiserverAvailability: false
+        kubeApiserverBurnrate: false
+        kubeApiserverHistogram: false
+        kubeApiserverSlos: false
+        kubeControllerManager: false
+        kubeSchedulerAlerting: false
+        kubeSchedulerRecording: false
+        kubeProxy: false
+        etcd: false
+        windows: false
     alertmanager:
       fullnameOverride: alertmanager
       config:
@@ -106,9 +119,9 @@ spec:
               targetLabel: kubernetes_node
       fullnameOverride: kube-state-metrics
       metricLabelsAllowlist:
-        - pods=[*]
-        - deployments=[*]
-        - persistentvolumeclaims=[*]
+        - pods=[app.kubernetes.io/name,app.kubernetes.io/instance,app.kubernetes.io/component]
+        - deployments=[app.kubernetes.io/name,app.kubernetes.io/instance]
+        - persistentvolumeclaims=[app.kubernetes.io/name]
       rbac:
         extraRules:
           - apiGroups:
@@ -449,13 +462,13 @@ spec:
             static_configs:
               - targets:
                   - 192.168.100.102:9100
-                  - 192.168.100.103:9100
                   - 192.168.100.1:9100
           - job_name: node-exporter-openwrt
             static_configs:
               - targets:
                   - 192.168.100.1:9101
-        retention: 15d
+        retention: 30d
+        retentionSize: "50GiB"
         resources:
           requests:
             cpu: 200m
@@ -506,14 +519,15 @@ spec:
           - action: drop
             sourceLabels: ["__name__"]
             regex: (rest_client_request_duration_seconds_bucket|rest_client_request_duration_seconds_sum|rest_client_request_duration_seconds_count)
+          # Drop control-plane histogram buckets leaked into job=kubelet on k3s servers
+          - action: drop
+            sourceLabels: ["__name__"]
+            regex: (apiserver|etcd|scheduler|workqueue)_.+_bucket
     kubeApiServer:
       enabled: true
       serviceMonitor:
         metricRelabelings:
-          # Drop high cardinality labels
+          # Drop all apiserver/etcd/rest_client histogram buckets (keep _sum/_count)
           - action: drop
             sourceLabels: ["__name__"]
-            regex: (apiserver|etcd|rest_client)_request(|_sli|_slo)_duration_seconds_bucket
-          - action: drop
-            sourceLabels: ["__name__"]
-            regex: (apiserver_response_sizes_bucket|apiserver_watch_events_sizes_bucket)
+            regex: (apiserver|etcd|rest_client)_.+_bucket
