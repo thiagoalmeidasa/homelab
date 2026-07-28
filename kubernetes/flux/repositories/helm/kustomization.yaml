@@ -16,6 +16,5 @@ resources:
   - ./longhorn.yaml
   - ./metrics-server.yaml
   - ./nfs-provisioner-charts.yaml
-  - ./postfinance.yaml
   - ./prometheus-community-charts.yaml
   - ./stakater.yaml

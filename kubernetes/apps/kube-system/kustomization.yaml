@@ -9,7 +9,6 @@ resources:
   - ./descheduler/ks.yaml
   - ./intel-device-plugin/ks.yaml
   - ./kube-vip/ks.yaml
-  - ./kubelet-csr-approver/ks.yaml
   - ./node-feature-discovery/ks.yaml
   - ./metrics-server/ks.yaml
   - ./nfs-subdir-external-provisioner/ks.yaml
