@@ -29,7 +29,7 @@ spec:
           update-servers:
             image:
               repository: docker.io/qmcgaw/gluetun
-              tag: latest@sha256:e44047294ad8cfe6191bf8621dffb53d30289004339a1fcb937844fd7f1a5104
+              tag: latest@sha256:71996384718e0033764bf90dad0ef271537dd3213df2fe51fc71816cf3ae74ae
             command:
               - /gluetun-entrypoint
               - update
@@ -48,7 +48,7 @@ spec:
             dependsOn: main
             image:
               repository: docker.io/qmcgaw/gluetun
-              tag: latest@sha256:e44047294ad8cfe6191bf8621dffb53d30289004339a1fcb937844fd7f1a5104
+              tag: latest@sha256:71996384718e0033764bf90dad0ef271537dd3213df2fe51fc71816cf3ae74ae
             env:
               - name: VPN_SERVICE_PROVIDER
                 value: "private internet access"
