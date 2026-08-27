@@ -11,6 +11,7 @@ resources:
   - ./n8n/ks.yaml
   - ./openspeedtest/ks.yaml
   - ./oxicloud/ks.yaml
+  - ./piper/ks.yaml
   - ./photoprism/ks.yaml
   - ./qwen3-asr/ks.yaml
   - ./readeck/ks.yaml
