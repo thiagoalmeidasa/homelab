@@ -30,8 +30,6 @@ spec:
         certificateRefs:
           - kind: Secret
             name: "${SECRET_DOMAIN/./-}-production-tls"
-          - kind: Secret
-            name: "sites-${SECRET_DOMAIN/./-}-production-tls"
     - name: https-sites
       protocol: HTTPS
       port: 443
@@ -71,5 +69,3 @@ spec:
         certificateRefs:
           - kind: Secret
             name: "${SECRET_DOMAIN/./-}-production-tls"
-          - kind: Secret
-            name: "sites-${SECRET_DOMAIN/./-}-production-tls"
