@@ -32,6 +32,17 @@ spec:
             name: "${SECRET_DOMAIN/./-}-production-tls"
           - kind: Secret
             name: "sites-${SECRET_DOMAIN/./-}-production-tls"
+    - name: https-sites
+      protocol: HTTPS
+      port: 443
+      hostname: "*.sites.${PUBLIC_DOMAIN}"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: "sites-${SECRET_DOMAIN/./-}-production-tls"
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
