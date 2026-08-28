@@ -147,6 +147,9 @@ spec:
           - name: external
             namespace: networking
             sectionName: https
+          - name: external
+            namespace: networking
+            sectionName: https-sites
         hostnames:
           - sites.${PUBLIC_DOMAIN}
           - "*.sites.${PUBLIC_DOMAIN}"
