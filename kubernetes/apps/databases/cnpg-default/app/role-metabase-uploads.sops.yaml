@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: cnpg-default-metabase-uploads
+    namespace: databases
+type: kubernetes.io/basic-auth
+stringData:
+    username: ENC[AES256_GCM,data:3+sYNUfiI7E=,iv:psMOjAgjai/kSyGekA1evNI8cGweRLR1eH+3nx8UQz4=,tag:5aLh++uV8F24Z+eHBvmCdw==,type:str]
+    password: ENC[AES256_GCM,data:8F2oNzWjp5cqUAFUbVLWl0184827lmRt,iv:GgbxKCxYoPo5VIKRiQG7XfW3pyPWK+4lm2aV3Gl4x4U=,tag:f6YQGUaEBDdBRiex9YxJfg==,type:str]
+sops:
+    age:
+        - recipient: age1w02zzfg0y4ast9mgnd9w0yuym0wqx6q967kmrmq355w4cnw0xytq2x369r
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB1VURkVkpwMDU5RC9FQzcv
+            QTRSZVRHNlRtM2w0eXNLR25BN2h5SDJVaVRBClJVRU9pcStkN09VcXRoSnkyWlIw
+            Y2RrUUM5L2pmUnhOTm9seVhmWWFQL2MKLS0tIEVqZTZ2T25DWTduL25oVldlYkE5
+            akRhSDNxdDlNM01Nbzk2dnFNa2dhbk0KaNpZE3WWVckV38ka9Yb9KXDubgrM5Vn9
+            nhahEeWslI5mZYyjbWJe+ppHeIfmU4EU4wtISsbTVy+3DhmIuEAlvA==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-08-29T07:12:51Z"
+    mac: ENC[AES256_GCM,data:/pkxcwDbECTaPtSE3tJjl5RV6tWuzI6GloyhR9pozMr1xMX59WvtcRHfojwM7d2Ce+QyxvEofnnYXRQdRvNm4urrXXsUmqPC01YbySTeQVU+eZUpPfIJIny5zLxtjXNAC+xX3eyXMKwcnVVoauJDAiGehhqcSJOxsF5MDXhaukc=,iv:nRJF3axSYyTapNldrvFU0dIJYgZ34Bsan7Jf105a3lk=,tag:sAjBF3MDZcVrXHIWrNIZvw==,type:str]
+    encrypted_regex: ^(data|stringData)$
+    version: 3.10.2

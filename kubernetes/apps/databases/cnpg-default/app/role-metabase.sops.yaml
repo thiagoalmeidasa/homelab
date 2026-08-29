@@ -5,5 +5,20 @@ metadata:
     namespace: databases
 type: kubernetes.io/basic-auth
 stringData:
-    username: metabase
-    password: saihee5esh5OhzaeSae0liew
+    username: ENC[AES256_GCM,data:hdtV9qJ8u8E=,iv:M6vjppyh3TlznR1YobajHLVBnDyUVE6L6pMfc1pozDk=,tag:ta4QQFBAx0RUpqYIdnHw7g==,type:str]
+    password: ENC[AES256_GCM,data:Mpgmh2BOCpVuleQ9XkxIYY5QQydWIgPU,iv:BVhR6KQmUWbNWh8UTlCCyQfHVeH9bZtInlarRa+k5jQ=,tag:fA5phGSigj+NtezKk5Y5tA==,type:str]
+sops:
+    age:
+        - recipient: age1w02zzfg0y4ast9mgnd9w0yuym0wqx6q967kmrmq355w4cnw0xytq2x369r
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB1d0xVMnJEQS9UM3NIdGVu
+            TittZExrcG5rQ0FSODMyenNUdlMvUFA4RFJJCnlQWllYWEtET3NoN3lOSXV3cGxm
+            NkdKMzdDUHhDSjBwTGpHWEZJclU1V3cKLS0tIDBKTGQ2NzZLZGw5TS9RTjBGT0cy
+            VTJMZnZCTEN4VlEvQmpUQm9wa0IyaGMKGvU+lqDt78R8SqhEvSoeFNmEqjSCUJuZ
+            DOxuanHcHvTTTRrlTKMjBWm5xLQmQUgqJwNbEug2XwT/ebS3M9ZFTw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-08-29T07:14:33Z"
+    mac: ENC[AES256_GCM,data:jFbfRuyKp2EOvpBpujD3mumgTTxI/ydb8ytn1iVvdWA60Lq1Of9/0Yl3XWbd9Fz+utbJRf62nCuCTEyMEFcuF6IGI2aQYWuqXuDuatvoSMjsvo7tJnj2DNmyzScRoKakSebc4sHGJO1Ul5WenolmJxp84OCIJNKErbTofot1RQ4=,iv:4ybJxkNENGQEWa3eQPQ+6Zz2Ysr98u/rNsWCNZypfjQ=,tag:H+AS7v5mAbP90EI40Fs1lA==,type:str]
+    encrypted_regex: ^(data|stringData)$
+    version: 3.10.2
