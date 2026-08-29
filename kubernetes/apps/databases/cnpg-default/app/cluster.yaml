@@ -27,6 +27,10 @@ spec:
         login: true
         passwordSecret:
           name: cnpg-default-hoodik
+      - name: metabase
+        login: true
+        passwordSecret:
+          name: cnpg-default-metabase
       - name: oxicloud
         login: true
         passwordSecret:
