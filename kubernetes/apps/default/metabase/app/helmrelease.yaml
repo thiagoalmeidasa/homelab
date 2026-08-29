@@ -1,0 +1,115 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app metabase
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+      strategy: rollback
+
+  values:
+    controllers:
+      metabase:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 2000
+            runAsGroup: 2000
+            fsGroup: 2000
+            fsGroupChangePolicy: "OnRootMismatch"
+            seccompProfile:
+              type: RuntimeDefault
+        containers:
+          app:
+            image:
+              repository: docker.io/metabase/metabase
+              tag: v0.63.15@sha256:57fea84fc127377eec9e4ca6c82836012c76d6c012c5e39376f14c725f3dd08b
+            env:
+              TZ: ${TIMEZONE}
+              MB_DB_TYPE: postgres
+              MB_DB_CONNECTION_URI:
+                valueFrom:
+                  secretKeyRef:
+                    name: metabase-secret
+                    key: MB_DB_CONNECTION_URI
+              MB_SITE_URL: https://metabase.${SECRET_DOMAIN}
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/health
+                    port: &port 3000
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness: *probes
+            resources:
+              requests:
+                cpu: 10m
+                memory: 256Mi
+              limits:
+                memory: 2Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
+
+    route:
+      app:
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Metabase
+          gethomepage.dev/group: Monitoring
+          gethomepage.dev/icon: metabase.png
+        parentRefs:
+          - name: external
+            namespace: networking
+            sectionName: https
+          - name: internal
+            namespace: networking
+            sectionName: https
+        hostnames:
+          - "metabase.${PUBLIC_DOMAIN}"
+          - "metabase.${SECRET_DOMAIN}"
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http
+
+    persistence:
+      plugins:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        retain: true
+        size: 1Gi
+        storageClass: longhorn
+        labels:
+          recurring-job-group.longhorn.io/backup: enabled
+          recurring-job.longhorn.io/source: enabled
+        globalMounts:
+          - path: /plugins
