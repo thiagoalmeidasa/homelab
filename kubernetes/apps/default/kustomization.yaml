@@ -12,11 +12,12 @@ resources:
   - ./n8n/ks.yaml
   - ./openspeedtest/ks.yaml
   - ./oxicloud/ks.yaml
-  - ./piper/ks.yaml
   - ./photoprism/ks.yaml
+  - ./piper/ks.yaml
   - ./qwen3-asr/ks.yaml
   - ./readeck/ks.yaml
   - ./subgen/ks.yaml
   - ./syncthing/ks.yaml
   - ./umami/ks.yaml
+  - ./vert/ks.yaml
   - ./whisper-asr-webservice/ks.yaml
