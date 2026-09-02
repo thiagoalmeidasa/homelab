@@ -5,6 +5,8 @@ metadata:
   name: &app vert
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: oauth2-proxy
   targetNamespace: default
   commonMetadata:
     labels:

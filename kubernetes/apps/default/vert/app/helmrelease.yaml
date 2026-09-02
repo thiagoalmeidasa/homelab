@@ -63,95 +63,12 @@ spec:
               allowPrivilegeEscalation: false
               capabilities:
                 drop: ["ALL"]
-      oauth2-proxy:
-        replicas: 1
-        strategy: Recreate
-        pod:
-          securityContext:
-            runAsUser: 1000
-            runAsGroup: 1000
-            fsGroup: 1000
-            fsGroupChangePolicy: OnRootMismatch
-        containers:
-          app:
-            image:
-              repository: quay.io/oauth2-proxy/oauth2-proxy
-              tag: v7.15.4@sha256:b1b2021fe8f4004573e8d690dec6c7bb29cc44364572cf8510a05bf3a0ae2ded
-            args:
-              - --provider=oidc
-              - --oidc-issuer-url=https://auth.${PUBLIC_DOMAIN}
-              - --upstream=http://vert-app:80
-              - --http-address=0.0.0.0:4180
-              - --redirect-url=https://convert.${PUBLIC_DOMAIN}/oauth2/callback
-              - --cookie-domain=.${PUBLIC_DOMAIN}
-              - --cookie-secure=true
-              - --email-domain=*
-              - --skip-provider-button=true
-              - --code-challenge-method=S256
-            env:
-              TZ: ${TIMEZONE}
-            envFrom:
-              - secretRef:
-                  name: convert-oauth2-proxy
-            ports:
-              - containerPort: &oauth2-port 4180
-                name: http
-            probes:
-              startup:
-                enabled: true
-                custom: false
-              liveness: &oauth2-probes
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /
-                    port: *oauth2-port
-                  initialDelaySeconds: 15
-                  periodSeconds: 30
-                  timeoutSeconds: 5
-                  failureThreshold: 5
-              readiness: *oauth2-probes
-            resources:
-              requests:
-                cpu: 5m
-                memory: 30Mi
-              limits:
-                memory: 100Mi
-            securityContext:
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop: ["ALL"]
-
     service:
       app:
         controller: *app
         ports:
           http:
             port: *port
-      oauth2-proxy:
-        controller: oauth2-proxy
-        ports:
-          http:
-            port: *oauth2-port
-
-    route:
-      app:
-        annotations:
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: Convert
-          gethomepage.dev/group: Productivity
-          gethomepage.dev/description: Convert files into different formats
-        parentRefs:
-          - name: external
-            namespace: networking
-            sectionName: https
-        hostnames:
-          - "convert.${PUBLIC_DOMAIN}"
-        rules:
-          - backendRefs:
-              - identifier: oauth2-proxy
-                port: http
 
     persistence:
       cache:
