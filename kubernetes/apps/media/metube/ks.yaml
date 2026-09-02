@@ -5,6 +5,8 @@ metadata:
   name: metube
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: oauth2-proxy
   path: ./kubernetes/apps/media/metube/app
   prune: true
   sourceRef:
