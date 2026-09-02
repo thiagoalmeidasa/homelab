@@ -1,0 +1,114 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app oauth2-proxy
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+      strategy: rollback
+  driftDetection:
+    mode: enabled
+
+  values:
+    defaultPodOptions:
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+
+    controllers:
+      oauth2-proxy:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        replicas: 1
+        pod:
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            runAsNonRoot: true
+            seccompProfile:
+              type: RuntimeDefault
+        containers:
+          app:
+            image:
+              repository: quay.io/oauth2-proxy/oauth2-proxy
+              tag: v7.15.4@sha256:b1b2021fe8f4004573e8d690dec6c7bb29cc44364572cf8510a05bf3a0ae2ded
+            args:
+              - --provider=oidc
+              - --provider-display-name=Pocket ID
+              - --oidc-issuer-url=https://auth.${PUBLIC_DOMAIN}
+              - --scope=openid profile email groups
+              - --upstream=static://202
+              - --http-address=0.0.0.0:4180
+              # Intentionally omit redirect-url so callbacks use each protected host.
+              # Register /oauth2/callback for every protected hostname in Pocket ID.
+              - --reverse-proxy=true
+              - --set-xauthrequest=true
+              - --email-domain=*
+              - --skip-provider-button=true
+              - --code-challenge-method=S256
+              - --cookie-name=__Host-oauth2-proxy
+              - --cookie-secure=true
+              - --cookie-httponly=true
+              - --cookie-samesite=lax
+              - --whitelist-domain=.${PUBLIC_DOMAIN}
+              - --whitelist-domain=.${SECRET_DOMAIN}
+            env:
+              TZ: ${TIMEZONE}
+            envFrom:
+              - secretRef:
+                  name: oauth2-proxy
+            ports:
+              - containerPort: &port 4180
+                name: http
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  initialDelaySeconds: 10
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ready
+                    port: *port
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                  timeoutSeconds: 3
+                  failureThreshold: 3
+            resources:
+              requests:
+                cpu: 5m
+                memory: 30Mi
+              limits:
+                memory: 100Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
