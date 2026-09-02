@@ -146,10 +146,10 @@ cilium`.
 | `internal` | LAN address `192.168.100.226` | Private applications and selected split-DNS public names |
 | `external` | Cloudflare Tunnel through the cluster Service | Explicitly public applications |
 
-HTTP listeners redirect to HTTPS. The ordinary external HTTPS listener accepts
-hosts under `*.thiagoalmeida.xyz`. A second `https-sites` listener and origin
-certificate cover `*.sites.thiagoalmeida.xyz` for Versity's native hostname
-mapping.
+HTTP listeners redirect to HTTPS. The external HTTPS listener accepts hosts
+under `*.thiagoalmeida.xyz`. Versity websites use exact first-level public
+hostnames on this listener and rewrite the upstream hostname to Versity's
+native `bucket.sites.thiagoalmeida.xyz` mapping.
 
 An HTTPRoute is public only when it references the `external` Gateway. Merely
 creating a Service, using a public-looking hostname, or attaching to the
@@ -170,9 +170,9 @@ hostnames. Exact HTTPRoute hostnames are more specific and take precedence.
    request hostname, and forwards the request to its Kubernetes Service.
 6. The Service selects the application pod.
 
-The `cloudflared` wildcard `*.thiagoalmeida.xyz` also matches deeper names such
-as `bucket.sites.thiagoalmeida.xyz`. Certificate coverage is a separate matter;
-hostname routing alone does not make a deeper name usable by browsers.
+Versity's deeper `bucket.sites.thiagoalmeida.xyz` names are used only as
+rewritten upstream hostnames. Visitors use exact first-level public names so
+Cloudflare can terminate edge TLS with Universal SSL.
 
 ## TLS boundaries
 
@@ -183,11 +183,9 @@ Public requests have two independent TLS connections:
 | Visitor to Cloudflare | Cloudflare edge certificate | The visitor-facing application hostname |
 | `cloudflared` to Cilium Gateway | cert-manager / Let's Encrypt | The configured origin SNI and Gateway listener hostnames |
 
-The general cert-manager Certificate covers `thiagoalmeida.xyz`,
-`*.thiagoalmeida.xyz`, and `*.${SECRET_DOMAIN}`. A separate Certificate covers
-`sites.thiagoalmeida.xyz` and `*.sites.thiagoalmeida.xyz`. Certificates use
-DNS-01 validation through Cloudflare, so issuance does not require an inbound
-LAN connection.
+The cert-manager Certificate covers `thiagoalmeida.xyz`,
+`*.thiagoalmeida.xyz`, and `*.${SECRET_DOMAIN}`. It uses DNS-01 validation
+through Cloudflare, so issuance does not require an inbound LAN connection.
 
 Cloudflare Universal SSL on a full zone covers the apex and one subdomain
 level, but not names such as `bucket.sites.thiagoalmeida.xyz`. See

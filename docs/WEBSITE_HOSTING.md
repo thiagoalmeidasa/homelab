@@ -20,15 +20,10 @@ At the Versity endpoint, the host maps to a bucket as follows:
 example-site.sites.thiagoalmeida.xyz -> bucket example-site
 ```
 
-The cluster already has an external HTTPRoute, Gateway listener, and
-cert-manager certificate for `sites.thiagoalmeida.xyz` and
-`*.sites.thiagoalmeida.xyz`. The tunnel ingress wildcard also accepts those
-names.
-
-However, the public Cloudflare edge is a separate TLS boundary. Universal SSL
-on a normal full Cloudflare zone covers `*.thiagoalmeida.xyz`, not the deeper
-`*.sites.thiagoalmeida.xyz`. Without an Advanced or custom Cloudflare edge
-certificate, browsers fail TLS before reaching the tunnel.
+The native Versity hostname is not published directly. Cloudflare Universal
+SSL on a normal full zone covers `*.thiagoalmeida.xyz`, not the deeper
+`*.sites.thiagoalmeida.xyz`. Publishing the native hostname would therefore
+fail TLS at the Cloudflare edge before the request reached the tunnel.
 
 To use Universal SSL and keep the existing Versity mapping unchanged, publish
 each website through an exact first-level hostname and rewrite the upstream
@@ -68,6 +63,12 @@ hostname. A site bucket must:
 
 For example, bucket `example-site` is published as
 `https://example-site.thiagoalmeida.xyz`.
+
+The currently published site is:
+
+| Bucket | Public URL |
+| --- | --- |
+| `iaghoephahsohl2fe3xahngiev8poe7u` | `https://iaghoephahsohl2fe3xahngiev8poe7u.thiagoalmeida.xyz` |
 
 Inventory existing public hostnames before choosing a name:
 
@@ -299,9 +300,8 @@ example-site.thiagoalmeida.xyz          supported by Universal SSL
 example-site.sites.thiagoalmeida.xyz    requires deeper edge TLS coverage
 ```
 
-Then inspect the certificate with `openssl s_client`. The cert-manager
-`sites-...-production-tls` Secret is an origin certificate and cannot fix a
-missing Cloudflare edge certificate.
+Then inspect the certificate with `openssl s_client`. A cert-manager origin
+certificate cannot fix a missing Cloudflare edge certificate.
 
 ### DNS does not resolve
 
