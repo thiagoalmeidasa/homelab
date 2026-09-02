@@ -142,21 +142,6 @@ spec:
           - backendRefs:
               - identifier: app
                 port: admin
-      website:
-        parentRefs:
-          - name: external
-            namespace: networking
-            sectionName: https
-          - name: external
-            namespace: networking
-            sectionName: https-sites
-        hostnames:
-          - sites.${PUBLIC_DOMAIN}
-          - "*.sites.${PUBLIC_DOMAIN}"
-        rules:
-          - backendRefs:
-              - identifier: app
-                port: website
     persistence:
       data:
         accessMode: ReadWriteOnce

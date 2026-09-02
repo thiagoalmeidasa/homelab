@@ -5,3 +5,4 @@ kind: Kustomization
 resources:
   - ./versitygw.sops.yaml
   - ./helmrelease.yaml
+  - ./site-iaghoephahsohl2fe3xahngiev8poe7u.yaml
