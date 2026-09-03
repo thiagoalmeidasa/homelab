@@ -100,15 +100,23 @@ spec:
     route:
       app:
         parentRefs:
+          - name: internal
+            namespace: networking
+            sectionName: https
+        hostnames: ["auth.${SECRET_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http
+      public:
+        parentRefs:
           - name: external
             namespace: networking
             sectionName: https
           - name: internal
             namespace: networking
             sectionName: https
-        hostnames:
-          - "auth.${SECRET_DOMAIN}"
-          - "auth.${PUBLIC_DOMAIN}"
+        hostnames: ["auth.${PUBLIC_DOMAIN}"]
         rules:
           - backendRefs:
               - identifier: app
