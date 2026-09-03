@@ -1,5 +1,5 @@
 ---
-# Wildcard catch-all for unmatched hostnames on both gateways.
+# Wildcard catch-all for unmatched internal hostnames.
 # Gateway API hostname matching prefers non-wildcard over wildcard, so this only
 # fires when no other HTTPRoute matches the requested host. Status returned is
 # the container default (200 with branded body); 5xx response-override is a
@@ -8,6 +8,24 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: error-pages
+  namespace: networking
+spec:
+  parentRefs:
+    - name: internal
+      namespace: networking
+      sectionName: https
+  hostnames: ["*.${SECRET_DOMAIN}"]
+  rules:
+    - backendRefs:
+        - name: error-pages
+          port: 8080
+---
+# Wildcard catch-all for unmatched public hostnames. External DNS is disabled
+# because application routes publish the concrete hostnames.
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: error-pages-public
   namespace: networking
   annotations:
     external-dns.alpha.kubernetes.io/controller: none
@@ -19,9 +37,7 @@ spec:
     - name: internal
       namespace: networking
       sectionName: https
-  hostnames:
-    - "*.${PUBLIC_DOMAIN}"
-    - "*.${SECRET_DOMAIN}"
+  hostnames: ["*.${PUBLIC_DOMAIN}"]
   rules:
     - backendRefs:
         - name: error-pages

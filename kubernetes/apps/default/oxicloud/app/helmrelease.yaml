@@ -107,15 +107,23 @@ spec:
           gethomepage.dev/group: Productivity
           gethomepage.dev/icon: https://raw.githubusercontent.com/AtalayaLabs/OxiCloud/main/images/oxicloud-logo.png
         parentRefs:
+          - name: internal
+            namespace: networking
+            sectionName: https
+        hostnames: ["arai.${SECRET_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http
+      public:
+        parentRefs:
           - name: external
             namespace: networking
             sectionName: https
           - name: internal
             namespace: networking
             sectionName: https
-        hostnames:
-          - "arai.${PUBLIC_DOMAIN}"
-          - "arai.${SECRET_DOMAIN}"
+        hostnames: ["arai.${PUBLIC_DOMAIN}"]
         rules:
           - backendRefs:
               - identifier: app
