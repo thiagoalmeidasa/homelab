@@ -95,6 +95,10 @@ spec:
         labels:
           recurring-job-group.longhorn.io/backup: enabled
           recurring-job.longhorn.io/source: enabled
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
       downloads:
         enabled: true
         type: nfs
