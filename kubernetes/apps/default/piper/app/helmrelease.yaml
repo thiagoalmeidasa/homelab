@@ -25,7 +25,7 @@ spec:
           app:
             image:
               repository: rhasspy/wyoming-piper
-              tag: 2.4.2@sha256:6b837615b543e38587b735b72abad2dfd7ead50fd10ec1a4d5815241e5539377
+              tag: 2.4.3@sha256:bf803881fc41b7bfb0e623a3c915ffc1c9495c468deb33e5c11436cfaee49310
             args:
               - --voice
               - pt_BR-faber-medium
