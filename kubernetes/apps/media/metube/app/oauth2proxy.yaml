@@ -37,6 +37,7 @@ spec:
             - --cookie-secure=true
             - --email-domain=*
             - --skip-provider-button=true
+            - --code-challenge-method=S256
           envFrom:
             - secretRef:
                 name: metube-oauth2-proxy
