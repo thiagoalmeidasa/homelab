@@ -1,23 +1,23 @@
-variable "minio_region" {
+variable "s3_region" {
   type        = string
-  description = "Default MINIO region"
+  description = "Versity S3 signing region"
   default     = "us-east-1"
 }
 
-variable "minio_server" {
+variable "s3_endpoint" {
   type        = string
-  description = "Default MINIO host and port"
-  default     = "s3.home399.thiagoalmeida.xyz"
+  description = "Versity S3 endpoint"
+  default     = "https://s3.home399.thiagoalmeida.xyz"
 }
 
-variable "minio_user" {
+variable "access_key" {
   type        = string
-  description = "MINIO user"
-  default     = "minio-root"
+  description = "Versity access key"
+  sensitive   = true
 }
 
-variable "minio_password" {
+variable "secret_key" {
   type        = string
-  description = "MINIO password"
+  description = "Versity secret key"
   sensitive   = true
 }

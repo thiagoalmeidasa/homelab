@@ -1,19 +1,16 @@
 terraform {
   backend "s3" {
-    bucket = "terraform-state" # Name of the S3 bucket
+    bucket = "terraform-state"
     endpoints = {
-      s3 = "https://s3.home399.thiagoalmeida.xyz" # Minio endpoint
+      s3 = "https://s3.home399.thiagoalmeida.xyz"
     }
-    key = "local-s3-buckets/terraform.tfstate" # Name of the tfstate file
+    key = "local-s3-buckets/terraform.tfstate"
 
-    access_key = "" # on ./state.config
-    secret_key = ""
-
-    region                      = "us-east-1" # Versity strict-validates sigv4 credential scope
-    skip_credentials_validation = true   # Skip AWS related checks and validations
+    region                      = "us-east-1"
+    skip_credentials_validation = true
     skip_requesting_account_id  = true
     skip_metadata_api_check     = true
     skip_region_validation      = true
-    use_path_style              = true # Enable path-style S3 URLs (https://<HOST>/<BUCKET> https://developer.hashicorp.com/terraform/language/settings/backends/s3#use_path_style
+    use_path_style              = true
   }
 }

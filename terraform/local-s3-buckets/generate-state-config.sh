@@ -7,7 +7,9 @@
 # Usage:
 #   ./generate-state-config.sh
 #
-# Run before `terraform init -backend-config=state.config`.
+# The generated keys are also Terraform input variables for the AWS provider.
+# Run `terraform init -backend-config=state.config`, then
+# `terraform plan -var-file=state.config`.
 set -euo pipefail
 
 ITEM="${RBW_ITEM:-minio-tf-creds}"
