@@ -3,12 +3,17 @@
 ## Local S3 buckets
 
 `local-s3-buckets/` manages buckets on Versity Gateway. It uses the
-`aminueza/minio` provider only for its S3-compatible bucket operations, with
-`s3_compat_mode = true`.
+`hashicorp/aws` provider with a custom, path-style S3 endpoint. This allows
+Terraform to manage S3 bucket resources, bucket policies, and static website
+configuration through Versity's S3-compatible API.
 
-Versity does not implement the MinIO admin API used by the provider's IAM and
-ILM resources. Manage users, credentials, policies, and lifecycle behavior
+Versity account identities and access keys are outside the S3 API. Manage those
 through Versity's own admin API/CLI instead.
+
+Versity does not currently implement the S3 bucket lifecycle API. The former
+Mimir rule that expired all objects after 90 days therefore remains deferred;
+do not add `aws_s3_bucket_lifecycle_configuration` until Versity supports both
+reading and writing that configuration.
 
 ### Credentials
 
@@ -29,10 +34,6 @@ tracked Terraform files.
 terraform init -backend-config=state.config
 terraform plan -var-file=state.config
 ```
-
-The first plan after this migration forgets the legacy MinIO IAM and ILM
-objects from Terraform state with `destroy = false`. It does not delete those
-objects or any buckets.
 
 ## Cloud backups
 
