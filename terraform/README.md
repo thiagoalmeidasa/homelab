@@ -10,6 +10,11 @@ configuration through Versity's S3-compatible API.
 Versity account identities and access keys are outside the S3 API. Manage those
 through Versity's own admin API/CLI instead.
 
+Versity does not currently implement the S3 bucket lifecycle API. The former
+Mimir rule that expired all objects after 90 days therefore remains deferred;
+do not add `aws_s3_bucket_lifecycle_configuration` until Versity supports both
+reading and writing that configuration.
+
 ### Credentials
 
 Generate the ignored `state.config` file from Bitwarden:
@@ -29,12 +34,6 @@ tracked Terraform files.
 terraform init -backend-config=state.config
 terraform plan -var-file=state.config
 ```
-
-The first apply after this migration forgets the legacy MinIO resources from
-Terraform state with `destroy = false`, then imports the existing buckets at
-their AWS provider addresses. It also imports the existing website bucket,
-website configuration, and bucket policy. It does not delete or recreate any
-buckets.
 
 ## Cloud backups
 
