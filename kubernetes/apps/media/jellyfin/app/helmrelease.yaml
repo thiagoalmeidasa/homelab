@@ -176,6 +176,12 @@ spec:
         path: "${NFS_MEDIA}/intros"
         globalMounts:
           - path: "/media/intros"
+      internos:
+        type: nfs
+        server: "${NFS_SERVER}"
+        path: "${NFS_MEDIA}/internos"
+        globalMounts:
+          - path: "/media/internos"
       jellyfin-cache:
         type: nfs
         server: "${NFS_SERVER}"
