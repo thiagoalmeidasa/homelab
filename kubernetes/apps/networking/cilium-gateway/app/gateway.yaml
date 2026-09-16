@@ -5,12 +5,12 @@ metadata:
   name: external
   namespace: networking
   annotations:
-    external-dns.alpha.kubernetes.io/target: "ingress.${PUBLIC_DOMAIN}"
+    external-dns.kubernetes.io/target: "ingress.${PUBLIC_DOMAIN}"
 spec:
   gatewayClassName: cilium
   infrastructure:
     annotations:
-      external-dns.alpha.kubernetes.io/hostname: "ingress.${PUBLIC_DOMAIN}"
+      external-dns.kubernetes.io/hostname: "ingress.${PUBLIC_DOMAIN}"
   listeners:
     - name: http
       protocol: HTTP
