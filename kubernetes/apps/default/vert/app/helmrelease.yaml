@@ -24,7 +24,7 @@ spec:
   values:
     controllers:
       vert:
-        replicas: 1
+        replicas: 0
         strategy: Recreate
         pod:
           securityContext:
