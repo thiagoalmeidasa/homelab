@@ -5,9 +5,9 @@ metadata:
   name: snapshot
   namespace: storage
 spec:
-  cron: "20 3 * * *"
+  cron: "20 3 * * 0"
   task: "snapshot"
   groups:
     - backup
-  retain: 7
+  retain: 2
   concurrency: 1
