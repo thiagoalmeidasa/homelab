@@ -4,4 +4,4 @@ kind: Kustomization
 namespace: storage
 resources:
   - ./backup-weekly.yaml
-  - ./snapshot-daily.yaml
+  - ./snapshot-weekly.yaml
