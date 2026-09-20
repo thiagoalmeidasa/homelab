@@ -37,7 +37,7 @@ spec:
           app:
             image:
               repository: docker.io/metabase/metabase
-              tag: v0.63.17@sha256:918187453bd5d70849d14bb6af0bb482a617dc849f251502679a8e626d98f4ee
+              tag: v0.63.18@sha256:1160b570cb11c107bce00e71293552df8a8363e01a32c2c7a048cee002dc8a73
             env:
               TZ: ${TIMEZONE}
               MB_DB_TYPE: postgres
