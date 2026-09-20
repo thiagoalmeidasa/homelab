@@ -27,7 +27,7 @@ spec:
           app:
             image:
               repository: docker.io/diocrafts/oxicloud
-              tag: 0.9.0@sha256:c367d86856a4a2eccbd5afe16a79ecc15b21f21d89652b43bd39923f26fde273
+              tag: 0.9.1@sha256:cc00b839e27dc66e38d2f85f15a5e2682369f4ee9b02c04eeee1311198d5357d
             env:
               OXICLOUD_BASE_URL: https://arai.${PUBLIC_DOMAIN}
               OXICLOUD_SERVER_HOST: 0.0.0.0
