@@ -174,6 +174,25 @@
             state: absent
           loop: ["none", "swap"]
           when: ansible_facts['distribution'] == 'Ubuntu'
+        - name: System Configuration (2) | Create K3s containerd config drop-in directory | Ubuntu 26.04+
+          ansible.builtin.file:
+            path: /var/lib/rancher/k3s/agent/etc/containerd/config-v3.toml.d
+            state: directory
+            mode: "0755"
+          when:
+            - ansible_facts['distribution'] == 'Ubuntu'
+            - ansible_facts['distribution_version'] is version('26.04', '>=')
+        - name: System Configuration (2) | Disable containerd AppArmor | Ubuntu 26.04+
+          ansible.builtin.copy:
+            dest: /var/lib/rancher/k3s/agent/etc/containerd/config-v3.toml.d/99-disable-apparmor.toml
+            mode: "0644"
+            content: |
+              [plugins.'io.containerd.cri.v1.runtime']
+                disable_apparmor = true
+          notify: RestartK3s
+          when:
+            - ansible_facts['distribution'] == 'Ubuntu'
+            - ansible_facts['distribution_version'] is version('26.04', '>=')
         - name: System Configuration (2) | Permissive SELinux | Fedora
           ansible.posix.selinux:
             state: permissive
@@ -192,4 +211,8 @@
     - name: RestartJournald
       ansible.builtin.systemd:
         service: systemd-journald.service
+        state: restarted
+    - name: RestartK3s
+      ansible.builtin.systemd:
+        service: "{{ 'k3s.service' if k3s_control_node | default(false) else 'k3s-agent.service' }}"
         state: restarted
