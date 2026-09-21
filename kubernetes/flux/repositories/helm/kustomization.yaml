@@ -12,6 +12,7 @@ resources:
   - ./fairwinds-charts.yaml
   - ./grafana.yaml
   - ./jetstack.yaml
+  - ./kedacore.yaml
   - ./kubernetes-sigs-nfd.yaml
   - ./longhorn.yaml
   - ./metrics-server.yaml
