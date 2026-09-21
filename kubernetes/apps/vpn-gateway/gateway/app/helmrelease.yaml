@@ -35,6 +35,8 @@ spec:
               - update
               - -providers
               - private internet access
+              - -minratio
+              - "0.75"
             env:
               - name: UPDATER_PREFER_DIRECT_DOWNLOAD
                 value: "on"
