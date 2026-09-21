@@ -59,8 +59,6 @@ spec:
               limits:
                 memory: 2Gi
     defaultPodOptions:
-      annotations:
-        container.apparmor.security.beta.kubernetes.io/gateway-init: unconfined
       securityContext:
         runAsNonRoot: true
         runAsUser: 1000

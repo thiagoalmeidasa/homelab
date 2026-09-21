@@ -52,7 +52,6 @@ spec:
           maxSurge: 1
         podSpec:
           annotations:
-            container.apparmor.security.beta.kubernetes.io/gateway-init: unconfined
             prometheus.io/scrape: "true"
             prometheus.io/port: "8192"
             prometheus.io/path: "/metrics"
