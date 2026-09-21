@@ -20,6 +20,8 @@ spec:
   values:
     fullnameOverride: *name
     defaultPodOptions:
+      annotations:
+        container.apparmor.security.beta.kubernetes.io/gateway-init: unconfined
       automountServiceAccountToken: false
       enableServiceLinks: false
       hostname: *name
