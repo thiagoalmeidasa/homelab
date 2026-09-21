@@ -26,6 +26,8 @@ spec:
     controllers:
       qbittorrent:
         pod:
+          annotations:
+            container.apparmor.security.beta.kubernetes.io/gateway-init: unconfined
           securityContext:
             runAsNonRoot: true
             runAsUser: 1000

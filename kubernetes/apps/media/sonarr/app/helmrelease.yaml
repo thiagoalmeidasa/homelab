@@ -30,6 +30,8 @@ spec:
         annotations:
           reloader.stakater.com/auto: "true"
         pod:
+          annotations:
+            container.apparmor.security.beta.kubernetes.io/gateway-init: unconfined
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
