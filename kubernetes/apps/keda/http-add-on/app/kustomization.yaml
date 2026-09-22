@@ -4,3 +4,4 @@ kind: Kustomization
 namespace: keda
 resources:
   - ./helmrelease.yaml
+  - ./referencegrants.yaml
