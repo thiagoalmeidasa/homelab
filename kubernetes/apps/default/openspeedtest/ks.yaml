@@ -5,6 +5,8 @@ metadata:
   name: &app openspeedtest
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: cluster-apps-keda-http-add-on
   targetNamespace: default
   commonMetadata:
     labels:
