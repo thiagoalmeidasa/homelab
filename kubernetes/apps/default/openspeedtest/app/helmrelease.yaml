@@ -21,6 +21,7 @@ spec:
   values:
     controllers:
       openspeedtest:
+        replicas: null
         containers:
           app:
             image:
@@ -53,19 +54,3 @@ spec:
         ports:
           http:
             port: &port 3000
-    route:
-      app:
-        annotations:
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/name: OpenSpeedTest
-          gethomepage.dev/group: Monitoring
-          gethomepage.dev/icon: openspeedtest.png
-        parentRefs:
-          - name: internal
-            namespace: networking
-            sectionName: https
-        hostnames: ["openspeedtest.${SECRET_DOMAIN}"]
-        rules:
-          - backendRefs:
-              - identifier: app
-                port: http
