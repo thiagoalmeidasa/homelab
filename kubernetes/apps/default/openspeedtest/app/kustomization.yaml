@@ -5,4 +5,3 @@ resources:
   - ./autoscaling.yaml
   - ./helmrelease.yaml
   - ./httproute.yaml
-  - ./referencegrant.yaml

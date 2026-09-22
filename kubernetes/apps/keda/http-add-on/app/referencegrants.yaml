@@ -2,8 +2,21 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: ReferenceGrant
 metadata:
+  name: allow-headlamp-to-http-interceptor
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: monitoring
+  to:
+    - group: ""
+      kind: Service
+      name: keda-add-ons-http-interceptor-proxy
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: ReferenceGrant
+metadata:
   name: allow-openspeedtest-to-http-interceptor
-  namespace: keda
 spec:
   from:
     - group: gateway.networking.k8s.io
