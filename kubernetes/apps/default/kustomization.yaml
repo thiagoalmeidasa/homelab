@@ -16,7 +16,6 @@ resources:
   - ./piper/ks.yaml
   - ./qwen3-asr/ks.yaml
   - ./readeck/ks.yaml
-  - ./subgen/ks.yaml
   - ./syncthing/ks.yaml
   - ./umami/ks.yaml
   - ./vert/ks.yaml
