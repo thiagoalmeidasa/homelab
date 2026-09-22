@@ -1,0 +1,101 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app speech-to-phrase
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  maxHistory: 3
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      speech-to-phrase:
+        strategy: Recreate
+        containers:
+          app:
+            image:
+              repository: rhasspy/wyoming-speech-to-phrase
+              tag: 1.4.3@sha256:e532f0dbc6b21285c4c784212003865b9167041927328a767cb0beb1a0beaa20
+            args:
+              - --hass-websocket-uri
+              - ws://home-assistant.home.svc.cluster.local:8123/api/websocket
+              - --hass-token
+              - $(HASS_TOKEN)
+              - --retrain-on-start
+              - --retrain-seconds
+              - "3600"
+            env:
+              HASS_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: home-assistant-secret
+                    key: HASS_BEARER_TOKEN
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: &port 10300
+                  periodSeconds: 5
+                  timeoutSeconds: 2
+                  failureThreshold: 180
+              readiness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  tcpSocket:
+                    port: *port
+                  periodSeconds: 10
+                  timeoutSeconds: 2
+                  failureThreshold: 3
+              liveness:
+                <<: *probes
+                spec:
+                  tcpSocket:
+                    port: *port
+                  periodSeconds: 30
+                  timeoutSeconds: 2
+                  failureThreshold: 3
+            resources:
+              requests:
+                cpu: 500m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+    service:
+      app:
+        controller: speech-to-phrase
+        ports:
+          wyoming:
+            port: *port
+    persistence:
+      models:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        storageClass: longhorn
+        size: 1Gi
+        retain: true
+        globalMounts:
+          - path: /models
+      train:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        storageClass: longhorn
+        size: 1Gi
+        retain: true
+        globalMounts:
+          - path: /train
