@@ -1,0 +1,63 @@
+---
+apiVersion: http.keda.sh/v1beta1
+kind: InterceptorRoute
+metadata:
+  name: vert
+  namespace: default
+spec:
+  target:
+    service: vert-oauth2-proxy
+    port: 4180
+  rules:
+    - hosts:
+        - "convert.${PUBLIC_DOMAIN}"
+  scalingMetric:
+    concurrency:
+      targetValue: 10
+  coldStart:
+    maxPendingRequests: 100
+    overflow: Reject
+  timeouts:
+    readiness: 2m
+    request: 3m
+    responseHeader: 2m
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: vert
+  namespace: default
+spec:
+  scaleTargetRef:
+    name: vert
+  pollingInterval: 5
+  cooldownPeriod: 600
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  advanced:
+    restoreToOriginalReplicaCount: true
+  triggers:
+    - type: external-push
+      metadata:
+        scalerAddress: keda-add-ons-http-external-scaler.keda.svc.cluster.local:9090
+        interceptorRoute: vert
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: vert-oauth2-proxy
+  namespace: default
+spec:
+  scaleTargetRef:
+    name: vert-oauth2-proxy
+  pollingInterval: 5
+  cooldownPeriod: 600
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  advanced:
+    restoreToOriginalReplicaCount: true
+  triggers:
+    - type: external-push
+      metadata:
+        scalerAddress: keda-add-ons-http-external-scaler.keda.svc.cluster.local:9090
+        interceptorRoute: vert
