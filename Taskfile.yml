@@ -62,3 +62,8 @@ tasks:
     cmds:
       - flate build ks --path ./kubernetes --no-progress 2>/dev/null |
           flux schema validate - --config .fluxschema.yml
+
+  schema:update:
+    desc: Regenerate custom schemas from installed CRDs
+    cmds:
+      - ./hacks/update-flux-schemas.sh

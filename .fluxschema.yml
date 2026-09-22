@@ -2,6 +2,7 @@ apiVersion: schema.plugin.fluxcd.io/v1beta1
 kind: Config
 validate:
   schemaLocation:
+    - .schemas
     - default
     - ecosystem
     - "https://raw.githubusercontent.com/datreeio/CRDs-catalog/main"
