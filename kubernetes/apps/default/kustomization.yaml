@@ -20,4 +20,3 @@ resources:
   - ./syncthing/ks.yaml
   - ./umami/ks.yaml
   - ./vert/ks.yaml
-  - ./whisper-asr-webservice/ks.yaml
