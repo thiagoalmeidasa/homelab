@@ -5,6 +5,8 @@ metadata:
   name: &app headlamp
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: cluster-apps-keda-http-add-on
   targetNamespace: monitoring
   commonMetadata:
     labels:

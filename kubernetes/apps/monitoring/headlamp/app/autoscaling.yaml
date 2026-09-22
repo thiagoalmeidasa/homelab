@@ -1,0 +1,43 @@
+---
+apiVersion: http.keda.sh/v1beta1
+kind: InterceptorRoute
+metadata:
+  name: headlamp
+  namespace: monitoring
+spec:
+  target:
+    service: headlamp
+    port: 80
+  rules:
+    - hosts:
+        - "headlamp.${SECRET_DOMAIN}"
+  scalingMetric:
+    concurrency:
+      targetValue: 10
+  coldStart:
+    maxPendingRequests: 100
+    overflow: Reject
+  timeouts:
+    readiness: 2m
+    request: 3m
+    responseHeader: 2m
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: headlamp
+  namespace: monitoring
+spec:
+  scaleTargetRef:
+    name: headlamp
+  pollingInterval: 5
+  cooldownPeriod: 600
+  minReplicaCount: 0
+  maxReplicaCount: 1
+  advanced:
+    restoreToOriginalReplicaCount: true
+  triggers:
+    - type: external-push
+      metadata:
+        scalerAddress: keda-add-ons-http-external-scaler.keda.svc.cluster.local:9090
+        interceptorRoute: headlamp

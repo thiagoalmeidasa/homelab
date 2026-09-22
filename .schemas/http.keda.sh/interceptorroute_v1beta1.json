@@ -1,0 +1,479 @@
+{
+  "properties": {
+    "apiVersion": {
+      "type": "string"
+    },
+    "kind": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "spec": {
+      "additionalProperties": false,
+      "properties": {
+        "coldStart": {
+          "additionalProperties": false,
+          "properties": {
+            "fallback": {
+              "additionalProperties": false,
+              "properties": {
+                "service": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "port": {
+                      "format": "int32",
+                      "maximum": 65535,
+                      "minimum": 1,
+                      "type": "integer"
+                    },
+                    "portName": {
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name"
+                  ],
+                  "type": "object",
+                  "x-kubernetes-validations": [
+                    {
+                      "message": "exactly one of 'port' or 'portName' must be set",
+                      "rule": "has(self.port) != has(self.portName)"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "service"
+              ],
+              "type": "object"
+            },
+            "maxPendingRequests": {
+              "format": "int32",
+              "minimum": 1,
+              "type": "integer"
+            },
+            "overflow": {
+              "default": "Reject",
+              "enum": [
+                "Reject",
+                "Placeholder"
+              ],
+              "type": "string"
+            },
+            "placeholder": {
+              "additionalProperties": false,
+              "properties": {
+                "response": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "body": {
+                      "maxLength": 32768,
+                      "type": "string"
+                    },
+                    "bodyFromConfigMap": {
+                      "additionalProperties": false,
+                      "properties": {
+                        "key": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "minLength": 1,
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ],
+                      "type": "object"
+                    },
+                    "headers": {
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "type": "object"
+                    },
+                    "statusCode": {
+                      "format": "int32",
+                      "maximum": 599,
+                      "minimum": 100,
+                      "type": "integer"
+                    }
+                  },
+                  "type": "object",
+                  "x-kubernetes-validations": [
+                    {
+                      "message": "at most one of 'body' or 'bodyFromConfigMap' may be set",
+                      "rule": "!(has(self.body) && has(self.bodyFromConfigMap))"
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "response"
+              ],
+              "type": "object"
+            }
+          },
+          "type": "object",
+          "x-kubernetes-validations": [
+            {
+              "message": "at least one of 'fallback', 'placeholder' or 'maxPendingRequests' must be set",
+              "rule": "has(self.fallback) || has(self.placeholder) || has(self.maxPendingRequests)"
+            },
+            {
+              "message": "'placeholder' must be set when 'overflow' is 'Placeholder'",
+              "rule": "self.overflow != 'Placeholder' || has(self.placeholder)"
+            }
+          ]
+        },
+        "rules": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "headers": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "name": {
+                      "minLength": 1,
+                      "type": "string"
+                    },
+                    "value": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "name"
+                  ],
+                  "type": "object"
+                },
+                "type": "array",
+                "x-kubernetes-list-map-keys": [
+                  "name"
+                ],
+                "x-kubernetes-list-type": "map"
+              },
+              "hosts": {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array",
+                "x-kubernetes-list-type": "set"
+              },
+              "paths": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "value": {
+                      "minLength": 1,
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "value"
+                  ],
+                  "type": "object"
+                },
+                "type": "array",
+                "x-kubernetes-list-type": "atomic"
+              }
+            },
+            "type": "object"
+          },
+          "type": "array",
+          "x-kubernetes-list-type": "atomic"
+        },
+        "scalingMetric": {
+          "additionalProperties": false,
+          "properties": {
+            "concurrency": {
+              "additionalProperties": false,
+              "properties": {
+                "targetValue": {
+                  "format": "int32",
+                  "minimum": 1,
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "targetValue"
+              ],
+              "type": "object"
+            },
+            "requestRate": {
+              "additionalProperties": false,
+              "properties": {
+                "granularity": {
+                  "default": "1s",
+                  "type": "string"
+                },
+                "targetValue": {
+                  "format": "int32",
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                "window": {
+                  "default": "1m",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "targetValue"
+              ],
+              "type": "object"
+            }
+          },
+          "type": "object",
+          "x-kubernetes-validations": [
+            {
+              "message": "at least one of 'concurrency' or 'requestRate' must be set",
+              "rule": "has(self.concurrency) || has(self.requestRate)"
+            }
+          ]
+        },
+        "staticRoutes": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "response": {
+                "additionalProperties": false,
+                "properties": {
+                  "body": {
+                    "maxLength": 32768,
+                    "type": "string"
+                  },
+                  "bodyFromConfigMap": {
+                    "additionalProperties": false,
+                    "properties": {
+                      "key": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "minLength": 1,
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name"
+                    ],
+                    "type": "object"
+                  },
+                  "headers": {
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "type": "object"
+                  },
+                  "statusCode": {
+                    "format": "int32",
+                    "maximum": 599,
+                    "minimum": 100,
+                    "type": "integer"
+                  }
+                },
+                "type": "object",
+                "x-kubernetes-validations": [
+                  {
+                    "message": "at most one of 'body' or 'bodyFromConfigMap' may be set",
+                    "rule": "!(has(self.body) && has(self.bodyFromConfigMap))"
+                  }
+                ]
+              },
+              "responseMode": {
+                "default": "WhenUnavailable",
+                "enum": [
+                  "Always",
+                  "WhenUnavailable"
+                ],
+                "type": "string"
+              },
+              "rules": {
+                "items": {
+                  "additionalProperties": false,
+                  "properties": {
+                    "headers": {
+                      "items": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "name": {
+                            "minLength": 1,
+                            "type": "string"
+                          },
+                          "value": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "name"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array",
+                      "x-kubernetes-list-map-keys": [
+                        "name"
+                      ],
+                      "x-kubernetes-list-type": "map"
+                    },
+                    "hosts": {
+                      "items": {
+                        "type": "string"
+                      },
+                      "type": "array",
+                      "x-kubernetes-list-type": "set"
+                    },
+                    "paths": {
+                      "items": {
+                        "additionalProperties": false,
+                        "properties": {
+                          "value": {
+                            "minLength": 1,
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "value"
+                        ],
+                        "type": "object"
+                      },
+                      "type": "array",
+                      "x-kubernetes-list-type": "atomic"
+                    }
+                  },
+                  "type": "object"
+                },
+                "minItems": 1,
+                "type": "array",
+                "x-kubernetes-list-type": "atomic"
+              }
+            },
+            "required": [
+              "response",
+              "rules"
+            ],
+            "type": "object"
+          },
+          "type": "array",
+          "x-kubernetes-list-type": "atomic"
+        },
+        "target": {
+          "additionalProperties": false,
+          "properties": {
+            "port": {
+              "format": "int32",
+              "maximum": 65535,
+              "minimum": 1,
+              "type": "integer"
+            },
+            "portName": {
+              "minLength": 1,
+              "type": "string"
+            },
+            "service": {
+              "minLength": 1,
+              "type": "string"
+            }
+          },
+          "required": [
+            "service"
+          ],
+          "type": "object",
+          "x-kubernetes-validations": [
+            {
+              "message": "exactly one of 'port' or 'portName' must be set",
+              "rule": "has(self.port) != has(self.portName)"
+            }
+          ]
+        },
+        "timeouts": {
+          "additionalProperties": false,
+          "properties": {
+            "readiness": {
+              "type": "string"
+            },
+            "request": {
+              "type": "string"
+            },
+            "responseHeader": {
+              "type": "string"
+            }
+          },
+          "type": "object"
+        }
+      },
+      "required": [
+        "scalingMetric",
+        "target"
+      ],
+      "type": "object"
+    },
+    "status": {
+      "additionalProperties": false,
+      "properties": {
+        "conditions": {
+          "items": {
+            "additionalProperties": false,
+            "properties": {
+              "lastTransitionTime": {
+                "format": "date-time",
+                "type": "string"
+              },
+              "message": {
+                "maxLength": 32768,
+                "type": "string"
+              },
+              "observedGeneration": {
+                "format": "int64",
+                "minimum": 0,
+                "type": "integer"
+              },
+              "reason": {
+                "maxLength": 1024,
+                "minLength": 1,
+                "pattern": "^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$",
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "True",
+                  "False",
+                  "Unknown"
+                ],
+                "type": "string"
+              },
+              "type": {
+                "maxLength": 316,
+                "pattern": "^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$",
+                "type": "string"
+              }
+            },
+            "required": [
+              "lastTransitionTime",
+              "message",
+              "reason",
+              "status",
+              "type"
+            ],
+            "type": "object"
+          },
+          "type": "array",
+          "x-kubernetes-list-map-keys": [
+            "type"
+          ],
+          "x-kubernetes-list-type": "map"
+        }
+      },
+      "type": "object"
+    }
+  },
+  "required": [
+    "metadata",
+    "spec"
+  ],
+  "type": "object"
+}

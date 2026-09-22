@@ -11,6 +11,14 @@ spec:
     namespace: flux-system
   driftDetection:
     mode: enabled
+    ignore:
+      - paths:
+          - /spec/replicas
+        target:
+          group: apps
+          version: v1
+          kind: Deployment
+          name: headlamp
   install:
     remediation:
       retries: 3
@@ -21,6 +29,7 @@ spec:
       retries: 3
   values:
     fullnameOverride: headlamp
+    replicaCount: null
     initContainers:
       - image: ghcr.io/headlamp-k8s/headlamp-plugin-flux:v0.1.0-beta-1@sha256:5274c581d69b36af6899dfccfc73adeda414e0ae6046f009db8ed3c4271c6add
         command:
