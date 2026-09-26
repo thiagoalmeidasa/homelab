@@ -16,7 +16,7 @@ repos:
         files: ^ansible/
         args: ["ansible/"]
   - repo: https://github.com/tarioch/flux-check-hook
-    rev: v0.8.0
+    rev: v0.9.0
     hooks:
       - id: check-flux-helm-values
   - repo: https://github.com/pre-commit/pre-commit-hooks
