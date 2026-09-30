@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: cnpg-default-hass-v2
+    namespace: databases
+type: kubernetes.io/basic-auth
+stringData:
+    username: ENC[AES256_GCM,data:HKQ97/NFwA==,iv:cC5fgz3u92GBF3ETBEKsAg+XE27cvXOiE+w8faF081g=,tag:tI0JfOLPlSyllUaBVvDUGw==,type:str]
+    password: ENC[AES256_GCM,data:7cMBXyjiNRq9Wfp1Y8cHo8DyDeSl9mYl8bao5YWdix+ty6R8xyaIvQ==,iv:eRRsb0JdshSxKQ7al27st0HZT71tWv1jCrK10TwCllA=,tag:nTNTUbE4cV5cEQzsJEepEw==,type:str]
+sops:
+    age:
+        - recipient: age1w02zzfg0y4ast9mgnd9w0yuym0wqx6q967kmrmq355w4cnw0xytq2x369r
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBza2RhdEJHWm5GNjA3N2l4
+            RTRtcEx4S2FaYmtReDRuYThwWk1xRmRjVzBRCkkwN0lXWjJ4bXp6T1ZIQnVWV0k3
+            TEhqVlhDU2ZnNXMyMVJncXRvQ3FnL1UKLS0tIEw2d1NpdmNyUzdGREJuS2p1ZTJ1
+            b0NaVDl0cmQ2L1JuNUU4Q1F5VXR3dHMK6teqkP8nTUtJ95/j6LpZtNjxQf9ef8SJ
+            CJKvgoWQdMg4Zngxh0LJUKXJZq42Fzjs4FzTaBSwAKNQyOIkMbHyNQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-09-30T18:40:25Z"
+    mac: ENC[AES256_GCM,data:rD4uqCicjVFTqbBD9qJAQRZq6vmALI4H82Oq33Bcnj95z5seyIu2HsZalXX3aeoWefJX1q/bh295S17z/L2rzrj4kqr2fATcOYuxLCoplA3RDTsUZBG9JddG1Rmoi0AkQGlngejYw0seXjKGb5vdJatpYbBQ3w5ObB/98cXt0Q0=,iv:hYEfE6VUZ0vIcjH8GeyJ0NDmj9xG0F7TO9S6fTeY9lk=,tag:Ubp+JN2VQ6DlD4ej8HlQ7g==,type:str]
+    encrypted_regex: ^(data|stringData)$
+    version: 3.10.2

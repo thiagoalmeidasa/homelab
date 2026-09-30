@@ -23,6 +23,10 @@ spec:
       max_slot_wal_keep_size: "512MB"
   managed:
     roles:
+      - name: hass_v2
+        login: true
+        passwordSecret:
+          name: cnpg-default-hass-v2
       - name: hoodik
         login: true
         passwordSecret:
