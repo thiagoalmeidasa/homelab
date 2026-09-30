@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: home-assistant-v2-secret
+    namespace: home
+type: Opaque
+stringData:
+    RECORDER_DB_URL: ENC[AES256_GCM,data:INZRn0TRfntcqUAztbUJ+oXZUGCyNDTPZcAjcqR6NI3gDBI0ybS26kD2qBcUpXk4LAc2M94NwWZlbXKD7t8qBNKBHZuU59olCTFwf66H6y/K0Xue3HyIrGzOHZxSub8Cxbv7/u08XOzJCmR0jPvwWwFyryoEWw==,iv:miGz3IFcaqjIdVZi7aUSgo3NPJNyMGSxSygeakGTZcA=,tag:n1UgMKeXsoK8ltCfPta7Yw==,type:str]
+sops:
+    age:
+        - recipient: age1w02zzfg0y4ast9mgnd9w0yuym0wqx6q967kmrmq355w4cnw0xytq2x369r
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBjSlFxYkhNdWFVMnpLakhW
+            WWJ1U1FaSld4eGxUZnc0cDREbzg0L2w3WUE4CkpmODhJcUZCZHozbzZHUGpDZkFm
+            S1Y5RzJEN2dJQjJFdnY3TDdleFZocTQKLS0tIC93djhpNDEzN2RwTElUemVFcUwx
+            NUpGa3ZzY1Nudk1PbXJEcXplTGQ2NncK9mqPfjx0EpGYpUqwkJKw4egH9cr1AlS0
+            gUWjHV4vpJOwbyKtgG6R5U0F4tVREdQQBR9LZwKi72yse6+/KBt+zQ==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-09-30T17:57:49Z"
+    mac: ENC[AES256_GCM,data:P3LVys38TMbsEmxz1P5yngeQuQ2wnBHI/W6uGR80y6hgt3t5Dgvyd/CpfUw4/UVJSMfZBDbpQuWhDfB2sbaYyDUKN+ChDEwBEJljahF0zO+oZSyKnlPAu0eH5q90iYR8QME6jMyzC6Gn4u0f+5mlpePtbaL1uVKTi00ZTbxOWF4=,iv:/72blDuwCcL7jTEfMi+loMBkZp38UEH0fh1vLFHW+fw=,tag:Afz3Ki7Jim3MR1FwulgKTw==,type:str]
+    encrypted_regex: ^(data|stringData)$
+    version: 3.10.2

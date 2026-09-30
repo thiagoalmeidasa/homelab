@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: home-assistant-v2-config
+  labels:
+    recurring-job-group.longhorn.io/backup: enabled
+    recurring-job.longhorn.io/source: enabled
+spec:
+  accessModes: ["ReadWriteOnce"]
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 6Gi
