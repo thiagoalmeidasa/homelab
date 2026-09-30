@@ -1,0 +1,202 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app home-assistant-v2
+spec:
+  interval: 15m
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  maxHistory: 3
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    timeout: 10m
+    remediation:
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            fsGroup: 1000
+            fsGroupChangePolicy: OnRootMismatch
+        initContainers:
+          git-clone:
+            image: &gitImage
+              repository: alpine/git
+              tag: latest@sha256:832b1cd1a271509f3d5272a1a62d4cb2ab1a53426ebde1f6c2cb7349f907dc6f
+            env:
+              HOME: /tmp
+            envFrom:
+              - secretRef:
+                  name: home-assistant-v2-git
+            securityContext:
+              runAsUser: 1000
+              runAsGroup: 1000
+            command:
+              - sh
+              - -c
+              - |
+                set -eu
+                git config --global --add safe.directory /config
+                if [ -f /config/configuration.yaml ]; then
+                  echo "/config already initialized, skipping clone"
+                  exit 0
+                fi
+                if [ -n "$(find /config -mindepth 1 -not -name 'lost+found' 2>/dev/null)" ]; then
+                  echo "ERROR: /config is not empty but has no configuration.yaml; refusing to clone" >&2
+                  exit 1
+                fi
+                git config --global http.extraHeader "AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GIT_TOKEN" | base64 | tr -d '\n')"
+                git clone --branch "$GIT_BRANCH" "$GIT_REPO_URL" /config
+                echo "Cloned $GIT_REPO_URL ($GIT_BRANCH) into /config"
+        containers:
+          main:
+            image:
+              repository: ghcr.io/home-operations/home-assistant
+              tag: 2026.9.3@sha256:638c4c8d62caad377e70bfa7beef75f70c9343a49aed64aad824f2cd06843c1c
+            envFrom:
+              - secretRef:
+                  name: home-assistant-v2-secret
+            probes:
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: &port 8123
+                  initialDelaySeconds: 10
+                  periodSeconds: 5
+                  failureThreshold: 60
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            resources:
+              requests:
+                cpu: 200m
+                memory: 512Mi
+              limits:
+                memory: 1Gi
+          git-sync:
+            image: *gitImage
+            envFrom:
+              - secretRef:
+                  name: home-assistant-v2-git
+            command:
+              - sh
+              - -c
+              - |
+                set -e
+                apk add --no-cache python3
+                git config --global --add safe.directory /config
+                git config --global http.extraHeader "AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GIT_TOKEN" | base64 | tr -d '\n')"
+                exec sh /config/utils/commit-all.sh
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 128Mi
+      code-server:
+        replicas: null
+        pod:
+          # The config PVC is ReadWriteOnce; pin code-server to the node
+          # running the main HA pod so Longhorn does not have to detach.
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - topologyKey: kubernetes.io/hostname
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: *app
+                      app.kubernetes.io/controller: main
+        containers:
+          main:
+            image:
+              repository: ghcr.io/coder/code-server
+              tag: 4.139.1@sha256:0c067c3cf09ed1830ce282387826be8feefef8a5828f462791c2df3f1007ee17
+            args:
+              - --auth
+              - none
+              - --user-data-dir
+              - "/config/.vscode"
+              - --extensions-dir
+              - "/config/.vscode"
+              - --port
+              - "8080"
+              - "/config"
+            env:
+              TZ: "${TIMEZONE}"
+            probes:
+              liveness: &codeserverProbes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: &codeserverPort 8080
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *codeserverProbes
+            resources:
+              requests:
+                cpu: 200m
+                memory: 512Mi
+              limits:
+                memory: 1Gi
+    service:
+      main:
+        controller: main
+        type: ClusterIP
+        ports:
+          http:
+            port: *port
+      code-server:
+        controller: code-server
+        ports:
+          http:
+            port: *codeserverPort
+    route:
+      main:
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Home Assistant v2
+          gethomepage.dev/group: Home
+          gethomepage.dev/icon: home-assistant.png
+        parentRefs:
+          - name: internal
+            namespace: networking
+            sectionName: https
+        hostnames: ["hass-v2.${SECRET_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: main
+                port: http
+    persistence:
+      config:
+        existingClaim: home-assistant-v2-config
+        globalMounts:
+          - path: /config
