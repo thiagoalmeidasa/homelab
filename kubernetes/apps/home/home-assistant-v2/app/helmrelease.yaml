@@ -44,8 +44,9 @@ spec:
               - secretRef:
                   name: home-assistant-v2-git
             securityContext:
-              runAsUser: 1000
-              runAsGroup: 1000
+              runAsUser: 0
+              runAsGroup: 0
+              runAsNonRoot: false
             command:
               - sh
               - -c
@@ -56,12 +57,17 @@ spec:
                   echo "/config already initialized, skipping clone"
                   exit 0
                 fi
-                if [ -n "$(find /config -mindepth 1 -not -name 'lost+found' 2>/dev/null)" ]; then
+                # Fresh ext4/Longhorn volumes ship an empty lost+found owned by
+                # root: git refuses to clone into a non-empty dir, and the
+                # git-sync sidecar's 'git add -A' would commit it.
+                rmdir /config/lost+found 2>/dev/null || true
+                if [ -n "$(find /config -mindepth 1 2>/dev/null)" ]; then
                   echo "ERROR: /config is not empty but has no configuration.yaml; refusing to clone" >&2
                   exit 1
                 fi
                 git config --global http.extraHeader "AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GIT_TOKEN" | base64 | tr -d '\n')"
                 git clone --branch "$GIT_BRANCH" "$GIT_REPO_URL" /config
+                chown -R 1000:1000 /config
                 echo "Cloned $GIT_REPO_URL ($GIT_BRANCH) into /config"
         containers:
           main:
@@ -104,6 +110,10 @@ spec:
             envFrom:
               - secretRef:
                   name: home-assistant-v2-git
+            securityContext:
+              runAsUser: 0
+              runAsGroup: 0
+              runAsNonRoot: false
             command:
               - sh
               - -c
