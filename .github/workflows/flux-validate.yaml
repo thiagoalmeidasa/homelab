@@ -19,10 +19,10 @@ jobs:
         uses: fluxcd/flux2/action@dd233c4fadef306a62b7893204f8e3817fecc2b2 # v2.9.5
 
       - name: Setup Flux Schema CLI
-        uses: fluxcd/flux-schema/actions/setup@06b521982a61dbe92860fd8c2f7a4974b44b02f6 # v0.14.0
+        uses: fluxcd/flux-schema/actions/setup@fac00ee3cb2fb0bd904c77e9e7727e98ba8a3c05 # v0.15.0
 
       - name: Validate manifests
-        uses: fluxcd/flux-schema/actions/validate@06b521982a61dbe92860fd8c2f7a4974b44b02f6 # v0.14.0
+        uses: fluxcd/flux-schema/actions/validate@fac00ee3cb2fb0bd904c77e9e7727e98ba8a3c05 # v0.15.0
         with:
           path: kubernetes
           config: .fluxschema.yml
