@@ -44,7 +44,8 @@ spec:
               OXICLOUD_OIDC_FRONTEND_URL: https://arai.${PUBLIC_DOMAIN}
               OXICLOUD_OIDC_SCOPES: openid profile email groups
               OXICLOUD_OIDC_AUTO_PROVISION: "true"
-              OXICLOUD_OIDC_DISABLE_PASSWORD_LOGIN: "true"
+              OXICLOUD_AUTH_METHODS: oidc
+              OXICLOUD_NEXTCLOUD_ENABLED: "true"
               OXICLOUD_OIDC_PROVIDER_NAME: Pocket ID
               OXICLOUD_OIDC_ADMIN_GROUPS: oxicloud-admins
               OXICLOUD_SMTP_HOST: smtp-relay.networking.svc.cluster.local
