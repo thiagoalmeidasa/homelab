@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./affine/ks.yaml
+  - ./collabora/ks.yaml
   - ./distcc/ks.yaml
   - ./homepage/ks.yaml
   - ./hoodik/ks.yaml

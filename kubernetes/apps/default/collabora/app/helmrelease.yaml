@@ -1,0 +1,73 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app collabora
+  namespace: default
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+  values:
+    controllers:
+      collabora:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: docker.io/collabora/code
+              tag: latest@sha256:b1845bd69719363b8cb9e93c71b1b22baaceacb45bcdd83b130e31ee6edaf6f0
+            env:
+              TZ: ${TIMEZONE}
+              aliasgroup1: "https://arai\\.${PUBLIC_DOMAIN}:443"
+              DONT_GEN_SSL_CERT: "true"
+              extra_params: --o:ssl.enable=false --o:ssl.termination=true
+            envFrom:
+              - secretRef:
+                  name: collabora-secret
+            probes:
+              liveness: &probe
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /hosting/discovery
+                    port: &port 9980
+              readiness: *probe
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /hosting/discovery
+                    port: *port
+                  failureThreshold: 30
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop: ["ALL"]
+                add: ["MKNOD", "SYS_CHROOT"]
+            resources:
+              requests:
+                cpu: 100m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+
+    service:
+      app:
+        controller: collabora
+        ports:
+          http:
+            port: *port
