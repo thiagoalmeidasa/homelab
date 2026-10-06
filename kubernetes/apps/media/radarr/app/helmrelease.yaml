@@ -82,6 +82,7 @@ spec:
     persistence:
       config:
         enabled: true
+        forceRename: radarr-config
         storageClass: longhorn
         type: persistentVolumeClaim
         accessMode: ReadWriteOnce
