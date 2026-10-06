@@ -83,6 +83,7 @@ spec:
     persistence:
       config:
         enabled: true
+        forceRename: sonarr-config
         type: persistentVolumeClaim
         accessMode: ReadWriteOnce
         storageClass: longhorn
