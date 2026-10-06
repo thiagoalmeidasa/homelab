@@ -35,7 +35,7 @@ spec:
             fsGroupChangePolicy: OnRootMismatch
         initContainers:
           git-clone:
-            image: &gitImage
+            image:
               repository: alpine/git
               tag: latest@sha256:832b1cd1a271509f3d5272a1a62d4cb2ab1a53426ebde1f6c2cb7349f907dc6f
             env:
@@ -65,7 +65,7 @@ spec:
                 echo "Cloned $GIT_REPO_URL ($GIT_BRANCH) into /config"
         containers:
           main:
-            image:
+            image: &haImage
               repository: ghcr.io/home-operations/home-assistant
               tag: 2026.9.4@sha256:cd5ffc0a3bc873b35f20189ef22ee7ee9e8875fe666928dfee263cd464cc053d
             envFrom:
@@ -100,7 +100,9 @@ spec:
               limits:
                 memory: 1Gi
           git-sync:
-            image: *gitImage
+            image: *haImage
+            env:
+              HOME: /tmp
             envFrom:
               - secretRef:
                   name: home-assistant-v2-git
@@ -109,7 +111,6 @@ spec:
               - -c
               - |
                 set -e
-                apk add --no-cache python3
                 git config --global --add safe.directory /config
                 git config --global http.extraHeader "AUTHORIZATION: basic $(printf 'x-access-token:%s' "$GIT_TOKEN" | base64 | tr -d '\n')"
                 exec sh /config/utils/commit-all.sh
