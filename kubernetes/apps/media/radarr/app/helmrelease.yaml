@@ -81,15 +81,8 @@ spec:
             port: *port
     persistence:
       config:
-        enabled: true
-        forceRename: radarr-config
-        storageClass: longhorn
+        existingClaim: radarr-config
         type: persistentVolumeClaim
-        accessMode: ReadWriteOnce
-        size: 4Gi
-        labels:
-          recurring-job-group.longhorn.io/backup: enabled
-          recurring-job.longhorn.io/source: enabled
       tmp:
         type: emptyDir
         globalMounts:
