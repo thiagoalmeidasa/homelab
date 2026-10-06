@@ -60,8 +60,11 @@ tasks:
   validate:
     desc: Validate Kubernetes manifests via flate + flux schema
     cmds:
-      - flate build ks --path ./kubernetes --no-progress 2>/dev/null |
-          flux schema validate - --config .fluxschema.yml
+      - |
+        bash -o pipefail -c '
+          flate build ks --path ./kubernetes --no-progress --allow-missing-secrets |
+            flux schema validate - --config .fluxschema.yml
+        '
 
   schema:update:
     desc: Regenerate custom schemas from installed CRDs

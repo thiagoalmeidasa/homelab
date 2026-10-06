@@ -5,7 +5,7 @@ name: "Flux Diff"
 on:
   pull_request:
     branches: ["main"]
-    paths: ["kubernetes/**"]
+    paths: ["kubernetes/**", ".github/workflows/flux-diff.yaml"]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.number || github.ref }}
@@ -34,28 +34,48 @@ jobs:
           ref: "${{ github.event.repository.default_branch }}"
           path: default
 
-      - name: Diff Resources
-        uses: docker://ghcr.io/allenporter/flux-local:v8.4.0
+      - name: Setup flate CLI
+        uses: home-operations/flate/action@631b76b69c4e58c6f4d1cb01e23616fa61aebafa # v0.6.5
         with:
-          args: >-
-            diff ${{ matrix.resources }}
-            --unified 6
-            --path /github/workspace/pull/${{ matrix.paths }}/flux
-            --path-orig /github/workspace/default/${{ matrix.paths }}/flux
-            --strip-attrs "helm.sh/chart,checksum/config,app.kubernetes.io/version,chart"
-            --limit-bytes 10000
-            --all-namespaces
-            --sources "home-kubernetes"
-            --output-file diff.patch
+          cache: true
+          base: ""
+
+      - name: Diff Resources
+        env:
+          RESOURCE: ${{ matrix.resources }}
+          CLUSTER_PATH: ${{ matrix.paths }}
+        run: |
+          flate diff "$RESOURCE" \
+            --path "pull/$CLUSTER_PATH/flux" \
+            --path-orig "default/$CLUSTER_PATH/flux" \
+            --output diff --no-progress --allow-missing-secrets \
+            --strip-attr helm.sh/chart \
+            --strip-attr checksum/config \
+            --strip-attr app.kubernetes.io/version \
+            --strip-attr chart > diff.patch
 
       - name: Generate Diff
         id: diff
         run: |
-          cat diff.patch
-          DIFF=$(cat diff.patch)
-          echo "diff<<EOF" >> $GITHUB_OUTPUT
-          echo "${DIFF:0:65436}" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          python3 - <<'PY'
+          import os
+          import uuid
+          from pathlib import Path
+
+          content = Path("diff.patch").read_bytes()
+          if not content:
+              raise SystemExit(0)
+          notice = "\n... Diff truncated to 10,000 bytes.\n"
+          if len(content) > 10000:
+              content = content[:10000 - len(notice.encode())]
+              diff = content.decode("utf-8", errors="ignore") + notice
+          else:
+              diff = content.decode("utf-8")
+          print(diff, end="")
+          delimiter = uuid.uuid4().hex
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              output.write(f"diff<<{delimiter}\n{diff}\n{delimiter}\n")
+          PY
 
       - if: ${{ steps.diff.outputs.diff != '' }}
         name: Add comment

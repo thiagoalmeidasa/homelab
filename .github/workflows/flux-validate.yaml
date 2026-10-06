@@ -5,7 +5,11 @@ on:
   workflow_dispatch:
   pull_request:
     branches: ["main"]
-    paths: ["kubernetes/**"]
+    paths:
+      - "kubernetes/**"
+      - ".github/workflows/flux-validate.yaml"
+      - ".fluxschema.yml"
+      - ".schemas/**"
 
 jobs:
   flux-validate:
@@ -21,8 +25,20 @@ jobs:
       - name: Setup Flux Schema CLI
         uses: fluxcd/flux-schema/actions/setup@fac00ee3cb2fb0bd904c77e9e7727e98ba8a3c05 # v0.15.0
 
+      - name: Setup flate CLI
+        uses: home-operations/flate/action@631b76b69c4e58c6f4d1cb01e23616fa61aebafa # v0.6.5
+        with:
+          cache: true
+          base: ""
+
       - name: Validate manifests
         uses: fluxcd/flux-schema/actions/validate@fac00ee3cb2fb0bd904c77e9e7727e98ba8a3c05 # v0.15.0
         with:
           path: kubernetes
           config: .fluxschema.yml
+
+      - name: Validate rendered manifests
+        run: |
+          flate build ks --path ./kubernetes --no-progress --allow-missing-secrets \
+            > "$RUNNER_TEMP/rendered.yaml"
+          flux-schema validate - --config .fluxschema.yml < "$RUNNER_TEMP/rendered.yaml"
