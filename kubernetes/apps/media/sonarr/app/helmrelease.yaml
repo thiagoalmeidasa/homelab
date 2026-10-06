@@ -82,15 +82,8 @@ spec:
             port: *port
     persistence:
       config:
-        enabled: true
-        forceRename: sonarr-config
+        existingClaim: sonarr-config
         type: persistentVolumeClaim
-        accessMode: ReadWriteOnce
-        storageClass: longhorn
-        size: 10Gi
-        labels:
-          recurring-job-group.longhorn.io/backup: enabled
-          recurring-job.longhorn.io/source: enabled
       tmp:
         type: emptyDir
         globalMounts:
