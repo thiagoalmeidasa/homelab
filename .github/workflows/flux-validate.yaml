@@ -41,4 +41,4 @@ jobs:
         run: |
           flate build ks --path ./kubernetes --no-progress --allow-missing-secrets \
             > "$RUNNER_TEMP/rendered.yaml"
-          flux schema validate - --config .fluxschema.yml < "$RUNNER_TEMP/rendered.yaml"
+          flux-schema validate - --config .fluxschema.yml < "$RUNNER_TEMP/rendered.yaml"
