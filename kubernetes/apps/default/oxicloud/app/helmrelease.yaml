@@ -33,6 +33,10 @@ spec:
               OXICLOUD_SERVER_HOST: 0.0.0.0
               OXICLOUD_SERVER_PORT: &port 8086
               OXICLOUD_STORAGE_PATH: /data
+              # Cloudflare Tunnel caps request bodies at 100 MB — keep every
+              # single PUT below that so larger files use the chunked protocol.
+              OXICLOUD_DIRECT_PUT_MAX_BYTES: "94371840" # 90 MiB
+              OXICLOUD_CHUNK_MAX_BYTES: "94371840" # 90 MiB
               OXICLOUD_ENABLE_AUTH: "true"
               OXICLOUD_ENABLE_FILE_SHARING: "true"
               OXICLOUD_ENABLE_SEARCH: "true"
