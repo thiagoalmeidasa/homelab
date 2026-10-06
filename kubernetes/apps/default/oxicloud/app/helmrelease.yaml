@@ -28,10 +28,16 @@ spec:
             image:
               repository: docker.io/diocrafts/oxicloud
               tag: 0.9.2@sha256:57f948fdb1db35a0caac7f2c4b305017f4b4e6828847d87b53f56989baea6105
+            ports:
+              - name: http
+                containerPort: &port 8086
+              - name: metrics
+                containerPort: &metricsPort 9100
             env:
               OXICLOUD_BASE_URL: https://arai.${PUBLIC_DOMAIN}
               OXICLOUD_SERVER_HOST: 0.0.0.0
-              OXICLOUD_SERVER_PORT: &port 8086
+              OXICLOUD_SERVER_PORT: *port
+              OXICLOUD_METRICS_LISTEN: 0.0.0.0:9100
               OXICLOUD_STORAGE_PATH: /data
               # Cloudflare Tunnel caps request bodies at 100 MB — keep every
               # single PUT below that so larger files use the chunked protocol.
@@ -103,6 +109,16 @@ spec:
         ports:
           http:
             port: *port
+          metrics:
+            port: *metricsPort
+
+    serviceMonitor:
+      app:
+        serviceName: *app
+        endpoints:
+          - port: metrics
+            scheme: http
+            path: /metrics
 
     route:
       app:
