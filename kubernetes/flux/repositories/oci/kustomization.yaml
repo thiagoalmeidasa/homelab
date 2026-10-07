@@ -7,4 +7,5 @@ resources:
   - ./cnpg-barman-cloud-oci.yaml
   - ./cnpg-oci.yaml
   - ./flaresolverr-oci.yaml
+  - ./forgejo-oci.yaml
   - ./headlamp-oci.yaml
