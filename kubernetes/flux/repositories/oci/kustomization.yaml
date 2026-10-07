@@ -8,4 +8,5 @@ resources:
   - ./cnpg-oci.yaml
   - ./flaresolverr-oci.yaml
   - ./forgejo-oci.yaml
+  - ./forgejo-runner-oci.yaml
   - ./headlamp-oci.yaml
