@@ -93,10 +93,12 @@ spec:
         recurring-job.longhorn.io/source: enabled
     service:
       ssh:
-        type: LoadBalancer
         port: *sshPort
-        loadBalancerIP: ${GIT_SSH_ADDR}
-        annotations:
-          io.cilium/lb-ipam-ips: ${GIT_SSH_ADDR}
+    tcpRoute:
+      enabled: true
+      parentRefs:
+        - name: internal
+          namespace: networking
+          sectionName: ssh
     httpRoute:
       enabled: false

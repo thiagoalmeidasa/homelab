@@ -47,7 +47,8 @@ enters through outbound `cloudflared` connections.
 | Kubernetes API virtual IP | `192.168.100.100` | `KUBE_VIP_ADDR` / kube-vip configuration |
 | Cilium LoadBalancer pool | `192.168.100.220-230` | `CiliumLoadBalancerIPPool` |
 | Internal HTTPS Gateway | `192.168.100.226` | `GATEWAY_INTERNAL_ADDR` |
-| Forgejo Git SSH | `192.168.100.227` | `GIT_SSH_ADDR` |
+| External HTTPS Gateway | `192.168.100.227` | `cilium-gateway-external` (lb-ipam) |
+| Forgejo git SSH | internal gateway `:2222` (TCPRoute) | `ssh` listener on internal Gateway |
 | Pod network | `10.42.0.0/16` | k3s and Cilium configuration |
 | Service network | `10.43.0.0/16` | k3s configuration |
 | Cluster DNS Service | `10.43.0.10` | CoreDNS Helm values |
