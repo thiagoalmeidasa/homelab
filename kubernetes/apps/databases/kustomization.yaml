@@ -5,6 +5,7 @@ resources:
   - ./namespace.yaml
   - ./cnpg-auth/ks.yaml
   - ./cnpg-default/ks.yaml
+  - ./cnpg-forgejo/ks.yaml
   - ./cnpg-immich/ks.yaml
   - ./cnpg-media/ks.yaml
   - ./mariadb/ks.yaml
