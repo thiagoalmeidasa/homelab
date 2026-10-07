@@ -69,6 +69,9 @@ spec:
           REPO_INDEXER_ENABLED: true
         mailer:
           ENABLED: false
+        oauth2_client:
+          ENABLE_AUTO_REGISTRATION: true
+          UPDATE_AVATAR: true
         webhook:
           ALLOWED_HOST_LIST: "*.${SECRET_DOMAIN},*.${PUBLIC_DOMAIN},10.42.0.0/16,192.168.0.0/16"
     deployment:
