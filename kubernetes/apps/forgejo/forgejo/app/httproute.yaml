@@ -1,0 +1,20 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/gateway.networking.k8s.io/httproute_v1.json
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: forgejo
+spec:
+  parentRefs:
+    - name: internal
+      namespace: networking
+      sectionName: https
+  hostnames:
+    - git.${SECRET_DOMAIN}
+  rules:
+    - backendRefs:
+        - name: forgejo-http
+          port: 3000
+      timeouts:
+        request: 300s
+        backendRequest: 300s

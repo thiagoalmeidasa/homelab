@@ -1,0 +1,99 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/fluxcd-community/flux2-schemas/main/helmrelease-helm-v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app forgejo
+spec:
+  interval: 30m
+  timeout: 15m
+  install:
+    timeout: 15m
+    remediation:
+      retries: 3
+  upgrade:
+    timeout: 15m
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+      strategy: rollback
+  chartRef:
+    kind: OCIRepository
+    name: *app
+    namespace: flux-system
+  values:
+    image:
+      tag: 16.0.5-rootless
+      digest: sha256:5effb7305584aca479b29fde6f9631a6dbe86ae798ae02eeea33a3666f0c0bf8
+      rootless: true
+    gitea:
+      admin:
+        existingSecret: forgejo-secret
+        email: noreply@git.${SECRET_DOMAIN}
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+      config:
+        database:
+          DB_TYPE: postgres
+          HOST: cnpg-forgejo-rw.databases.svc.cluster.local:5432
+          NAME: forgejo
+          USER: forgejo
+          SSL_MODE: disable
+          LOG_SQL: false
+        server:
+          DOMAIN: &host git.${SECRET_DOMAIN}
+          ROOT_URL: https://git.${SECRET_DOMAIN}/
+          SSH_DOMAIN: *host
+          START_SSH_SERVER: true
+          SSH_PORT: &sshPort 2222
+          SSH_LISTEN_PORT: *sshPort
+          APP_DATA_PATH: /data/gitea
+          LFS_START_SERVER: true
+        service:
+          DISABLE_REGISTRATION: true
+          SHOW_REGISTRATION_BUTTON: false
+          ENABLE_NOTIFY_MAIL: false
+          DEFAULT_ENABLE_TIMETRACKING: false
+        security:
+          REVERSE_PROXY_TRUSTED_PROXIES: 10.42.0.0/16
+        repository:
+          ROOT: /data/git/repositories
+          DEFAULT_REPO_UNITS: repo.code,repo.releases,repo.issues,repo.pulls,repo.actions,repo.packages
+          DISABLED_REPO_UNITS: repo.ext_wiki,repo.ext_issues
+        repository.pull-request:
+          DEFAULT_MERGE_STYLE: squash
+        indexer:
+          ISSUE_INDEXER_TYPE: bleve
+          REPO_INDEXER_ENABLED: true
+        mailer:
+          ENABLED: false
+        webhook:
+          ALLOWED_HOST_LIST: "*.${SECRET_DOMAIN},*.${PUBLIC_DOMAIN},10.42.0.0/16,192.168.0.0/16"
+    deployment:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      env:
+        - name: GITEA__database__PASSWD
+          valueFrom:
+            secretKeyRef:
+              name: forgejo-secret
+              key: GITEA__database__PASSWD
+    persistence:
+      enabled: true
+      create: true
+      size: 10Gi
+      storageClass: longhorn
+      labels:
+        recurring-job-group.longhorn.io/backup: enabled
+        recurring-job.longhorn.io/source: enabled
+    service:
+      ssh:
+        type: LoadBalancer
+        port: *sshPort
+        loadBalancerIP: ${GIT_SSH_ADDR}
+        annotations:
+          io.cilium/lb-ipam-ips: ${GIT_SSH_ADDR}
+    httpRoute:
+      enabled: false
