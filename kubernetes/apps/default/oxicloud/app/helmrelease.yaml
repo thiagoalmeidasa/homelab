@@ -47,6 +47,8 @@ spec:
               OXICLOUD_ENABLE_FILE_SHARING: "true"
               OXICLOUD_ENABLE_SEARCH: "true"
               OXICLOUD_ENABLE_TRASH: "true"
+              OXICLOUD_WOPI_ENABLED: "true"
+              OXICLOUD_WOPI_DISCOVERY_URL: "https://office.${PUBLIC_DOMAIN}/hosting/discovery"
               OXICLOUD_OIDC_ENABLED: "true"
               OXICLOUD_OIDC_ISSUER_URL: https://auth.${PUBLIC_DOMAIN}
               OXICLOUD_OIDC_CLIENT_ID: f32140c9-033d-4db5-86ac-a8dadb5255e0
