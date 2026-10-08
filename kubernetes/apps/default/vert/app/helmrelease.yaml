@@ -36,7 +36,7 @@ spec:
           app:
             image:
               repository: ghcr.io/vert-sh/vert
-              tag: main@sha256:6492f2a88e977e7ce82fd26f49028a17575fee8cac38604f585bc5773298cbc8
+              tag: main@sha256:ed2afd55ef8207ddf9029b57ac0c1b63e0ab21cf493a56f787a13e1ea2ac056f
             env:
               TZ: ${TIMEZONE}
               PUB_DISABLE_ALL_EXTERNAL_REQUESTS: true
