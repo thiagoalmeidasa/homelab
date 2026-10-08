@@ -54,7 +54,7 @@ spec:
         service:
           DISABLE_REGISTRATION: true
           SHOW_REGISTRATION_BUTTON: false
-          ENABLE_NOTIFY_MAIL: false
+          ENABLE_NOTIFY_MAIL: true
           DEFAULT_ENABLE_TIMETRACKING: false
         security:
           REVERSE_PROXY_TRUSTED_PROXIES: 10.42.0.0/16
@@ -68,7 +68,11 @@ spec:
           ISSUE_INDEXER_TYPE: bleve
           REPO_INDEXER_ENABLED: true
         mailer:
-          ENABLED: false
+          ENABLED: true
+          PROTOCOL: smtp
+          SMTP_ADDR: smtp-relay.networking.svc.cluster.local
+          SMTP_PORT: 25
+          FROM: noreply@mail.thiagoalmeida.xyz
         oauth2_client:
           ENABLE_AUTO_REGISTRATION: true
           UPDATE_AVATAR: true
