@@ -27,7 +27,7 @@ spec:
           app:
             image:
               repository: docker.io/collabora/code
-              tag: latest@sha256:b1845bd69719363b8cb9e93c71b1b22baaceacb45bcdd83b130e31ee6edaf6f0
+              tag: latest@sha256:56541aad09403975646dfb87a3716e38afecce09b5f853391eb6d937a0ccd402
             env:
               TZ: ${TIMEZONE}
               aliasgroup1: "https://arai\\.${PUBLIC_DOMAIN}:443"
