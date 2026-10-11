@@ -1,0 +1,18 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: farinhada-wpp-openwa
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: cnpg-farinhada-wpp
+  path: ./kubernetes/apps/farinhada-wpp/openwa/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: true
+  interval: 30m
+  retryInterval: 1m
+  timeout: 10m

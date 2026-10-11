@@ -1,0 +1,16 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: farinhada-wpp
+  namespace: farinhada-wpp
+spec:
+  selector:
+    matchLabels:
+      monitoring: enabled
+  endpoints:
+    - port: http
+      path: /api/metrics
+      bearerTokenSecret:
+        name: farinhada-wpp-secret
+        key: METRICS_TOKEN

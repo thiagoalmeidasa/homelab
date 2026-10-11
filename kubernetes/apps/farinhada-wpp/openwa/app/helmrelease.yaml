@@ -1,0 +1,156 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app farinhada-wpp
+  namespace: farinhada-wpp
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+      strategy: rollback
+
+  values:
+    controllers:
+      farinhada-wpp:
+        type: statefulset
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          terminationGracePeriodSeconds: 75
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 997
+            runAsGroup: 997
+            fsGroup: 997
+            fsGroupChangePolicy: "OnRootMismatch"
+            seccompProfile:
+              type: RuntimeDefault
+        containers:
+          app:
+            image:
+              repository: docker.io/rmyndharis/openwa
+              tag: 0.24.0@sha256:5a2cb7a85e58f33967245dbda174de6aa8c0d0e36d0fced42fb9c6ef83e110d5
+            env:
+              TZ: ${TIMEZONE}
+              NODE_ENV: production
+              ENGINE_TYPE: whatsapp-web.js
+              AUTO_START_SESSIONS: "true"
+              DATABASE_TYPE: postgres
+              DATABASE_HOST: farinhada-wpp-rw
+              DATABASE_PORT: "5432"
+              DATABASE_NAME: openwa
+              DATABASE_USERNAME:
+                valueFrom:
+                  secretKeyRef:
+                    name: farinhada-wpp-app
+                    key: username
+              DATABASE_PASSWORD:
+                valueFrom:
+                  secretKeyRef:
+                    name: farinhada-wpp-app
+                    key: password
+              METRICS_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: farinhada-wpp-secret
+                    key: METRICS_TOKEN
+              API_MASTER_KEY:
+                valueFrom:
+                  secretKeyRef:
+                    name: farinhada-wpp-secret
+                    key: API_MASTER_KEY
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/health/live
+                    port: &port 2785
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness:
+                <<: *probes
+                spec:
+                  httpGet:
+                    path: /api/health/ready
+                    port: *port
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/health/live
+                    port: *port
+                  periodSeconds: 5
+                  timeoutSeconds: 5
+                  failureThreshold: 60
+            resources:
+              requests:
+                cpu: 250m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+
+    service:
+      app:
+        controller: *app
+        labels:
+          monitoring: enabled
+        ports:
+          http:
+            port: *port
+
+    route:
+      app:
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: OpenWA
+          gethomepage.dev/group: Messaging
+          gethomepage.dev/icon: whatsapp.png
+        parentRefs:
+          - name: internal
+            namespace: networking
+            sectionName: https
+        hostnames: ["farinhada-wpp.${SECRET_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http
+
+    persistence:
+      data:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        retain: true
+        size: 10Gi
+        storageClass: longhorn
+        labels:
+          recurring-job-group.longhorn.io/backup: enabled
+          recurring-job.longhorn.io/source: enabled
+        globalMounts:
+          - path: /app/data
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp

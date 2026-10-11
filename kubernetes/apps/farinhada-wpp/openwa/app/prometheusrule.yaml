@@ -1,0 +1,60 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: farinhada-wpp-rules
+  namespace: farinhada-wpp
+spec:
+  groups:
+    - name: farinhada-wpp.rules
+      rules:
+        - alert: OpenWADown
+          expr: |
+            kube_pod_status_ready{namespace="farinhada-wpp", pod=~"farinhada-wpp-\\d+", condition="true"} != 1
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: OpenWA pod not ready ({{ $labels.pod }})
+            description: "Pod {{ $labels.namespace }}/{{ $labels.pod }} has not been ready for over 5 minutes.\n  VALUE = {{ $value }}"
+
+        - alert: OpenWACrashLooping
+          expr: |
+            increase(kube_pod_container_status_restarts_total{namespace="farinhada-wpp", container="app"}[15m]) > 3
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: OpenWA container restarting frequently ({{ $labels.pod }})
+            description: "Container {{ $labels.container }} in {{ $labels.namespace }}/{{ $labels.pod }} restarted more than 3 times in 15 minutes.\n  VALUE = {{ $value }}"
+
+        - alert: OpenWAOOMKilled
+          expr: |
+            increase(kube_pod_container_status_last_terminated_reason{namespace="farinhada-wpp", container="app", reason="OOMKilled"}[30m]) > 0
+          for: 1m
+          labels:
+            severity: warning
+          annotations:
+            summary: OpenWA container OOMKilled ({{ $labels.pod }})
+            description: "Container {{ $labels.container }} in {{ $labels.namespace }}/{{ $labels.pod }} was OOMKilled. With whatsapp-web.js the 2Gi limit may be too tight for the session count.\n  VALUE = {{ $value }}"
+
+        - alert: OpenWADataPVCAlmostFull
+          expr: |
+            kubelet_volume_stats_used_bytes{namespace="farinhada-wpp", persistent_volume_claim="data-farinhada-wpp-0"} / kubelet_volume_stats_capacity_bytes{namespace="farinhada-wpp", persistent_volume_claim="data-farinhada-wpp-0"} > 0.8
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: OpenWA data PVC above 80% ({{ $labels.persistent_volume_claim }})
+            description: "PVC {{ $labels.namespace }}/{{ $labels.persistent_volume_claim }} is above 80% full.\n  VALUE = {{ $value | humanizePercentage }}"
+
+        - alert: OpenWADataPVCCritical
+          expr: |
+            kubelet_volume_stats_used_bytes{namespace="farinhada-wpp", persistent_volume_claim="data-farinhada-wpp-0"} / kubelet_volume_stats_capacity_bytes{namespace="farinhada-wpp", persistent_volume_claim="data-farinhada-wpp-0"} > 0.9
+          for: 15m
+          labels:
+            severity: critical
+          annotations:
+            summary: OpenWA data PVC above 90% ({{ $labels.persistent_volume_claim }})
+            description: "PVC {{ $labels.namespace }}/{{ $labels.persistent_volume_claim }} is above 90% full.\n  VALUE = {{ $value | humanizePercentage }}"
