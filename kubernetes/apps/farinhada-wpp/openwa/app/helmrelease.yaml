@@ -46,6 +46,7 @@ spec:
               NODE_ENV: production
               ENGINE_TYPE: whatsapp-web.js
               AUTO_START_SESSIONS: "true"
+              SSRF_ALLOWED_HOSTS: canal-wpp
               DATABASE_TYPE: postgres
               DATABASE_HOST: farinhada-wpp-rw
               DATABASE_PORT: "5432"
