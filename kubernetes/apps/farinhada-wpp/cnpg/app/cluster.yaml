@@ -21,6 +21,12 @@ spec:
       wal_keep_size: "128MB"
       max_wal_size: "512MB"
       max_slot_wal_keep_size: "512MB"
+  managed:
+    roles:
+      - name: canal_wpp
+        login: true
+        passwordSecret:
+          name: canal-wpp-db
   resources:
     requests:
       cpu: 100m

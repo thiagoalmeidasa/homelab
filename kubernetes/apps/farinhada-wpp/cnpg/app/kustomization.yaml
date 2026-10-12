@@ -4,6 +4,8 @@ kind: Kustomization
 namespace: farinhada-wpp
 resources:
   - ./cluster.yaml
+  - ./database-canal-wpp.yaml
+  - ./role-canal-wpp.sops.yaml
   - ./objectstore.yaml
   - ./secret.sops.yaml
   - ./scheduledbackup.yaml
