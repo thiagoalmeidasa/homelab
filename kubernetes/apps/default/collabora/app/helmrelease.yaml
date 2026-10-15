@@ -43,7 +43,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /hosting/discovery
+                    path: /collabora/hosting/discovery
                     port: &port 9980
               readiness: *probe
               startup:
@@ -51,7 +51,7 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /hosting/discovery
+                    path: /collabora/hosting/discovery
                     port: *port
                   failureThreshold: 30
             securityContext:
