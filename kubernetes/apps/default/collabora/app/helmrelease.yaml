@@ -21,6 +21,7 @@ spec:
   values:
     controllers:
       collabora:
+        replicas: 1
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -32,7 +33,7 @@ spec:
               TZ: ${TIMEZONE}
               aliasgroup1: "https://arai\\.${PUBLIC_DOMAIN}:443"
               DONT_GEN_SSL_CERT: "true"
-              extra_params: --o:ssl.enable=false --o:ssl.termination=true
+              extra_params: --o:ssl.enable=false --o:ssl.termination=true --o:net.service_root=/collabora
             envFrom:
               - secretRef:
                   name: collabora-secret

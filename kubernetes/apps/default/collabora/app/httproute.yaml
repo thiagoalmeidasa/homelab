@@ -13,15 +13,19 @@ spec:
       namespace: networking
       sectionName: https
   hostnames:
-    - "office.${PUBLIC_DOMAIN}"
+    - "arai.${PUBLIC_DOMAIN}"
   rules:
-    - filters:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /collabora
+      filters:
         - type: RequestHeaderModifier
           requestHeaderModifier:
             set:
               - name: X-Forwarded-Proto
                 value: https
       backendRefs:
-        - name: keda-add-ons-http-interceptor-proxy
-          namespace: keda
-          port: 8080
+        - name: collabora
+          namespace: default
+          port: 9980
