@@ -1,0 +1,15 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vpn-gateway-dnssec-trust-anchors
+  namespace: vpn-gateway
+data:
+  trust-anchors.conf: |
+    # The root DNSSEC trust anchors, from https://data.iana.org/root-anchors/root-anchors.xml
+    # KSK-2017 (20326) and KSK-2024 (38696) - the latter became the sole signing KSK
+    # on 2026-10-11. Mounted over /usr/share/dnsmasq/trust-anchors.conf because the
+    # pod-gateway image ships dnsmasq 2.90 with only the KSK-2017 anchor.
+    # TODO: remove this ConfigMap and its mount once angelnu/pod-gateway#98 is fixed upstream
+    trust-anchor=.,20326,8,2,E06D44B80B8F1D39A95C0B0D7C65D08458E880409BBC683457104237C7F8EC8D
+    trust-anchor=.,38696,8,2,683D2D0ACB8C9B712A1948B27F741219298D0A450D612C483AF444A4C0FB2B16
