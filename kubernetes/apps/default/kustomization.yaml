@@ -7,7 +7,6 @@ resources:
   - ./collabora/ks.yaml
   - ./distcc/ks.yaml
   - ./homepage/ks.yaml
-  - ./hoodik/ks.yaml
   - ./immich/ks.yaml
   - ./metabase/ks.yaml
   - ./n8n/ks.yaml
