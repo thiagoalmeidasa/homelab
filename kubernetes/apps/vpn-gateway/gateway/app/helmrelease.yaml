@@ -122,6 +122,14 @@ spec:
       main:
         enabled: false
     persistence:
+      # TODO: remove together with dnssec-trust-anchors.yaml ConfigMap once angelnu/pod-gateway#98 is fixed upstream
+      dnssec-trust-anchors:
+        type: configMap
+        name: vpn-gateway-dnssec-trust-anchors
+        advancedMounts:
+          main:
+            main:
+              - path: /usr/share/dnsmasq
       gluetun-servers-dir:
         type: persistentVolumeClaim
         accessMode: ReadWriteOnce
