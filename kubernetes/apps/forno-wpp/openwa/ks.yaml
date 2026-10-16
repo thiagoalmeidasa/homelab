@@ -1,0 +1,22 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app forno-openwa
+  namespace: flux-system
+spec:
+  targetNamespace: forno-wpp
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  dependsOn:
+    - name: forno-cnpg
+  path: ./k8s/openwa
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: forno
+  wait: true
+  interval: 30m
+  retryInterval: 1m
+  timeout: 10m

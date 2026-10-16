@@ -1,0 +1,20 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app forno-cnpg
+  namespace: flux-system
+spec:
+  targetNamespace: forno-wpp
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  path: ./k8s/cnpg
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: forno
+  wait: true
+  interval: 30m
+  retryInterval: 1m
+  timeout: 10m
