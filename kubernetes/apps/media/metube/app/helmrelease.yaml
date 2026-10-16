@@ -48,17 +48,51 @@ spec:
               OUTPUT_TEMPLATE: "%(title)s_-_[%(id)s].%(ext)s"
               YTDL_OPTIONS: |
                 {
-                  "format": "(bv*[vcodec~='^((he|a)vc|h26[45])']+ba[acodec~='^(aac|mp4a)'])/bv*+ba/b",
                   "restrictfilenames": true,
-                  "embedmetadata": true,
-                  "merge_output_format": "mp4",
                   "verbose": true,
-                  "clean_infojson":true,
-                  "writethumbnail":true,
-                  "postprocessors": [
-                        {"key":"SponsorBlock"},
-                        {"key":"EmbedThumbnail"}
-                  ]
+                  "clean_infojson": true
+                }
+              YTDL_OPTIONS_PRESETS: |
+                {
+                  "Web compatible (H.264 + AAC, MP4)": {
+                    "format": "bv[dynamic_range=?SDR]+ba/b[dynamic_range=?SDR]",
+                    "merge_output_format": "mkv",
+                    "postprocessor_args": {
+                      "videoconvertor+ffmpeg_o": [
+                        "-c:v", "libx264", "-crf", "18", "-preset", "medium",
+                        "-pix_fmt", "yuv420p", "-profile:v", "high",
+                        "-vf", "scale=trunc(iw/2)*2:trunc(ih/2)*2",
+                        "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-ac", "2",
+                        "-threads", "2", "-movflags", "+faststart"
+                      ]
+                    },
+                    "writethumbnail": true,
+                    "postprocessors": [
+                      {"key": "FFmpegVideoRemuxer", "preferedformat": "mkv"},
+                      {"key": "FFmpegVideoConvertor", "preferedformat": "mp4"},
+                      {"key": "FFmpegThumbnailsConvertor", "format": "jpg", "when": "before_dl"},
+                      {"key": "FFmpegMetadata", "add_metadata": true, "add_chapters": true},
+                      {"key": "EmbedThumbnail"}
+                    ]
+                  },
+                  "Best quality for editing (ProRes 422 HQ + PCM, MOV)": {
+                    "format": "bv*+ba/b",
+                    "merge_output_format": "mkv",
+                    "postprocessor_args": {
+                      "videoconvertor+ffmpeg_o": [
+                        "-c:v", "prores_ks", "-profile:v", "3", "-pix_fmt", "yuv422p10le",
+                        "-c:a", "pcm_s24le", "-threads", "2"
+                      ]
+                    },
+                    "writethumbnail": true,
+                    "postprocessors": [
+                      {"key": "FFmpegVideoRemuxer", "preferedformat": "mkv"},
+                      {"key": "FFmpegVideoConvertor", "preferedformat": "mov"},
+                      {"key": "FFmpegThumbnailsConvertor", "format": "jpg", "when": "before_dl"},
+                      {"key": "FFmpegMetadata", "add_metadata": true, "add_chapters": true},
+                      {"key": "EmbedThumbnail"}
+                    ]
+                  }
                 }
             securityContext:
               allowPrivilegeEscalation: false
