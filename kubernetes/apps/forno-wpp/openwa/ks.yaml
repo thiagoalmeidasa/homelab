@@ -33,7 +33,7 @@ spec:
       app.kubernetes.io/name: *app-echo
   dependsOn:
     - name: forno-cnpg
-    - name: forno-wpp
+    - name: forno-openwa
   path: ./k8s/http-echo
   prune: true
   sourceRef:
