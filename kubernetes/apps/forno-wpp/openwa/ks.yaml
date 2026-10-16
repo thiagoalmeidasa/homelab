@@ -20,3 +20,26 @@ spec:
   interval: 30m
   retryInterval: 1m
   timeout: 10m
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app-echo forno-openwa-http-echo
+  namespace: flux-system
+spec:
+  targetNamespace: forno-wpp
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app-echo
+  dependsOn:
+    - name: forno-cnpg
+    - name: forno-openwa
+  path: ./k8s/http-echo
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: forno
+  wait: true
+  interval: 30m
+  retryInterval: 1m
+  timeout: 10m
