@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: forno-wpp
+  labels:
+    kustomize.toolkit.fluxcd.io/prune: disabled
