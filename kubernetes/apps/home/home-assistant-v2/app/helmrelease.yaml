@@ -37,7 +37,7 @@ spec:
           git-clone:
             image:
               repository: alpine/git
-              tag: latest@sha256:ce84fd6a057b4dc5cf5009da2dd832f1c6d096c1984bf50496cf3c256402264d
+              tag: latest@sha256:4fac439ee3b9204bec99c712b8a15942999632458f716ae8149fbb97cb760cd4
             env:
               HOME: /tmp
             envFrom:
