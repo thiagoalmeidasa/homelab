@@ -40,7 +40,7 @@ spec:
           app:
             image:
               repository: docker.io/rmyndharis/openwa
-              tag: 0.24.0@sha256:5a2cb7a85e58f33967245dbda174de6aa8c0d0e36d0fced42fb9c6ef83e110d5
+              tag: 0.26.0@sha256:46e3d3d01b1948c96a0bea94f6650aa772370f40dd3956052d2da24fe4ee2acf
             env:
               TZ: ${TIMEZONE}
               NODE_ENV: production
