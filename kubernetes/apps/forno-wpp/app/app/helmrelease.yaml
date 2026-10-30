@@ -34,18 +34,6 @@ spec:
             fsGroup: 10001
             seccompProfile:
               type: RuntimeDefault
-        initContainers:
-          migrate:
-            image:
-              repository: git.home399.thiagoalmeida.xyz/casa-de-farinha/forno-wpp-migrate
-              tag: sha-8a461129c951d576d5a449770e82114ac89c5fce@sha256:0ea5d407ff8f7a603d6e7b8fdec650c5b5e3d5d34772eb54a17c2ac54f585cfd
-            args: ["up"]
-            env:
-              DATABASE_URL:
-                valueFrom:
-                  secretKeyRef:
-                    name: forno-app
-                    key: DATABASE_URL
         containers:
           app:
             image:

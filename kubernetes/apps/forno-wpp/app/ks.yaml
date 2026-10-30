@@ -2,12 +2,67 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: forno-wpp-config
+  namespace: flux-system
+spec:
+  targetNamespace: forno-wpp
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: forno-wpp
+  path: ./kubernetes/apps/forno-wpp/app/config
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: forno-wpp-migrations
+  namespace: flux-system
+spec:
+  targetNamespace: forno-wpp
+  dependsOn:
+    - name: cnpg-forno-wpp
+    - name: forno-wpp-config
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: forno-wpp
+  path: ./kubernetes/apps/forno-wpp/app/migrations
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: true
+  force: true
+  interval: 30m
+  retryInterval: 1m
+  timeout: 10m
+  healthChecks:
+    - apiVersion: batch/v1
+      kind: Job
+      name: forno-wpp-migrate
+      namespace: forno-wpp
+  healthCheckExprs:
+    - apiVersion: batch/v1
+      kind: Job
+      current: status.succeeded == 1
+      failed: has(status.conditions.filter(e, e.type == 'Failed'))
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: &app forno-wpp
   namespace: flux-system
 spec:
   targetNamespace: forno-wpp
   dependsOn:
     - name: cnpg-forno-wpp
+    - name: forno-wpp-config
+    - name: forno-wpp-migrations
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app

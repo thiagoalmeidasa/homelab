@@ -4,5 +4,3 @@ kind: Kustomization
 namespace: forno-wpp
 resources:
   - ./helmrelease.yaml
-  - ./secret.sops.yaml
-  - ./registry-secret.sops.yaml
