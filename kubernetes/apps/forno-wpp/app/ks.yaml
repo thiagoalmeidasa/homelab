@@ -50,7 +50,7 @@ spec:
     - apiVersion: batch/v1
       kind: Job
       current: status.succeeded == 1
-      failed: has(status.conditions.filter(e, e.type == 'Failed'))
+      failed: status.conditions.exists(e, e.type == 'Failed')
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
