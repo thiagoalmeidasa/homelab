@@ -1,0 +1,16 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/postgresql.cnpg.io/scheduledbackup_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: forno-wpp-weekly
+  namespace: forno-wpp
+spec:
+  schedule: "0 30 5 * * 0"
+  backupOwnerReference: self
+  immediate: true
+  cluster:
+    name: forno-wpp
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
