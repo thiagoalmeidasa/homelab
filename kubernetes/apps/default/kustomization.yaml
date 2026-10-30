@@ -12,6 +12,5 @@ resources:
   - ./oxicloud/ks.yaml
   - ./piper/ks.yaml
   - ./readeck/ks.yaml
-  - ./syncthing/ks.yaml
   - ./umami/ks.yaml
   - ./vert/ks.yaml
