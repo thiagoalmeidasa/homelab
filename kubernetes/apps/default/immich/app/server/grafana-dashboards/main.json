@@ -7,14 +7,6 @@
       "type": "datasource",
       "pluginId": "prometheus",
       "pluginName": "Prometheus"
-    },
-    {
-      "name": "DS_LOKI",
-      "label": "Loki",
-      "description": "",
-      "type": "datasource",
-      "pluginId": "loki",
-      "pluginName": "Loki"
     }
   ],
   "__elements": {},
@@ -23,18 +15,6 @@
       "type": "grafana",
       "id": "grafana",
       "name": "Grafana",
-      "version": "12.2.1"
-    },
-    {
-      "type": "panel",
-      "id": "logs",
-      "name": "Logs",
-      "version": ""
-    },
-    {
-      "type": "datasource",
-      "id": "loki",
-      "name": "Loki",
       "version": "12.2.1"
     },
     {
@@ -1119,66 +1099,6 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 32
-      },
-      "id": 2,
-      "panels": [
-        {
-          "datasource": {
-            "type": "loki",
-            "uid": "${DS_LOKI}"
-          },
-          "description": "",
-          "fieldConfig": {
-            "defaults": {},
-            "overrides": []
-          },
-          "gridPos": {
-            "h": 12,
-            "w": 24,
-            "x": 0,
-            "y": 33
-          },
-          "id": 1,
-          "options": {
-            "dedupStrategy": "none",
-            "enableInfiniteScrolling": false,
-            "enableLogDetails": true,
-            "prettifyLogMessage": false,
-            "showCommonLabels": true,
-            "showLabels": false,
-            "showTime": true,
-            "sortOrder": "Descending",
-            "wrapLogMessage": false
-          },
-          "pluginVersion": "12.2.1",
-          "targets": [
-            {
-              "datasource": {
-                "type": "loki",
-                "uid": "${DS_LOKI}"
-              },
-              "direction": "backward",
-              "editorMode": "builder",
-              "expr": "{namespace=\"$NAMESPACE\", job=~\"default/immich-.*\"}",
-              "legendFormat": "{{app}}",
-              "queryType": "range",
-              "refId": "A"
-            }
-          ],
-          "title": "Immich Server Logs (Promtail)",
-          "type": "logs"
-        }
-      ],
-      "title": "Logging",
-      "type": "row"
-    },
-    {
-      "collapsed": true,
-      "gridPos": {
-        "h": 1,
-        "w": 24,
-        "x": 0,
         "y": 33
       },
       "id": 7,
@@ -1449,16 +1369,6 @@
         "name": "DS_PROMETHEUS",
         "options": [],
         "query": "prometheus",
-        "refresh": 1,
-        "regex": "",
-        "type": "datasource"
-      },
-      {
-        "current": {},
-        "includeAll": false,
-        "name": "DS_LOKI",
-        "options": [],
-        "query": "loki",
         "refresh": 1,
         "regex": "",
         "type": "datasource"
