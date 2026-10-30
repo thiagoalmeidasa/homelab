@@ -7,7 +7,6 @@ resources:
   - ./collabora/ks.yaml
   - ./homepage/ks.yaml
   - ./immich/ks.yaml
-  - ./metabase/ks.yaml
   - ./n8n/ks.yaml
   - ./openspeedtest/ks.yaml
   - ./oxicloud/ks.yaml
