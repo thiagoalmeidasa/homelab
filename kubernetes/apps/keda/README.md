@@ -33,7 +33,6 @@ Three resources are involved per app:
 These apps scale to zero on idle HTTP traffic:
 
 - [openspeedtest](../../default/openspeedtest/app/autoscaling.yaml)
-- [home-assistant-v2-code-server](../../home/home-assistant-v2/app/autoscaling.yaml)
 
 ## Example: scale to zero with HTTP
 
