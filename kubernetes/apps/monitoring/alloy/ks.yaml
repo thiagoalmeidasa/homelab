@@ -14,8 +14,6 @@ spec:
   sourceRef:
     kind: GitRepository
     name: home-kubernetes
-  dependsOn:
-    - name: loki
   interval: 30m
   retryInterval: 1m
   timeout: 5m
