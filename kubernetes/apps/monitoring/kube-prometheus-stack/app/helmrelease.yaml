@@ -454,7 +454,6 @@ spec:
         probeSelectorNilUsesHelmValues: false
         scrapeConfigSelectorNilUsesHelmValues: false
         enableAdminAPI: true
-        enableRemoteWriteReceiver: true
         walCompression: true
         enableFeatures:
           - auto-gomemlimit
