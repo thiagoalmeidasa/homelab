@@ -10,7 +10,6 @@ configMapGenerator:
     files:
       - grafana-dashboards/control-plane.json
       - grafana-dashboards/cluster.json
-      - grafana-dashboards/logs.json
     options:
       labels:
         grafana_dashboard: "1"
