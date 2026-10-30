@@ -401,10 +401,6 @@ spec:
             gnetId: 1860
             revision: 37
             datasource: "Prometheus"
-          syncthing:
-            gnetId: 19560
-            revision: 1
-            datasource: "Prometheus"
       sidecar:
         dashboards:
           enabled: true
