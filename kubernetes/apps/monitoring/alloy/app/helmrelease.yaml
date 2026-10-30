@@ -10,23 +10,8 @@ spec:
     kind: OCIRepository
     name: alloy
     namespace: flux-system
-  dependsOn:
-    - name: loki
-      namespace: monitoring
   values:
     alloy:
-      mounts:
-        varlog: true
-        extra:
-          - name: var-journal
-            mountPath: /var/log/journal
-            readOnly: true
-          - name: run-journal
-            mountPath: /run/log/journal
-            readOnly: true
-          - name: machine-id
-            mountPath: /etc/machine-id
-            readOnly: true
       resources:
         requests:
           cpu: 100m
@@ -34,18 +19,9 @@ spec:
         limits:
           memory: 256Mi
       timeoutSeconds: 1
-      extraPorts:
-        - name: syslog-tcp
-          port: 1514
-          targetPort: 1514
-          protocol: TCP
-        - name: syslog-udp
-          port: 1514
-          targetPort: 1514
-          protocol: UDP
       configMap:
         content: |
-          // Container logs discovery
+          // Container metrics discovery
           discovery.kubernetes "pods" {
             role = "pod"
           }
@@ -103,145 +79,15 @@ spec:
             }
           }
 
-          loki.source.kubernetes "pods" {
-            targets    = discovery.relabel.pods.output
-            forward_to = [loki.write.default.receiver]
+          prometheus.scrape "pods" {
+            targets         = discovery.relabel.pods.output
+            scrape_interval = "30s"
+            forward_to      = [prometheus.remote_write.default.receiver]
           }
 
-          // Journal relabel rules - applied inside the journal source
-          // before __journal_* internal labels are stripped.
-          loki.relabel "journal" {
-            forward_to = []
-
-            rule {
-              source_labels = ["__journal__systemd_unit"]
-              target_label  = "unit"
-            }
-
-            rule {
-              source_labels = ["__journal__hostname"]
-              target_label  = "node_name"
-            }
-
-            rule {
-              source_labels = ["__journal_syslog_identifier"]
-              target_label  = "syslog_identifier"
-            }
-          }
-
-          // Systemd journal
-          loki.source.journal "journal" {
-            path          = "/var/log/journal"
-            max_age       = "12h"
-            relabel_rules = loki.relabel.journal.rules
-            forward_to    = [loki.write.default.receiver]
-            labels        = {
-              job = "systemd-journal",
-            }
-          }
-
-          // Syslog relabel rules - applied inside the syslog source
-          // before __syslog_* internal labels are stripped (grafana/alloy#2266).
-          loki.relabel "syslog" {
-            forward_to = []
-
-            rule {
-              source_labels = ["__syslog_message_hostname"]
-              target_label  = "host"
-            }
-
-            rule {
-              source_labels = ["host", "__syslog_connection_hostname"]
-              separator     = ";"
-              regex         = "^;(.+)$"
-              target_label  = "host"
-            }
-
-            rule {
-              source_labels = ["host", "__syslog_connection_ip_address"]
-              separator     = ";"
-              regex         = "^;(.+)$"
-              target_label  = "host"
-            }
-
-            rule {
-              source_labels = ["host"]
-              target_label  = "hostname"
-            }
-
-            rule {
-              source_labels = ["__syslog_message_severity"]
-              target_label  = "level"
-            }
-
-            rule {
-              source_labels = ["__syslog_message_app_name"]
-              target_label  = "application"
-            }
-
-            rule {
-              source_labels = ["__syslog_message_facility"]
-              target_label  = "facility"
-            }
-
-            rule {
-              source_labels = ["__syslog_connection_hostname"]
-              target_label  = "connection_hostname"
-            }
-          }
-
-          // Syslog - TCP listener
-          loki.source.syslog "syslog_tcp" {
-            listener {
-              address               = "0.0.0.0:1514"
-              protocol              = "tcp"
-              syslog_format         = "rfc3164"
-              idle_timeout          = "60s"
-              label_structured_data = true
-              labels                = {
-                job = "syslog",
-              }
-            }
-            relabel_rules = loki.relabel.syslog.rules
-            forward_to    = [loki.process.syslog.receiver]
-          }
-
-          // Syslog - UDP listener
-          loki.source.syslog "syslog_udp" {
-            listener {
-              address               = "0.0.0.0:1514"
-              protocol              = "udp"
-              syslog_format         = "rfc3164"
-              label_structured_data = true
-              labels                = {
-                job = "syslog",
-              }
-            }
-            relabel_rules = loki.relabel.syslog.rules
-            forward_to    = [loki.process.syslog.receiver]
-          }
-
-          loki.process "syslog" {
-            forward_to = [loki.write.default.receiver]
-
-            stage.multiline {
-              firstline     = "^\\S"
-              max_wait_time = "3s"
-              max_lines     = 128
-            }
-          }
-
-          // Kubernetes events
-          loki.source.kubernetes_events "cluster" {
-            job_name   = "kubernetes-events"
-            log_format = "logfmt"
-            forward_to = [loki.write.default.receiver]
-          }
-
-          // Write to Loki
-          loki.write "default" {
+          prometheus.remote_write "default" {
             endpoint {
-              url = "http://loki-gateway/loki/api/v1/push"
+              url = "http://prometheus-operated.monitoring.svc.cluster.local:9090/api/v1/write"
             }
           }
 
@@ -252,40 +98,6 @@ spec:
           operator: Exists
         - effect: NoExecute
           operator: Exists
-      volumes:
-        extra:
-          - name: var-journal
-            hostPath:
-              path: /var/log/journal
-          - name: run-journal
-            hostPath:
-              path: /run/log/journal
-          - name: machine-id
-            hostPath:
-              path: /etc/machine-id
 
     serviceMonitor:
       enabled: true
-
-    extraObjects:
-      - apiVersion: v1
-        kind: Service
-        metadata:
-          name: alloy-syslog
-          namespace: monitoring
-          annotations:
-            lbipam.cilium.io/ips: "${ALLOY_SYSLOG}"
-        spec:
-          type: LoadBalancer
-          externalTrafficPolicy: Local
-          selector:
-            app.kubernetes.io/name: alloy
-          ports:
-            - name: syslog-tcp
-              port: 1514
-              targetPort: 1514
-              protocol: TCP
-            - name: syslog-udp
-              port: 1514
-              targetPort: 1514
-              protocol: UDP
