@@ -1,0 +1,30 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cnpg-forno-wpp
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: cluster-apps-cnpg
+    - name: cluster-apps-cnpg-barman-cloud
+    - name: versitygw
+  path: ./kubernetes/apps/forno-wpp/cnpg/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  wait: true
+  interval: 30m
+  retryInterval: 1m
+  timeout: 10m
+  healthChecks:
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Cluster
+      name: forno-wpp
+      namespace: forno-wpp
+  healthCheckExprs:
+    - apiVersion: postgresql.cnpg.io/v1
+      kind: Cluster
+      current: status.phase == 'Cluster in healthy state'
+      failed: status.phase == 'Cluster in failed state'

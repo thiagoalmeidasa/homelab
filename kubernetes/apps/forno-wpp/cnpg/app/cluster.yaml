@@ -1,0 +1,46 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/postgresql.cnpg.io/cluster_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: forno-wpp
+  namespace: forno-wpp
+spec:
+  instances: 2
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.5
+  inheritedMetadata:
+    labels:
+      recurring-job-group.longhorn.io/backup: enabled
+      recurring-job.longhorn.io/source: enabled
+  bootstrap:
+    initdb:
+      database: forno
+      owner: forno
+  postgresql:
+    parameters:
+      wal_keep_size: "128MB"
+      max_wal_size: "512MB"
+      max_slot_wal_keep_size: "512MB"
+  managed:
+    roles:
+      - name: forno
+        login: true
+        passwordSecret:
+          name: forno-db
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 768Mi
+  storage:
+    size: 5Gi
+    storageClass: longhorn
+  backup:
+    volumeSnapshot:
+      className: longhorn-snapshot-class
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: forno-wpp-object-store
