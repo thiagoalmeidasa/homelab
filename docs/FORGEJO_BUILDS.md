@@ -3,7 +3,8 @@
 The Forgejo runner (`forgejo-runner` in the `forgejo` namespace) builds container
 images on two persistent, rootless BuildKit builders — one per CPU architecture.
 Jobs talk to the matching builder over mTLS with Docker Buildx's `remote` driver.
-There is no Docker daemon and no Docker-in-Docker.
+Jobs that need to *run* containers (not just build images) use a per-job
+ephemeral Docker daemon instead — see [FORGEJO_DOCKER.md](FORGEJO_DOCKER.md).
 
 > Scope: builders are for trusted jobs only. Rootless mode is not a strong
 > isolation boundary (see
@@ -24,9 +25,11 @@ explicitly AMD64.
 | `ubuntu-24.04-amd64` | amd64        | `tcp://buildkit-amd64.forgejo.svc:1234`     |
 | `ubuntu-24.04-arm64` | arm64        | `tcp://buildkit-arm64.forgejo.svc:1234`     |
 
-The `docker` label no longer exists. Anything that needs `docker run`, Docker
-Compose, service containers, or a local Docker image store is unsupported.
-Do not use `--load` / default-load — there is no local image store to load into.
+The `docker-amd64` and `docker-arm64` labels are also available for jobs that
+need `docker run`, Docker Compose, or testcontainers: each job pod gets its own
+ephemeral Docker daemon (privileged dind sidecar, localhost mTLS, emptyDir
+storage) pinned to the label's architecture. See
+[FORGEJO_DOCKER.md](FORGEJO_DOCKER.md).
 
 ## Buildx setup in a job
 
