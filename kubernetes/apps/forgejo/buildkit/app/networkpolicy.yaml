@@ -3,6 +3,9 @@
 # Job pods always carry app.kubernetes.io/managed-by=forgejo-runner
 # (forgejo-runner-k8s-plugin README). mTLS still authenticates clients;
 # this policy only restricts connectivity.
+# Selector matches the helm release names: app-template names every pod
+# after the release (app.kubernetes.io/name=buildkit-<arch>), and Flux
+# commonMetadata does not reach pod templates.
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
@@ -10,8 +13,12 @@ metadata:
   namespace: forgejo
 spec:
   endpointSelector:
-    matchLabels:
-      app.kubernetes.io/name: buildkit
+    matchExpressions:
+      - key: app.kubernetes.io/instance
+        operator: In
+        values:
+          - buildkit-amd64
+          - buildkit-arm64
   ingress:
     - fromEndpoints:
         - matchLabels:
