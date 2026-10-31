@@ -1,0 +1,22 @@
+---
+# Dedicated StorageClass for BuildKit cache volumes.
+# Same parameters as the chart-managed `longhorn` StorageClass, except one
+# storage replica: cache loss is acceptable and rebuilds are cheap.
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: longhorn-buildkit
+provisioner: driver.longhorn.io
+parameters:
+  backupTargetName: default
+  dataEngine: v1
+  dataLocality: disabled
+  disableRevisionCounter: "true"
+  fromBackup: ""
+  fsType: ext4
+  numberOfReplicas: "1"
+  staleReplicaTimeout: "30"
+  unmapMarkSnapChainRemoved: ignored
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+allowVolumeExpansion: true

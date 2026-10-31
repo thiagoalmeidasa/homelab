@@ -5,3 +5,4 @@ resources:
   - ./namespace.yaml
   - ./forgejo/ks.yaml
   - ./forgejo-runner/ks.yaml
+  - ./buildkit/ks.yaml

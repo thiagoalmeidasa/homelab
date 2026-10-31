@@ -1,0 +1,84 @@
+---
+# Bootstrap issuer for the private BuildKit CA.
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: buildkit-ca-bootstrap
+  namespace: forgejo
+spec:
+  selfSigned: {}
+---
+# Private CA for internal BuildKit mTLS. The CA private key stays in
+# buildkit-ca-secret and is never mounted into any pod.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: buildkit-ca
+  namespace: forgejo
+spec:
+  isCA: true
+  commonName: buildkit-ca
+  secretName: buildkit-ca-secret
+  issuerRef:
+    name: buildkit-ca-bootstrap
+    kind: Issuer
+  duration: 87600h # 10 years
+  renewBefore: 2160h # 90 days
+---
+# Issuer for builder server certificates and the shared job-client identity.
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: buildkit-ca-issuer
+  namespace: forgejo
+spec:
+  ca:
+    secretName: buildkit-ca-secret
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: buildkit-amd64-tls
+  namespace: forgejo
+spec:
+  secretName: buildkit-amd64-tls-secret
+  issuerRef:
+    name: buildkit-ca-issuer
+    kind: Issuer
+  usages:
+    - server auth
+  dnsNames:
+    - buildkit-amd64.forgejo.svc
+    - buildkit-amd64.forgejo.svc.cluster.local
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: buildkit-arm64-tls
+  namespace: forgejo
+spec:
+  secretName: buildkit-arm64-tls-secret
+  issuerRef:
+    name: buildkit-ca-issuer
+    kind: Issuer
+  usages:
+    - server auth
+  dnsNames:
+    - buildkit-arm64.forgejo.svc
+    - buildkit-arm64.forgejo.svc.cluster.local
+---
+# Shared client identity for runner job pods. A single shared identity is
+# acceptable only because builders are restricted to trusted jobs.
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: buildkit-client
+  namespace: forgejo
+spec:
+  secretName: buildkit-client-secret
+  issuerRef:
+    name: buildkit-ca-issuer
+    kind: Issuer
+  usages:
+    - client auth
+  commonName: forgejo-runner-jobs

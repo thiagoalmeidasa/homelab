@@ -1,0 +1,22 @@
+---
+# Allow ingress to the BuildKit builders only from runner job pods.
+# Job pods always carry app.kubernetes.io/managed-by=forgejo-runner
+# (forgejo-runner-k8s-plugin README). mTLS still authenticates clients;
+# this policy only restricts connectivity.
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: buildkit
+  namespace: forgejo
+spec:
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: buildkit
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/managed-by: forgejo-runner
+      toPorts:
+        - ports:
+            - port: "1234"
+              protocol: TCP
