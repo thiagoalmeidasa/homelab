@@ -56,7 +56,7 @@ docker buildx build --builder native -t registry.example.com/app/image:tag --pus
 Architecture placement and builder readiness:
 
 ```sh
-kubectl -n forgejo get pods -l app.kubernetes.io/name=buildkit -o wide
+kubectl -n forgejo get pods -l 'app.kubernetes.io/instance in (buildkit-amd64,buildkit-arm64)' -o wide
 kubectl get nodes -L kubernetes.io/arch
 kubectl -n forgejo exec buildkit-amd64-0 -- buildctl debug workers
 ```
@@ -72,7 +72,7 @@ Longhorn cache volumes (one replica each, 20 GiB):
 
 ```sh
 kubectl -n longhorn-system get volumes
-kubectl -n forgejo get pvc -l app.kubernetes.io/name=buildkit
+kubectl -n forgejo get pvc -l 'app.kubernetes.io/instance in (buildkit-amd64,buildkit-arm64)'
 ```
 
 Cache reuse after a builder restart (re-run the same build; the cacheable step
@@ -100,7 +100,8 @@ kubectl -n forgejo run bk-check --rm -it --restart=Never --labels app.kubernetes
 
 | Condition | Symptom | Recovery |
 | --------- | ------- | -------- |
-| Leaf certificate renewal | Reloader restarts the affected builder; builds in flight are killed | Wait for the replacement pod to be Ready, then retry the build |
+| Leaf certificate renewal | Reloader should restart the affected builder; builds in flight are killed | Wait for the replacement pod to be Ready, then retry the build |
+| Reloader not restarting builders (known gap) | After certificate rotation the builder keeps running with the old server certificate (clients still trust it until the certificate expires) | Manually roll the builder: `kubectl -n forgejo rollout restart statefulset buildkit-<arch>`. Automatic Reloader restarts are currently not working cluster-wide; tracked separately |
 | CA rotation | Not automatic — leaf renewal does not rotate trust | Controlled migration: issue new CA, distribute overlapping trust, then retire the old CA |
 | Builder pod Pending | No node with matching `kubernetes.io/arch` | Expected behavior — there is no cross-architecture fallback. Provide a node of that architecture |
 | Full cache volume | Build fails with disk errors | Delete the cache PVC (an operator action) and let it rebuild cold; or expand the volume |
