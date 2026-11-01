@@ -38,7 +38,7 @@ spec:
           app:
             image:
               repository: git.home399.thiagoalmeida.xyz/casa-de-farinha/forno-wpp
-              tag: sha-8a461129c951d576d5a449770e82114ac89c5fce@sha256:a0303de7dc50b6913d0ec7b2a5b0c89239ef20f099fb1a260a007ebeba96f125
+              tag: 0.2.1@sha256:628d7f4360c9b5dab89179042d38ce629766ef0e0e48db0d08fe76eb428b96ab
             env:
               HTTP_ADDR: ":8080"
               AUDIO_DIR: /app/audio
