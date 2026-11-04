@@ -21,7 +21,7 @@ spec:
           type: RuntimeDefault
       containers:
         - name: migrate
-          image: git.home399.thiagoalmeida.xyz/casa-de-farinha/forno-wpp-migrate:0.2.1@sha256:a9bba2a6814c1662034f1e6cbbd20bf0924cac8083d067f9bd4ff3e7dde7e03e
+          image: git.home399.thiagoalmeida.xyz/casa-de-farinha/forno-wpp-migrate:0.2.2@sha256:6208e5fa33dfd2d2d867e04da176cb9e9460514d7b8ec4dc67c860825be125d8
           args: ["up"]
           env:
             - name: DATABASE_URL
