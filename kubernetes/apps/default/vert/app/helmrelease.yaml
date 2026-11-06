@@ -84,6 +84,7 @@ spec:
               - --http-address=0.0.0.0:4180
               - --redirect-url=https://convert.${PUBLIC_DOMAIN}/oauth2/callback
               - --cookie-domain=.${PUBLIC_DOMAIN}
+              - --cookie-name=_oauth2_proxy_vert
               - --cookie-secure=true
               - --email-domain=*
               - --skip-provider-button=true
