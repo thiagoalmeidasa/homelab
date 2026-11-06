@@ -30,7 +30,7 @@ spec:
           args:
             - --provider=oidc
             - --oidc-issuer-url=https://auth.${PUBLIC_DOMAIN}
-            - --upstream=http://app:8080
+            - --upstream=http://forno-wpp:8080
             - --http-address=0.0.0.0:4180
             - --redirect-url=https://forno-wpp.${SECRET_DOMAIN}/oauth2/callback
             - --cookie-domain=.${SECRET_DOMAIN}
