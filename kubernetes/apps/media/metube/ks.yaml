@@ -2,9 +2,32 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
+  name: metube-config
+  namespace: flux-system
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: metube
+  path: ./kubernetes/apps/media/metube/app/config
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
   name: metube
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: metube-config
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: metube
   path: ./kubernetes/apps/media/metube/app
   prune: true
   sourceRef:
