@@ -156,6 +156,7 @@ spec:
                 memory: 100Mi
             securityContext:
               allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
               capabilities:
                 drop: ["ALL"]
     service:
@@ -177,13 +178,23 @@ spec:
         retain: true
         size: 1Gi
         storageClass: longhorn
+        advancedMounts:
+          metube:
+            metube:
+              - path: /config
       tmp:
         enabled: true
         type: emptyDir
+        advancedMounts:
+          metube:
+            metube:
+              - path: /tmp
       media:
         enabled: true
         type: nfs
         server: "${NFS_SERVER}"
         path: "${NFS_KUBERNETES}/ytdlp"
-        globalMounts:
-          - path: /downloads
+        advancedMounts:
+          metube:
+            metube:
+              - path: /downloads
