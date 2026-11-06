@@ -5,3 +5,4 @@ namespace: forno-wpp
 resources:
   - ./secret.sops.yaml
   - ./registry-secret.sops.yaml
+  - ./oauth2-proxy-secret.sops.yaml
