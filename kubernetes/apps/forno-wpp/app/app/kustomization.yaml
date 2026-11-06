@@ -4,3 +4,4 @@ kind: Kustomization
 namespace: forno-wpp
 resources:
   - ./helmrelease.yaml
+  - ./oauth2proxy.yaml
