@@ -64,6 +64,8 @@ spec:
               capabilities:
                 drop: ["ALL"]
       oauth2-proxy:
+        annotations:
+          reloader.stakater.com/auto: "true"
         replicas: null
         strategy: Recreate
         pod:

@@ -15,6 +15,7 @@ spec:
         app.kubernetes.io/name: forno-wpp-oauth2-proxy
       annotations:
         setGateway: "false"
+        reloader.stakater.com/auto: "true"
     spec:
       automountServiceAccountToken: false
       enableServiceLinks: false
