@@ -107,6 +107,7 @@ spec:
       oauth2-proxy:
         annotations:
           setGateway: "false"
+          reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
