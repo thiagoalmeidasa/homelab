@@ -36,7 +36,7 @@ spec:
             image:
               repository: ghcr.io/usetrmnl/terminus
               tag: 0.80.0@sha256:4b242862c725e02b6e517e289453102b0a23f57f6bb0de9b322f1b3b05ba122f
-            env:
+            env: &env
               HANAMI_PORT: "2345"
               API_URI: https://terminus.${SECRET_DOMAIN}
               APP_SETUP: "true"
@@ -85,6 +85,7 @@ spec:
               tag: 0.80.0@sha256:4b242862c725e02b6e517e289453102b0a23f57f6bb0de9b322f1b3b05ba122f
             args: ["bundle", "exec", "sidekiq", "-r", "./config/sidekiq.rb"]
             env:
+              <<: *env
               APP_SETUP: "false"
             envFrom:
               - secretRef:
