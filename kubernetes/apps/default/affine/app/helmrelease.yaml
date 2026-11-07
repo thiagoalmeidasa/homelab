@@ -40,6 +40,7 @@ spec:
             env:
               TZ: "${TIMEZONE:=Etc/UTC}"
               NODE_ENV: production
+              DEPLOYMENT_TYPE: selfhosted
               # Server configuration
               PORT: &port "3010"
               AFFINE_SERVER_EXTERNAL_URL: https://notes.${PUBLIC_DOMAIN}

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: postfix
-          image: docker.io/boky/postfix:v5.1.0@sha256:aafc772384232497bed875e1eb66b4d3e54ba1ebc86e2e185a6dc1dbc48182ef
+          image: docker.io/boky/postfix:5.2.1@sha256:0632783c64183446c4edeae9092a2e015fdc0c4e8a3976bdf8878a7fc2146361
           env:
             - name: RELAYHOST
               value: "[smtp.resend.com]:587"

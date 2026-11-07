@@ -5,8 +5,6 @@ resources:
   - ./cluster.yaml
   - ./database-hass-v2.yaml
   - ./database-hoodik.yaml
-  - ./database-metabase.yaml
-  - ./database-metabase-uploads.yaml
   - ./database-oxicloud.yaml
   - ./role-oxicloud.sops.yaml
   - ./objectstore.yaml
@@ -14,7 +12,5 @@ resources:
   - ./prometheusrule.yaml
   - ./role-hass-v2.sops.yaml
   - ./role-hoodik.sops.yaml
-  - ./role-metabase.sops.yaml
-  - ./role-metabase-uploads.sops.yaml
   - ./scheduledbackup.yaml
   - ./secret.sops.yaml

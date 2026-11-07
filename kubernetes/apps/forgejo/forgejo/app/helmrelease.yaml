@@ -86,7 +86,7 @@ spec:
     persistence:
       enabled: true
       create: true
-      size: 10Gi
+      size: 30Gi
       storageClass: longhorn
       labels:
         recurring-job-group.longhorn.io/backup: enabled

@@ -1,0 +1,12 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: forno-wpp
+  namespace: forno-wpp
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/cluster: forno-wpp
+  podMetricsEndpoints:
+    - port: metrics

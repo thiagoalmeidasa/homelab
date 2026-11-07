@@ -1,0 +1,42 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: forno-wpp-migrate
+  namespace: forno-wpp
+spec:
+  completions: 1
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: OnFailure
+      imagePullSecrets:
+        - name: forno-wpp-registry
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: migrate
+          image: git.home399.thiagoalmeida.xyz/casa-de-farinha/forno-wpp-migrate:0.2.2@sha256:6208e5fa33dfd2d2d867e04da176cb9e9460514d7b8ec4dc67c860825be125d8
+          args: ["up"]
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: forno-app
+                  key: DATABASE_URL
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              memory: 256Mi

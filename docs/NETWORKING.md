@@ -58,8 +58,8 @@ mask is not managed in this repository. Check OpenWrt before treating `/24` as
 authoritative.
 
 Other addresses inside the Cilium pool are reserved in
-`kubernetes/flux/vars/cluster-settings.yaml` for services such as MQTT,
-Jellyfin, Alloy, and Syncthing. Allocate new LoadBalancer addresses from the
+`kubernetes/flux/vars/cluster-settings.yaml` for services such as MQTT and
+Jellyfin. Allocate new LoadBalancer addresses from the
 pool only after checking that file.
 
 ## Cluster networking

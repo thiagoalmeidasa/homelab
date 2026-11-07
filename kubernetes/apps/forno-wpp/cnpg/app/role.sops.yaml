@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: forno-db
+    namespace: forno-wpp
+type: kubernetes.io/basic-auth
+stringData:
+    username: ENC[AES256_GCM,data:XbSq6cI=,iv:TxG1HsjmJSMND3MTbks5y2ZPhhf0zw4zzSKjSEObX+Y=,tag:co2rChvMj/9izYSYz8lA9w==,type:str]
+    password: ENC[AES256_GCM,data:BjgIwZKe1RyjWWUMOnbhbN8fdxcDHpKSgJhBYJ/rh9LHGfzFK6kzDwcT6Pni1P6EOHWsZwGGkPXt0ideEqDpSQ==,iv:9cppvmXg/TlFM4xCMmYkW8uRlPDbbGuY10Rpq9rMKxs=,tag:ox4qu+wrJqp5KYnhUbSNQQ==,type:str]
+sops:
+    age:
+        - recipient: age1w02zzfg0y4ast9mgnd9w0yuym0wqx6q967kmrmq355w4cnw0xytq2x369r
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB4VmR5VjVKNGQ4aTdsV1Vw
+            R0lmWlBrVFBRMHNsWXdQN3d0ZTZETjJselhFClJiZTFxLzdnaFNlcUsrLzJUejEw
+            Vm90V0U3VTQydTY4ZzZNWHIzZXc2d00KLS0tIGU2Y1dMK3p1Z21qd2J2RHpTUjBD
+            ZmVwZkNzS0liV241WGVXMUdpSXV3Z1UKl+bHGIBDu+R3PiXVYq61gNvbp6BBWBi5
+            y3TxBzEFmC0gDMyKMeX1gKbsiQFRnuHo3LSBGuiK0Dt/7YAQ35+Yyg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-10-30T12:28:49Z"
+    mac: ENC[AES256_GCM,data:aN2buVJYS/0ChIiISrd8m38G0noCX7ScTB9okNBasKML99f5dHxXwBiyDIdQf39dOYPIhZQ2QdLp+zHPyCmM6e4tPubecBtuJd6IyXk12uChC1/OTPUO+3mzoDgy4WN41DTMMZFw5fv1aIj9f4e94ofbi6HgB6D5+VNAyWDEbo0=,iv:GcxpZ6yVW/7vp/x78+iMerfW/uCefr5rH90i0yPz0vc=,tag:SIC8csEuUL/neNHKAukIEg==,type:str]
+    encrypted_regex: ^(data|stringData)$
+    version: 3.10.2

@@ -39,7 +39,7 @@ spec:
           metube:
             image:
               repository: ghcr.io/alexta69/metube
-              tag: 2026.10.09@sha256:df929ef2453fd75c1f1cbd8dafb309ee03ff18d8705c7c1e01642b1202d4a650
+              tag: 2026.10.27@sha256:845a67373a9f9e62b88e5f9067867202200d63db3615a051acbd77b09e86b9ce
             env:
               TZ: "${TIMEZONE}"
               DOWNLOAD_DIR: "/downloads"
@@ -104,12 +104,73 @@ spec:
                 memory: 100Mi
               limits:
                 memory: 2Gi
+      oauth2-proxy:
+        annotations:
+          setGateway: "false"
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: quay.io/oauth2-proxy/oauth2-proxy
+              tag: v7.15.6@sha256:c3415e8660af553f5e18f5d90db050614c02493c0ac6260ac59442f6d9b12048
+            args:
+              - --provider=oidc
+              - --oidc-issuer-url=https://auth.${PUBLIC_DOMAIN}
+              - --upstream=http://metube-app:8081
+              - --http-address=0.0.0.0:4180
+              - --redirect-url=https://metube.${SECRET_DOMAIN}/oauth2/callback
+              - --cookie-domain=.${SECRET_DOMAIN}
+              - --cookie-name=_oauth2_proxy_metube
+              - --cookie-secure=true
+              - --email-domain=*
+              - --skip-provider-button=true
+              - --code-challenge-method=S256
+            env:
+              TZ: ${TIMEZONE}
+            envFrom:
+              - secretRef:
+                  name: metube-oauth2-proxy
+            ports:
+              - containerPort: &oauth2-port 4180
+                name: http
+            probes:
+              startup:
+                enabled: true
+                custom: false
+              liveness: &oauth2-probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *oauth2-port
+                  initialDelaySeconds: 15
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness: *oauth2-probes
+            resources:
+              requests:
+                cpu: 5m
+                memory: 30Mi
+              limits:
+                memory: 100Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: ["ALL"]
     service:
-      metube:
+      app:
         controller: *name
         ports:
           http:
             port: 8081
+      oauth2-proxy:
+        controller: oauth2-proxy
+        ports:
+          http:
+            port: *oauth2-port
     persistence:
       config:
         enabled: true
@@ -118,13 +179,23 @@ spec:
         retain: true
         size: 1Gi
         storageClass: longhorn
+        advancedMounts:
+          metube:
+            metube:
+              - path: /config
       tmp:
         enabled: true
         type: emptyDir
+        advancedMounts:
+          metube:
+            metube:
+              - path: /tmp
       media:
         enabled: true
         type: nfs
         server: "${NFS_SERVER}"
         path: "${NFS_KUBERNETES}/ytdlp"
-        globalMounts:
-          - path: /downloads
+        advancedMounts:
+          metube:
+            metube:
+              - path: /downloads
