@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: terminus-db
+    namespace: terminus
+type: kubernetes.io/basic-auth
+stringData:
+    username: ENC[AES256_GCM,data:JHRei3U/oVg=,iv:kxI2FVbptdDFN361Wm8ITp58Nh+ylegiOR5I0BfwK7s=,tag:nA3wfc+W2AY+KEDJGEOdlA==,type:str]
+    password: ENC[AES256_GCM,data:Dq5/Jg6sfkRcGwyTKrpiNPOZqJv4nBWv9MdHcos6jlayA0kUqSBKA76hFJyukyBf,iv:wWpdKk47rUqMs5pnlEeBG+cWgaUgqRdh842uNtZKL0I=,tag:wPP8xTeYaAIt2eJT4yfqow==,type:str]
+sops:
+    age:
+        - recipient: age1w02zzfg0y4ast9mgnd9w0yuym0wqx6q967kmrmq355w4cnw0xytq2x369r
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSB6VXlXMk5aYUYwR29EOFVU
+            dHUwL1M0WnpRc1JlUTlDMVJBZ1ZuVCtiYVVVCk0vWS93eFJ3RytuWVYvMlBrM1lW
+            ZW5Ldm9kZStLN09XQng5Y0w4b1M3a1EKLS0tIG81dkMrUm0rL2M2RFdhd1hrell6
+            eWFVcWM3RzJ3cVdrSWovMjIzbEhnbmMK1IMGIKVoqM4SYF6OLBzw0WVqx0GR68Fh
+            J9Fg9FU0MCZUvILrOj/7+9zLQclrGNcYQM2Y/ybBJSkLh2SWisbrsw==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-11-07T21:10:59Z"
+    mac: ENC[AES256_GCM,data:SvVCDQXdQjooz+wFsLSw3LekWkta49Bz1CqxoZMnBwDbej8hsmSr7+tranSK+uIG78thn99Rq22/9AIUkD4aO0u7OZNVblDPRHqT2eQP+xGjDNVR2TAjdETXDVCwATfqi2OXJir10o4zQHvGLw2UyocXAQtVzmG4++wDXYT1f9E=,iv:uY44jhfWV8x2l55EMX+jvzXfZIHAnk54cViYUY8AwPA=,tag:vR3SQC1H1OUFs6W1xE5WIQ==,type:str]
+    encrypted_regex: ^(data|stringData)$
+    version: 3.10.2

@@ -1,0 +1,162 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app terminus
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+      strategy: rollback
+
+  values:
+    controllers:
+      terminus:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        strategy: Recreate
+        pod:
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: "OnRootMismatch"
+        containers:
+          web:
+            image:
+              repository: ghcr.io/usetrmnl/terminus
+              tag: 0.80.0@sha256:4b242862c725e02b6e517e289453102b0a23f57f6bb0de9b322f1b3b05ba122f
+            env:
+              HANAMI_PORT: &port "2345"
+              API_URI: https://terminus.${SECRET_DOMAIN}
+              APP_SETUP: "true"
+              TZ: ${TIMEZONE}
+              RACK_ATTACK_ALLOWED_SUBNETS: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+            envFrom:
+              - secretRef:
+                  name: terminus-secret
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /up
+                    port: *port
+                  initialDelaySeconds: 45
+                  periodSeconds: 30
+                  timeoutSeconds: 10
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /up
+                    port: *port
+                  initialDelaySeconds: 30
+                  periodSeconds: 15
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+            resources:
+              requests:
+                cpu: 250m
+                memory: 512Mi
+              limits:
+                memory: 1Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+          worker:
+            image:
+              repository: ghcr.io/usetrmnl/terminus
+              tag: 0.80.0@sha256:4b242862c725e02b6e517e289453102b0a23f57f6bb0de9b322f1b3b05ba122f
+            args: ["bundle", "exec", "sidekiq", "-r", "./config/sidekiq.rb"]
+            env:
+              APP_SETUP: "false"
+            envFrom:
+              - secretRef:
+                  name: terminus-secret
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec:
+                    command: ["pgrep", "-f", "sidekiq"]
+                  initialDelaySeconds: 45
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                memory: 512Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+
+    service:
+      app:
+        controller: terminus
+        ports:
+          http:
+            port: *port
+
+    persistence:
+      uploads:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        retain: true
+        size: 5Gi
+        storageClass: longhorn
+        labels:
+          recurring-job-group.longhorn.io/backup: enabled
+          recurring-job.longhorn.io/source: enabled
+        globalMounts:
+          - path: /app/public/uploads
+      fonts:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        retain: true
+        size: 500Mi
+        storageClass: longhorn
+        labels:
+          recurring-job-group.longhorn.io/backup: enabled
+          recurring-job.longhorn.io/source: enabled
+        globalMounts:
+          - path: /app/public/fonts
+          - path: /usr/share/fonts/terminus
+
+    route:
+      app:
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Terminus
+          gethomepage.dev/group: Home
+          gethomepage.dev/icon: terminus.png
+        parentRefs:
+          - name: internal
+            namespace: networking
+            sectionName: https
+        hostnames: ["terminus.${SECRET_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http

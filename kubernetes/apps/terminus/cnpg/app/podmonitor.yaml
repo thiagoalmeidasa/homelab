@@ -1,0 +1,12 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: terminus
+  namespace: terminus
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/cluster: terminus
+  podMetricsEndpoints:
+    - port: metrics
