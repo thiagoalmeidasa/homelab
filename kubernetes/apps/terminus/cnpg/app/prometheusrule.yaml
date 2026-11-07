@@ -1,0 +1,20 @@
+---
+# yaml-language-server: $schema=https://kubernetes-schemas.pages.dev/monitoring.coreos.com/prometheusrule_v1.json
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cnpg-terminus-rules
+  namespace: terminus
+spec:
+  groups:
+    - name: cnpg-terminus.rules
+      rules:
+        - alert: CNPGClusterNotHealthy
+          expr: |
+            cnpg_collector_up{namespace="terminus"} != 1
+          for: 5m
+          labels:
+            severity: critical
+          annotations:
+            summary: CNPG cluster not healthy ({{ $labels.cluster }})
+            description: "CNPG cluster {{ $labels.namespace }}/{{ $labels.cluster }} collector is reporting unhealthy.\n  VALUE = {{ $value }}"

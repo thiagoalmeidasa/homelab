@@ -1,0 +1,41 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/datreeio/CRDs-catalog/main/postgresql.cnpg.io/cluster_v1.json
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: terminus
+  namespace: terminus
+spec:
+  instances: 1
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.5
+  inheritedMetadata:
+    labels:
+      recurring-job-group.longhorn.io/backup: enabled
+      recurring-job.longhorn.io/source: enabled
+  bootstrap:
+    initdb:
+      database: terminus
+      owner: terminus
+  postgresql:
+    parameters:
+      wal_keep_size: "128MB"
+      max_wal_size: "512MB"
+      max_slot_wal_keep_size: "512MB"
+  managed:
+    roles:
+      - name: terminus
+        login: true
+        passwordSecret:
+          name: terminus-db
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      memory: 768Mi
+  storage:
+    size: 5Gi
+    storageClass: longhorn
+  backup:
+    volumeSnapshot:
+      className: longhorn-snapshot-class
