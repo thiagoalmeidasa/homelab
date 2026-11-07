@@ -25,7 +25,7 @@ spec:
       existingSecret: forgejo-runner-secret
     image:
       repository: data.forgejo.org/forgejo/runner
-      tag: 13.2.0
+      tag: 13.2.1
       digest: sha256:ca3d5eea46004789a175d1369eec6829d3ea9bfbe2011a06625b4bdaa55f7552
     podLabels:
       app.kubernetes.io/component: forgejo-runner
