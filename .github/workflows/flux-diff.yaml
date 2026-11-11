@@ -48,7 +48,7 @@ jobs:
           flate diff "$RESOURCE" \
             --path "pull/$CLUSTER_PATH/flux" \
             --path-orig "default/$CLUSTER_PATH/flux" \
-            --output diff --no-progress --allow-missing-secrets \
+            --output diff --no-progress \
             --strip-attr helm.sh/chart \
             --strip-attr checksum/config \
             --strip-attr app.kubernetes.io/version \
