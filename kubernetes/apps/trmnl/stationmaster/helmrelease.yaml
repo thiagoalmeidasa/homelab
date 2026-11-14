@@ -37,7 +37,7 @@ spec:
               tag: v0.0.6@sha256:54c081b606d36ea7e27625e89cce85841f9c6dc053162353a4cb3d69e67f3e3b
             env:
               # Core
-              PORT: &port "8000"
+              PORT: &port 8000
               GIN_MODE: release
               DATA_DIR: /data
               STATIC_DIR: /app/static
