@@ -62,7 +62,7 @@ tasks:
     cmds:
       - |
         bash -o pipefail -c '
-          flate build ks --path ./kubernetes --no-progress --allow-missing-secrets |
+          flate build ks --path ./kubernetes --no-progress --supply hacks/flate-dummy-secrets.yaml |
             flux schema validate - --config .fluxschema.yml
         '
 
