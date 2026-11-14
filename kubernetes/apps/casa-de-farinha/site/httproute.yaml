@@ -20,7 +20,7 @@ spec:
   rules:
     - backendRefs:
         - name: site
-          port: http
+          port: 2368
 ---
 # Public route: site is public, but the admin path (/ghost/) is blackholed
 # to error-pages. Admin is only reachable via the SECRET_DOMAIN route above.
@@ -52,4 +52,4 @@ spec:
           port: 8080
     - backendRefs:
         - name: site
-          port: http
+          port: 2368
