@@ -56,6 +56,7 @@ spec:
               DATA_DIR: /data
               STATIC_DIR: /app/static
               BASE_URL: https://trmnl.${SECRET_DOMAIN}
+              BROWSERLESS_URL: http://browserless.trmnl.svc.cluster.local:3000
               DB_TYPE: sqlite
               SESSION_TIMEOUT: 24h
               LOG_LEVEL: INFO
