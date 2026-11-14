@@ -52,8 +52,8 @@ spec:
               mail__options__secure: "false"
               mail__from: casa-de-farinha@mail.thiagoalmeida.xyz
               # S3 (VersityGW) for media and files only; images stay on the
-              # PVC so responsive image sizes keep working.
-              storage__active: S3Storage
+              # PVC so responsive image sizes keep working. No storage.active:
+              # undeclared features (images) fall back to local storage.
               storage__media__adapter: S3Storage
               storage__media__staticFileURLPrefix: content/media
               storage__files__adapter: S3Storage
@@ -62,6 +62,9 @@ spec:
               storage__S3Storage__endpoint: http://versitygw.storage.svc.cluster.local:7070
               storage__S3Storage__region: us-east-1
               storage__S3Storage__forcePathStyle: "true"
+              # Required key on the shared block; only serves as the default
+              # prefix — media and files override it above, images are local.
+              storage__S3Storage__staticFileURLPrefix: content/media
               storage__S3Storage__cdnUrl: https://casa-de-farinha-ghost.${PUBLIC_DOMAIN}
               storage__S3Storage__multipartUploadThresholdBytes: "52428800"
               storage__S3Storage__multipartChunkSizeBytes: "10485760"
