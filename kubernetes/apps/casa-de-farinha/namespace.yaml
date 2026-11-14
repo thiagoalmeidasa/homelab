@@ -1,0 +1,7 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: casa-de-farinha
+  labels:
+    kustomize.toolkit.fluxcd.io/prune: disabled
