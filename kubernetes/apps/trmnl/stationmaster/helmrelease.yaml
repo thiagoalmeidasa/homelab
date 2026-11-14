@@ -54,7 +54,7 @@ spec:
               PORT: &port 8000
               GIN_MODE: release
               DATA_DIR: /data
-              STATIC_DIR: /app/static
+              STATIC_DIR: ./static
               BASE_URL: https://trmnl.${SECRET_DOMAIN}
               BROWSERLESS_URL: http://browserless.trmnl.svc.cluster.local:3000
               DB_TYPE: sqlite
