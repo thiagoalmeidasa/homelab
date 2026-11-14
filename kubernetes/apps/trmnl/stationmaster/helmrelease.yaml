@@ -30,6 +30,20 @@ spec:
             runAsGroup: 1000
             fsGroup: 1000
             fsGroupChangePolicy: "OnRootMismatch"
+        initContainers:
+          fix-run-permissions:
+            image:
+              repository: ghcr.io/rmitchellscott/stationmaster
+              tag: v0.0.6@sha256:54c081b606d36ea7e27625e89cce85841f9c6dc053162353a4cb3d69e67f3e3b
+            command: ["/bin/chown", "1000:1000", "/run"]
+            securityContext:
+              runAsUser: 0
+            resources:
+              requests:
+                cpu: 10m
+                memory: 16Mi
+              limits:
+                memory: 32Mi
         containers:
           app:
             image:
