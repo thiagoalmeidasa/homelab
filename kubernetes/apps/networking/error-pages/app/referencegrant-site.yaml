@@ -1,0 +1,17 @@
+---
+# Allows the casa-de-farinha/site-public HTTPRoute to blackhole the public
+# /ghost/ admin path by routing it to the error-pages service.
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: ReferenceGrant
+metadata:
+  name: error-pages-site
+  namespace: networking
+spec:
+  from:
+    - group: gateway.networking.k8s.io
+      kind: HTTPRoute
+      namespace: casa-de-farinha
+  to:
+    - group: ""
+      kind: Service
+      name: error-pages

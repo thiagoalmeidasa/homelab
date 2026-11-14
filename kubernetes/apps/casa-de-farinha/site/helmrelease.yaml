@@ -1,0 +1,131 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app site
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+      strategy: rollback
+
+  values:
+    controllers:
+      site:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: "OnRootMismatch"
+        containers:
+          app:
+            image:
+              repository: docker.io/library/ghost
+              tag: 6.9.3@sha256:ff85a42544375ce92a50a358a64fddd61ef63823c3aa30af6df1892a1f66f7eb
+            env:
+              NODE_ENV: production
+              TZ: ${TIMEZONE}
+              # Site URLs: public frontend, admin panel only on the internal
+              # (SECRET_DOMAIN) hostname. See site/README.md.
+              url: https://casa-de-farinha.${PUBLIC_DOMAIN}
+              admin__url: https://casa-de-farinha.${SECRET_DOMAIN}
+              # SQLite database
+              database__client: sqlite3
+              database__connection__filename: /var/lib/ghost/content/data/ghost.db
+              # SMTP via the cluster relay (sends as mail.thiagoalmeida.xyz)
+              mail__transport: SMTP
+              mail__options__host: smtp-relay.networking.svc.cluster.local
+              mail__options__port: "25"
+              mail__options__secure: "false"
+              mail__from: casa-de-farinha@mail.thiagoalmeida.xyz
+              # S3 (VersityGW) for media and files only; images stay on the
+              # PVC so responsive image sizes keep working.
+              storage__active: S3Storage
+              storage__media__adapter: S3Storage
+              storage__media__staticFileURLPrefix: content/media
+              storage__files__adapter: S3Storage
+              storage__files__staticFileURLPrefix: content/files
+              storage__S3Storage__bucket: casa-de-farinha-ghost
+              storage__S3Storage__endpoint: http://versitygw.storage.svc.cluster.local:7070
+              storage__S3Storage__region: us-east-1
+              storage__S3Storage__forcePathStyle: "true"
+              storage__S3Storage__cdnUrl: https://casa-de-farinha-ghost.${PUBLIC_DOMAIN}
+              storage__S3Storage__multipartUploadThresholdBytes: "52428800"
+              storage__S3Storage__multipartChunkSizeBytes: "10485760"
+              storage__S3Storage__accessKeyId:
+                valueFrom:
+                  secretKeyRef:
+                    name: site-secret
+                    key: GHOST_S3_ACCESS_KEY_ID
+              storage__S3Storage__secretAccessKey:
+                valueFrom:
+                  secretKeyRef:
+                    name: site-secret
+                    key: GHOST_S3_SECRET_ACCESS_KEY
+              # Redis cache adapter (image sizes cache)
+              adapters__cache__imageSizes__adapter: Redis
+              adapters__cache__imageSizes__ttl: "3600"
+              adapters__cache__imageSizes__keyPrefix: "site-image-sizes:"
+              adapters__cache__Redis__host: redis-master.databases.svc.cluster.local
+              adapters__cache__Redis__port: "6379"
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: &port 2368
+                  initialDelaySeconds: 30
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  initialDelaySeconds: 10
+                  periodSeconds: 10
+                  timeoutSeconds: 3
+                  failureThreshold: 3
+            resources:
+              requests:
+                cpu: 100m
+                memory: 256Mi
+              limits:
+                memory: 1536Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+
+    service:
+      app:
+        controller: site
+        ports:
+          http:
+            port: *port
+
+    persistence:
+      content:
+        type: persistentVolumeClaim
+        existingClaim: site-content
+        globalMounts:
+          - path: /var/lib/ghost/content

@@ -46,6 +46,7 @@
     public_lan_subdomains:
       - analytics
       - arai
+      - casa-de-farinha
       - drive
       - media
       - photos
