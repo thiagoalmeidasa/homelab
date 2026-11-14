@@ -44,6 +44,9 @@ spec:
               READECK_SERVER_ALLOWED_HOSTS: readeck.${PUBLIC_DOMAIN},readeck.${SECRET_DOMAIN}
               READECK_SERVER_TRUSTED_PROXIES: 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16
               READECK_DATA_DIRECTORY: /readeck
+              # OIDC via Pocket ID
+              READECK_AUTH_OIDC_PROVIDERS_1_NAME: Pocket ID
+              READECK_AUTH_OIDC_PROVIDERS_1_URL: https://auth.${PUBLIC_DOMAIN}
             envFrom:
               - secretRef:
                   name: readeck-secret
