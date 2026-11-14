@@ -1,0 +1,155 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s-labs/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app stationmaster
+spec:
+  interval: 30m
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 3
+      strategy: rollback
+
+  values:
+    controllers:
+      stationmaster:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        pod:
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            fsGroup: 1000
+            fsGroupChangePolicy: "OnRootMismatch"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/rmitchellscott/stationmaster
+              tag: v0.0.6@sha256:54c081b606d36ea7e27625e89cce85841f9c6dc053162353a4cb3d69e67f3e3b
+            env:
+              # Core
+              PORT: &port "8000"
+              GIN_MODE: release
+              DATA_DIR: /data
+              STATIC_DIR: /app/static
+              BASE_URL: https://trmnl.${SECRET_DOMAIN}
+              DB_TYPE: sqlite
+              SESSION_TIMEOUT: 24h
+              LOG_LEVEL: INFO
+              LOG_FORMAT: json
+              ALLOW_INSECURE: "false"
+              # User management
+              PUBLIC_REGISTRATION_ENABLED: "false"
+              DISABLE_WELCOME_EMAIL: "false"
+              # OIDC via Pocket ID
+              OIDC_ISSUER: https://auth.${PUBLIC_DOMAIN}
+              OIDC_CLIENT_ID: b631aa4e-fd0b-4d51-8e1d-108d474da96b
+              OIDC_REDIRECT_URL: https://trmnl.${SECRET_DOMAIN}/api/auth/oidc/callback
+              OIDC_SCOPES: openid,profile,email
+              OIDC_AUTO_CREATE_USERS: "true"
+              OIDC_SSO_ONLY: "false"
+              OIDC_BUTTON_TEXT: Pocket ID
+              # SMTP via cluster relay
+              SMTP_HOST: smtp-relay.networking.svc.cluster.local
+              SMTP_PORT: "25"
+              SMTP_FROM: noreply@mail.thiagoalmeida.xyz
+              SMTP_TLS: "false"
+              SITE_URL: https://trmnl.${SECRET_DOMAIN}
+            envFrom:
+              - secretRef:
+                  name: stationmaster-secret
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  initialDelaySeconds: 10
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 5
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                  timeoutSeconds: 3
+                  failureThreshold: 3
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 1Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities:
+                drop:
+                  - ALL
+
+    service:
+      app:
+        controller: stationmaster
+        ports:
+          http:
+            port: *port
+
+    persistence:
+      data:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        retain: true
+        size: 5Gi
+        storageClass: longhorn
+        labels:
+          recurring-job-group.longhorn.io/backup: enabled
+          recurring-job.longhorn.io/source: enabled
+        globalMounts:
+          - path: /data
+      static:
+        type: persistentVolumeClaim
+        accessMode: ReadWriteOnce
+        retain: true
+        size: 1Gi
+        storageClass: longhorn
+        labels:
+          recurring-job-group.longhorn.io/backup: enabled
+          recurring-job.longhorn.io/source: enabled
+        globalMounts:
+          - path: /app/static
+      run:
+        type: emptyDir
+        globalMounts:
+          - path: /run
+
+    route:
+      app:
+        annotations:
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/name: Stationmaster
+          gethomepage.dev/group: Home
+          gethomepage.dev/icon: trmnl.png
+        parentRefs:
+          - name: internal
+            namespace: networking
+            sectionName: https
+        hostnames: ["trmnl.${SECRET_DOMAIN}"]
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: http
