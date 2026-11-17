@@ -30,7 +30,7 @@ spec:
           app:
             image:
               repository: ghcr.io/umami-software/umami
-              tag: postgresql-v2.20.2
+              tag: 3.5.0@sha256:b64f40400d77bcadd39cf5c62a1e368c99524ca442024f96e1133355a19a5dbc
             env:
               TZ: ${TIMEZONE}
               DATABASE_TYPE: postgresql
