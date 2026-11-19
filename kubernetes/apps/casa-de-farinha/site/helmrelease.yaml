@@ -34,7 +34,7 @@ spec:
           app:
             image:
               repository: docker.io/library/ghost
-              tag: 6.77.0@sha256:2e3ca97643ea2a8cde6d0c97fae15ff39bfb60714f5abaab3f65263a2ed7c2a7
+              tag: 6.78.0@sha256:985ef9f30fb897a29050a9ef956bff1737ff1f2cd955aa5b759b88251f9c8735
             env:
               NODE_ENV: production
               TZ: ${TIMEZONE}
