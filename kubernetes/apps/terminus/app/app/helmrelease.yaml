@@ -35,7 +35,7 @@ spec:
           web:
             image:
               repository: ghcr.io/usetrmnl/terminus
-              tag: 0.82.0@sha256:a040d8947aa480266f42f8dd24fa7a86c52499cb6f1b9e083b21af1233f87204
+              tag: 0.84.0@sha256:78316a885994817162cbab2abfcb8d6ac3f49c1d58d89f36266765d9f760721f
             env: &env
               HANAMI_PORT: "2345"
               API_URI: https://terminus.${SECRET_DOMAIN}
@@ -82,7 +82,7 @@ spec:
           worker:
             image:
               repository: ghcr.io/usetrmnl/terminus
-              tag: 0.82.0@sha256:a040d8947aa480266f42f8dd24fa7a86c52499cb6f1b9e083b21af1233f87204
+              tag: 0.84.0@sha256:78316a885994817162cbab2abfcb8d6ac3f49c1d58d89f36266765d9f760721f
             args: ["bundle", "exec", "sidekiq", "-r", "./config/sidekiq.rb"]
             env:
               <<: *env
