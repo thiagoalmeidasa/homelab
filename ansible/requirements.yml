@@ -18,7 +18,7 @@ roles:
     version: v3.6.4
   - name: robertdebock.bootstrap
     src: https://github.com/robertdebock/ansible-role-bootstrap.git
-    version: 7.1.7
+    version: 7.3.1
   - name: robertdebock.luks
     src: https://github.com/robertdebock/ansible-role-luks.git
     version: 3.0.13
