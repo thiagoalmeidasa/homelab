@@ -35,7 +35,7 @@ spec:
           app:
             image:
               repository: ghcr.io/hms-homelab/hms-cpap
-              tag: 1.1.4@sha256:e4b36fc8024f9a3ab1b3882257ba070f622e032d04b23cc81dfb3754ef146c9e
+              tag: 1.9.0@sha256:137f0d52ab844580a942494ee2fedad9fe01e4cf9ad41c9091a3582b6ed09937
             env:
               TZ: ${TIMEZONE}
               CPAP_TEMP_DIR: /tmp/hms-cpap
