@@ -132,7 +132,7 @@ spec:
           kubernetes.io/arch: amd64
         initContainers:
           - name: dind
-            image: docker:29-dind@sha256:4bbc7223f81db790097c6dea42fb93e05b8fead4f0431fbe6ccaba6e8473201c
+            image: docker:29-dind@sha256:fbbc96e0af32cdc190aff92ba97a1281a115351a723afe21af78879cc55126b0
             securityContext:
               privileged: true
             restartPolicy: Always
@@ -193,7 +193,7 @@ spec:
           kubernetes.io/arch: arm64
         initContainers:
           - name: dind
-            image: docker:29-dind@sha256:4bbc7223f81db790097c6dea42fb93e05b8fead4f0431fbe6ccaba6e8473201c
+            image: docker:29-dind@sha256:fbbc96e0af32cdc190aff92ba97a1281a115351a723afe21af78879cc55126b0
             securityContext:
               privileged: true
             restartPolicy: Always
